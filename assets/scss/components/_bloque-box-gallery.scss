@@ -1,0 +1,25 @@
+.bloque-box-gallery {
+	ul {
+		padding: 0;
+		li {
+			width: 33.33%;
+			float: left;
+			position: relative;
+			list-style: none;
+			text-align: center;
+			padding: 1rem;
+			@media screen and (max-width: $anchoMobile) {
+				width: 100%;
+			}
+			img {
+				width: 100%;
+			}
+			h2 {
+				height: 5rem;
+				@media screen and (max-width: $anchoMobile) {
+					height: auto;
+				}
+			}
+		}
+	}
+}

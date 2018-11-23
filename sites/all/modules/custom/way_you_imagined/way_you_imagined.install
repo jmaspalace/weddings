@@ -1,0 +1,114 @@
+<?php
+/**
+ * Implements hook_schema().
+ *
+ * Defines the database tables used by this module.
+ * Remember that the easiest way to create the code for hook_schema is with
+ * the @link http://drupal.org/project/schema schema module @endlink
+ *
+ * @see hook_schema()
+ * @ingroup dbtng_example
+ */
+
+function way_you_imagined_schema() {
+    //drupal_flush_all_caches();
+    $schema['way_you_imagined_img'] = array(
+        'description' => 'Table with information of the image.',
+        'fields' => array(
+            'id_way_you_imagined_img' => array(
+                'description' => 'Image ID.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'id_img' => array(
+                'description' => 'Imagen ID of the table file_managed.',
+                'type' => 'int',
+                'not null' => TRUE,
+                'unsigned' => TRUE,
+            ),
+        ),
+        'primary key' => array('id_way_you_imagined_img'),
+        'indexes' => array(
+            'id_way_you_imagined' => array('id_way_you_imagined_img'),
+        ),
+        'foreign keys' => array(
+            'fk_id_img' => array(
+                'table' => 'wed_file_managed',
+                'columns' => array('id_img' => 'fid'),
+            ),
+        ),
+    );
+
+    $schema['way_you_imagined_request'] = array(
+        'description' => 'Save the information from the form.',
+        'fields' => array(
+            'id_way_you_imagined_request' => array(
+                'description' => 'Request form ID.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'bride_name' => array(
+                'description' => 'Bride Name.',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'bride_last_name' => array(
+                'description' => 'Bride last name.',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'groom_name' => array(
+                'description' => 'Groom Name.',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'groom_last_name' => array(
+                'description' => 'Groom last name.',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'mail' => array(
+                'description' => 'Email.',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'wedding_date' => array(
+                'description' => 'Wedding Date - The Unix timestamp when the set was created.',
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'video_link' => array(
+                'description' => 'Link of video',
+                'type' => 'varchar',
+                'length' => 500,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'send_promotion' => array(
+                'description' => 'Si=1,No=0',
+                'type' => 'int',
+                'length' => 2,
+                'not null' => TRUE,
+            ),
+        ),
+        'primary key' => array('id_way_you_imagined_request'),
+        'indexes' => array(
+            'id_way_you_imagined_request' => array('id_way_you_imagined_request'),
+        ),
+    );
+
+    return $schema;
+}

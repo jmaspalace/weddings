@@ -1,0 +1,734 @@
+.header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 15;
+	width: 100%;
+	padding: 14px 0;
+	transition: 0.4s;
+	@media (max-width: $anchoTablet) {
+		padding: 10px 0;
+	}
+	@media (max-width: $anchoMobile) {
+		height: 53px;
+	}
+	.container-header {
+		max-width: 1400px;
+		margin: 0 auto;
+		padding: 0 10px;
+	}
+	.logo-desktop {
+		@media (max-width: $anchoMobile) {
+			display: none;
+		}
+		.logo-weddings {
+			max-width: 140px;
+			transition: 0.3s;
+			@media (max-width: $anchoTablet) {
+				max-width: 100px;
+			}
+		}
+	}
+	.logo-mobile {
+		display: none;
+		@media (max-width: $anchoMobile) {
+			display: block;
+			position: absolute;
+			top: 1rem;
+			left: 1rem;
+		}
+	}
+	li {
+		list-style: none;
+		display: inline-block;
+		float: left;
+	}
+	.menu-superior {
+		float: right;
+		@media (max-width: $anchoMobile) {
+			display: none;
+		}
+		> ul {
+			float: left;
+			padding: 0;
+			margin-bottom: 8px;
+		}
+		.search_desktop {
+			background: url('../img/lupa.png') no-repeat center right;
+			width: 24px;
+			height: 22px;
+			position: relative;
+			margin-left: 10px;
+			cursor: pointer;
+			@media (max-width: $anchoTablet) {
+				height: 17px;
+			}
+			&::after {
+				content: "";
+				position: absolute;
+				left: 0;
+				width: 1px;
+				height: 11px;
+				background: #818181;
+				top: 7px;
+				@media (max-width: $anchoTablet) {
+					top: 3px;
+				}
+			}
+			&:hover {
+				opacity: 0.6;
+			}
+		}
+		.search_input {
+			position: fixed;
+			top: 0;
+			right: 0;
+			background: #f7f7f7;
+			padding: 0.5rem;
+			width: 28rem;
+			z-index: 100;
+			right: -28rem;
+			transition: 0.4s;
+			&.visible {
+				right: 0;
+			}
+			.search_form {
+				width: 90%;
+				position: relative;
+				input[type="text"] {
+					background: white;
+					width: 100%;
+					padding: 0.5rem;
+					font-family: $roboto;
+					font-weight: 100;
+					font-size: 1.1rem;
+					outline: none;
+					color: $gris;
+					border: none;
+				}
+				input[type="submit"] {
+					position: absolute;
+					top: 7px;
+					border: none;
+					right: 0;
+					height: 25px;
+					width: 35px;
+					background: url('../img/lupa_search_footer.png') no-repeat center;
+					border-left: 1px solid gray;
+					outline: none;
+				}
+			}
+		}
+		.dropdown {
+			color: #5f5f5f;
+			margin-left: 20px;
+			cursor: pointer;
+			.dropdown-menu {
+				right: 0;
+				left: auto;
+				background: white;
+				border-radius: 0;
+				box-shadow: none;
+				border: none;
+				padding: 10px;
+				cursor: auto;
+				li {
+					display: list-item;
+					float: right;
+					color: $gris;
+				}
+			}
+			&.dropdown-tels {
+				font-family: $roboto;
+				font-size: 0.8rem;
+				img {
+					width: 13px;
+					margin-right: 5px;
+					top: -1px;
+					position: relative;
+				}
+				.dropdown-menu  {
+					min-width: 330px;
+					li {
+						font-size: 0.9rem;
+						margin: 3px 0;
+						span {
+							color: $vinoTinto;
+						}
+					}
+				}
+			}
+			&.dropdown-idioma {
+				font-family: $roboto;
+				font-size: 0.8rem;
+				> div {
+					line-height: 1.3rem;
+				}
+				.dropdown-menu  {
+					min-width: 80px;
+					padding: 5px;
+					a {
+						font-size: 0.7rem;
+						color: $vinoTinto;
+						&:hover {
+							opacity: 0.6;
+						}
+					}	
+				}
+			}
+		}
+	}
+	nav {
+		position: relative;
+		float: left;
+		width: 100%;
+		text-align: center;
+		margin-top: 20px;
+		@media (max-width: $anchoTablet) {
+			margin-top: 0px;
+		}
+		@media(min-width: 991px) and (max-width: 1100px){
+			.menu{
+				position: relative;
+				top: 50px;
+			}
+			.enlace_next_step {
+				position: relative;
+				top: -48px !important; 
+				left: 364px;
+			}
+		}
+
+		@media(min-width: 768px) and (max-width: 800px){
+			.menu{
+				position: relative;
+				top: 50px;
+			}
+			.enlace_next_step {
+				position: relative;
+				top: -40px !important; 
+				left: 255px;
+			}
+		}
+		.menu {
+			display: inline-block;
+			float: right;
+			border-bottom: 1px solid #ddd;
+			padding: 0;
+			padding-bottom: 12px;
+			> li {
+				margin-right: 1.4rem;
+				position: relative;
+				&:first-child {
+					display: none;
+					@media (max-width: $anchoMobile) {
+						display: inline-block;
+					}
+				}
+				
+				.area-activa{
+					width: 400px;
+					height: 100px;
+					position: absolute;
+					top: 1rem;
+					left: 50%;
+					margin-left: -200px;
+					z-index: 2;
+					@media (max-width: $anchoMobile) {
+						display: none !important;
+					}
+				}
+				&.active {
+					&::after {
+						position: absolute;
+						content: "";
+						background: $vinoTinto;
+						width: 100%;
+						height: 2px;
+						bottom: -13px;
+						left: 0;
+						@media (max-width: $anchoMobile) { 
+							display: none;
+						}
+					}
+				}
+				@media (max-width: $anchoDesktop) {
+					margin-right: 8px;
+					padding-right: 0.6rem;
+				}
+				@media (max-width: $anchoTablet) {
+					margin-right: 0.3rem;
+					padding-right: 0.3rem;
+				}
+				@media (max-width: $anchoMobile) { 
+					margin-right: 0rem;
+					padding-right: 0rem;
+				}
+				&:hover {
+					&::after {
+						position: absolute;
+						content: "";
+						background: $vinoTinto;
+						width: 100%;
+						height: 2px;
+						bottom: -13px;
+						left: 0;
+					}
+				}
+				&:last-child {
+					padding-right: 0;
+					margin: 0;
+				}
+				a {
+					font-family: $miso;
+					font-size: 1.2rem;
+					transition: 0.2s;
+					color: #3e3e3e;
+					&:hover {
+						@include opacidad;
+					}
+					&.active {
+						position: relative;
+						margin-bottom: 1rem;
+						padding-bottom: 0.6rem;
+					}
+					@media (max-width: $anchoTablet) {
+						font-size: 15px;
+						margin-right: -2px;
+					}
+				}
+				.triangulo {
+					width: 0;
+					height: 0;
+					border-right: .8rem solid transparent;
+					border-top: .8rem solid transparent;
+					border-left: .8rem solid transparent;
+					border-bottom: 0.8rem solid rgba(0,0,0,0.85);
+					position: absolute;
+					top: -1.6rem;
+					left: 40%;
+					transition: 0.3s;
+					@media (max-width: $anchoMobile) {
+						display: none !important;
+					}
+				}
+				.submenu {
+					display: none;
+					width: 100%;
+					height: auto;
+					background: rgba(0,0,0,0.88);
+					position: fixed;
+					left: 0;
+					top: 7rem;
+					padding: 3rem 0;
+					@media(min-width: 768px) and (max-width: 800px){
+						top: 8rem;
+					}
+					@media(min-width: 800px) and (max-width: 990px){
+						top: 5rem;
+					}
+					@media(min-width: 991px) and (max-width: 1100px){
+						top: 10rem;
+					}
+
+					@media (max-width: $anchoMobile) {
+						display: none;
+						position: relative;
+						background: #3c3c3c;
+						float: left;
+						top: auto !important;
+						padding: 0; 
+						margin-top: 1rem;
+					}
+					.container {
+						padding: 0;
+						@media (max-width: $anchoMobile) {
+							padding: 0.7rem;
+						}
+						> div {
+							> a {
+								text-decoration: none;
+							}
+						}
+					}
+					ul.bloque-submenu {
+						margin: 0;
+						padding: 0;
+						&.top {
+							position: relative;
+							margin-top: 70px;
+							@media (max-width: $anchoTablet) {
+								margin-top: 20px;
+							}
+						}
+						> li {
+							list-style: none;
+							display: block;
+							text-align: left;
+							width: 100%;
+							margin-bottom: 1rem;
+							padding-bottom: 1rem;
+							position: relative;
+							padding-left: 1rem;
+							@media (max-width: $anchoMobile) {
+								text-align: center;
+								padding: 0;
+								margin: 0;
+							}
+							&::before {
+								position: absolute;
+								left: -0.4rem;
+								top: 0.3rem;
+								content: "";
+								width: 0;
+								height: 0;
+								border-left: 0.4rem solid $vinoTinto;
+								border-top: 0.25rem solid transparent;
+								border-bottom: 0.25rem solid transparent;
+								@media (max-width: $anchoMobile) {
+									display: none;
+								}
+							}
+							&::after {
+								content: "";
+								width: 80%;
+								background: $vinoTinto;
+								height: 1px;
+								bottom: 0;
+								left: 0;
+								position: absolute;
+								@media (max-width: $anchoMobile) {
+									display: none;
+								}
+							}
+							&:last-child {
+								margin-bottom: 0;
+								padding-bottom: 0;
+								&::after {
+									display: none;
+								}
+							}
+							> a {
+								color: $vinoTinto;
+								font-family: $miso;
+								text-transform: uppercase;
+								font-size: 1.3rem;
+							}
+							> ul {
+								margin: 0;
+								padding: 0;
+								padding-left: 1rem;
+								@media (max-width: $anchoMobile) {
+									padding-left: 0rem;
+								}
+								> li {
+									display: block;
+									width: 100%;
+									list-style: circle;
+									margin: 0.2rem 0;
+									position: relative;
+									@media (max-width: $anchoMobile) {
+										margin: 0;
+									}
+									&::after {
+										content: "";
+										position: absolute;
+										background: white;
+										width: 5px;
+										height: 5px;
+										border-radius: 50%;
+										left: -20px;
+										top: 50%;
+										margin-top: -3px;
+										@media (max-width: $anchoMobile) {
+											display: none;
+										}
+									}
+									&:first-child {
+										margin-top: 0.6rem;
+									}
+									> a {
+										color: white;
+										font-size: 0.9rem;
+										text-decoration: none;
+										font-family: $roboto;
+									}
+								}
+							}
+						}
+					}
+					.container-img {
+						@media (max-width: $anchoMobile) { 
+							display: none;
+						}
+					}
+				}
+			}
+		}
+		.close {
+			display: none;
+			color: $vinoTinto;
+			opacity: 1;
+		}
+		.menu-redes {
+			display: none;
+		}
+		@media (max-width: $anchoMobile) {
+			display: block;
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			right: -100%;
+			background: none;
+			z-index: 11;
+			transition: 0.3s;
+			&.right {
+				right: 0;
+			}
+			.close {
+				display: block;
+			}
+			.menu-redes {
+				background: $vinoTinto;
+				width: 100%;
+				position: relative;
+				float: left;
+				display: block;
+				padding: 2rem;
+				background-size: 110%;
+				margin-top: 1rem;
+				ul {
+					margin: 0;
+					padding: 0;
+					width: 100%;
+					li {
+						display: inline-block;
+						margin-right: 0.4rem;
+					}
+				}
+				select {
+					-webkit-appearance: none;
+					-moz-appearance: none;
+					appearance: none;
+					position: absolute;
+					top: 0;
+					right: 0;
+					color: white;
+					height: 100%;
+					padding: 0 1.5rem;
+					font-size: 1.3rem;
+					text-transform: uppercase;
+					border: none;
+					border-radius: 0;
+					font-family: $roboto;
+					font-weight: 100;
+					outline: none;
+					background: url('../img/down.png') center right 10% no-repeat #921429;
+					background-size: 16px;
+				}
+			}
+			.menu {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				margin-top: 3rem;
+				float: none;
+				border-bottom: none;
+				li {
+					width: 100%;
+					padding-top: 1.2rem !important;
+					padding-bottom: 1.2rem !important;
+					&.down {
+						background: url('../img/down-submenu.png') no-repeat 95% 21px;
+						background-size: 15px;
+						&.open {
+							background: url('../img/down-submenu2.png') no-repeat 95% 21px;
+							background-size: 15px;
+							.submenu {
+								display: block !important;
+							}
+						}
+					}
+					&::after {
+						content: "";
+						position: absolute;
+						bottom: 0;
+						left: 0;
+						width: 100%;
+						height: 2px;
+						background: url('../img/bg_menu_mobile.jpg');
+						background-size: 100%;
+					}
+					&.active {
+						&::after {
+							display: block;
+							content: "";
+							position: absolute;
+							bottom: 0;
+							left: 0;
+							width: 100%;
+							height: 2px;
+							background: url('../img/bg_menu_mobile.jpg');
+							background-size: 100%;
+						}
+						> a {
+							color: white;
+						}
+					}
+					a {
+						color: $vinoTinto;
+						font-size: 1.2rem;
+						opacity: 1;
+						width: 70%;
+						margin-left: 15%;
+						display: block;
+						text-transform: uppercase;
+						&.active {
+							opacity: 0.6;
+							color: $vinoTinto;
+							margin-bottom: 0;
+							padding-bottom: 0;
+							&::after {
+								display: none;
+							}
+						}
+						&:hover, &:focus {
+							color: $vinoTinto;
+						}
+						@media(min-width: 991px) and (max-width: 1100px){
+							font-size: 18px;
+						}
+						@media(min-width: 768px) and (max-width: 800px){
+							font-size: 18px;
+						}
+					}
+					&:last-child {
+						border-bottom: none;
+					}
+					&:hover {
+						&::after {
+							content: "";
+							position: absolute;
+							bottom: 0;
+							left: 0;
+							width: 100%;
+							height: 2px;
+							background: url('../img/bg_menu_mobile.jpg');
+							background-size: 100%;
+						}
+					}
+					&:last-child {
+						&::after {
+							display: none;
+						}
+					}
+				}
+			}
+		}
+	}
+	.close-back {
+		display: none;
+		@media (max-width: $anchoMobile) {
+			display: block;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			background: transparent;
+			position: absolute;
+		}
+	}
+	.container-nav {
+		@media (max-width: $anchoMobile) {
+			background: #323232;
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 90%;
+			height: 100%;
+			overflow: scroll;
+		}
+	}
+	.btn_book_now2 {
+		position: absolute;
+		right: -10rem;
+		bottom: -2.5rem;
+		width: 10rem;
+		height: 2.5rem;
+		background: $vinoTinto;
+		color: white;
+		padding: 0;
+		transition: 0.3s;
+		margin: 0;
+		&.visible {
+			right: 0;
+		}
+		&:hover {
+			background: white;
+			color: $vinoTinto;
+			border: solid 1px $vinoTinto;
+		}
+		@media (max-width: $anchoMobile) {
+			display: none !important;
+		}
+	}
+	.btn_book_now3 {
+		display: none;
+		@media (max-width: $anchoMobile) {
+			display: block;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			background: $vinoTinto;
+			color: white;
+			text-transform: uppercase;
+			width: 100%;
+			height: 4rem;
+			border: none;
+			font-family: $miso;
+			cursor: pointer;
+			font-size: 1.3rem;
+		}
+	}
+	&.transform {
+		background: white;
+		padding: 0;
+		padding-top: 7px;
+		@media (max-width: $anchoMobile) {
+			padding-top: 0px;
+		}
+		.logo-weddings {
+			transform: scale(0.8);
+		}
+		nav {
+			margin-top: 0px;
+		}
+		.submenu {
+			top: 5.5rem !important;
+		}
+	}
+	.icon-menu {
+		display: none;
+		@media (max-width: $anchoMobile) {
+			display: block;
+			width: 31px;
+			height: 19px;
+			background: url('../img/icon-menu.png') no-repeat center;
+			position: absolute;
+			top: 1rem;
+			right: 1rem;
+			cursor: pointer;
+		}
+	}
+}
+
+.cabos .menu {
+	float: right;
+}
+
+.page-honeymoons, .page-honeymoons-tours {
+	.enlace_next_step {
+		display: none !important;
+	}
+}

@@ -1,0 +1,97 @@
+.bloque-indian-weddings {
+	height: 40rem;
+	position: relative;
+	margin-bottom: 0;
+	@media (max-width: $anchoTablet) {
+		height: 33rem;
+	}
+	@media (max-width: $anchoMobile) {
+		height: auto;
+		background-size: cover;
+		display: flex;
+		flex-direction: column;
+		> div {
+			flex: 100%;
+			order: 1;
+			&.container-img {
+				order: 2;
+				margin-top: 1rem;
+			}
+		}
+	}
+	.container-img {
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: center no-repeat #fefefe;
+		background-size: cover;
+		height: 100%;
+		width: 100%;
+		@media (max-width: $anchoMobile) {
+			position: relative;
+			top: auto;
+			left: auto;
+			height: 28rem;
+			background-position: -15rem;
+		}
+	}
+	.container {
+		height: 100%;
+		position: relative;
+		@media (max-width: $anchoMobile) {
+			height: auto;
+		}
+		.content-info {
+			text-align: left;
+			position: absolute;
+			top: 50%;
+			-ms-transform: translateY(-50%);
+			-webkit-transform: translateY(-50%);
+			transform: translateY(-50%);
+			padding: 0 5rem;
+			max-width: 28rem;
+			left: 50%;
+			h2 {
+				padding-bottom: 0.5rem;
+				margin-bottom: 0.5rem;
+				position: relative;
+			}
+			@media screen and (max-width: $anchoTablet) {
+				padding: 0 3rem;
+			}
+			@media (max-width: $anchoMobile) {
+				top: auto;
+				transform: none;
+				width: 100%;
+				left: 0;
+				position: relative;
+				text-align: center;
+				padding: 0 1rem;
+			}
+		}
+	}
+}
+
+.bloque-indian-gallery {
+	> div {
+		padding: 0;
+	}
+	ul {
+		padding: 0;
+		li {
+			width: 25%;
+			position: relative;
+			float: left;
+			list-style: none;
+			@media screen and (max-width: $anchoMobile) {
+				width: 50%;
+			}
+		}
+	}
+	.grid-item {
+		width: 25%;
+		@media screen and (max-width: $anchoMobile) {
+			width: 50%;
+		}
+	}
+}

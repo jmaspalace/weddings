@@ -1,0 +1,896 @@
+<?php
+/**
+ * Implements hook_help().
+ * Type: Administration
+ *
+ * Show a bit of information about this module on the example page
+ * acruz: Agrega un links al path determinado
+ * @return html
+ */
+function way_you_imagined_help($path, $arg) {
+    switch ($path) {
+        case 'admin/structure/way_you_imagined':
+        case 'admin/structure/way_you_imagined/reques_form':
+            return '<p>' . l(t('Download Information'), 'admin/structure/way_you_imagined/download_info') . '</p><p>' . l(t('List images'), 'admin/structure/way_you_imagined/images') . '</p>';
+            break;
+        case 'admin/structure/way_you_imagined/images':
+            return '<p>' . l(t('New Image Hotel'), 'admin/structure/way_you_imagined/images/new/0') . '</p><p>' . l(t('List Request Form'), 'admin/structure/way_you_imagined/reques_form') . '</p>';
+            break;
+    }
+}
+
+/**
+ * Implements hook_menu().
+ * Type: Administration
+ *
+ * acruz: Agrega un link de tipo menu segun la opcion "type"
+ * @return $items
+ */
+function way_you_imagined_menu()
+{
+    $items = array();
+    $items['admin/structure/way_you_imagined'] = array(
+        'title' => 'The way you imagined',
+        'access callback' => 'way_you_imagined_admin_or_manipulate',
+        'access arguments' => array('Administer images'),
+        'page callback' => 'way_you_imagined_request_form_intro',
+        'expanded' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['admin/structure/way_you_imagined/reques_form'] = array(
+        'title' => 'Request Form',
+        'access callback' => 'way_you_imagined_admin_or_manipulate',
+        'access arguments' => array('Administer request form'),
+        'page callback' => 'way_you_imagined_request_form_intro',
+        'expanded' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['admin/structure/way_you_imagined/download_info'] = array(
+        'page callback' => 'download_request_form',
+        'access callback' => TRUE,
+        'type' =>  MENU_SUGGESTED_ITEM,
+    );
+
+    $items['admin/structure/way_you_imagined/images'] = array(
+        'title' => 'Managed Images',
+        'access callback' => 'way_you_imagined_admin_or_manipulate',
+        'access arguments' => array('Administer images'),
+        'page callback' => 'way_you_imagined_img_intro',
+        'expanded' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['admin/structure/way_you_imagined/images/new/%'] = array(
+        'title' => 'New Image',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('way_you_imagined_img_reg', 5),
+        'access callback' => 'way_you_imagined_admin_or_manipulate',
+        'access arguments' => array('Administer Images'),
+        'description' => 'New Image',
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['admin/structure/way_you_imagined/images/delete/%'] = array(
+        'title' => 'Delete Image',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('delete_image', 5),
+        //'access callback' => 'user_access',
+        'access callback' => 'way_you_imagined_admin_or_manipulate',
+        'access arguments' => array('Delete Image'),
+        'description' => 'Delete Image',
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['the-way-you-imagined'] = array(
+        'title' => 'The way you imagined',
+        'page callback' => 'home_way_you_imagined',
+        'access callback' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    return $items;
+}
+
+/**
+ * Custom function way_you_imagined_request_form_intro().
+ * Type: Administration
+ *
+ * acruz: Permite visualizar en una tabla todos los registros del formulario
+ * @return $build
+ */
+function way_you_imagined_request_form_intro()
+{
+    $header = array(
+        // The header gives the table the information it needs in order to make
+        // the query calls for ordering. TableSort uses the field information
+        // to know what database column to sort by.
+        //array('data' => t('Enabled'), 'field' => ''),
+        array('data' => t('#'), 'field' => 'id_way_you_imagined_request'),
+        array('data' => t('Bridge First Name'), 'field' => 'bride_name'),
+        array('data' => t('Bridge Last Name'), 'field' => 'bride_last_name'),
+        array('data' => t('Groom First Name'), 'field' => 'groom_name'),
+        array('data' => t('Groom Last Name'), 'field' => 'groom_last_name'),
+        array('data' => t('E-mail'), 'field' => 'mail'),
+        array('data' => t('Wedding Date'), 'field' => 'wedding_date'),
+        array('data' => t('Video Link'), 'field' => 'video_link'),
+        array('data' => t('Send Promotion'), 'field' => 'send_promotion'),
+    );
+
+    $result = _way_you_imagined_request_form();
+    $rows = [];
+
+    if ($result !== FALSE)
+    {
+        foreach ($result as $k => $row)
+        {
+            $row->send_promotion = $row->send_promotion == 1 ? 'Si' : 'No';
+            $rows[] = ['data' => (array) $row];
+        }
+    }
+    // Build the table for the nice output.
+    $build['ariadna_registro'] = [
+        '#theme' => 'table',
+        '#header' => $header,
+        '#rows' => $rows,
+    ];
+    return $build;
+}
+
+/**
+ * Custom function download_request_form().
+ * Type: Administration
+ *
+ * acruz: Genera archivo excel y permite su descarga con info del Formulario
+ */
+function download_request_form()
+{
+    module_load_include('inc', 'phpexcel');
+
+    $data = array();
+
+    $headers = array('id', 'Bridge First Name', 'Bridge Last Name', 'Groom First Name',
+        'Groom Last Name', 'E-mail', 'Wedding Date', 'Video Link', 'Send Promotion');
+
+    $result = _way_you_imagined_request_form();
+
+    while($row = $result->fetchAssoc())
+    {
+        $row['send_promotion'] = $row['send_promotion'] == 1 ? 'Si' : 'No';
+        $data[] = array_values($row);
+    }
+
+    if(count($data) == 0)
+    {
+        $data[0] = array('No existen Registros');
+    }
+
+    $caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; //posibles caracteres a usar
+    $numerodeletras=3; //numero de letras para generar el texto
+    $cadena = ''; //variable para almacenar la cadena generada
+    for($i=0;$i<$numerodeletras;$i++)
+    {
+        $cadena .= substr($caracteres,rand(0,strlen($caracteres)),1);
+    }
+
+    $dir = file_stream_wrapper_get_instance_by_uri('public://download_wedding/info/')->realpath();
+    $filename = 'info_wrf_'.$cadena.'.xls';
+    $path = "$dir/$filename";
+    $options = array('format' => 'xls');
+
+    $new_folder = 'public:///download_wedding/info/';
+    file_prepare_directory($new_folder, FILE_CREATE_DIRECTORY);
+
+    $result = phpexcel_export($headers, $data, $path, $options);
+
+    if ($result == PHPEXCEL_SUCCESS)
+    {
+        drupal_add_http_header('Content-disposition', 'attachment; filename=' . $filename);
+        readfile($path);
+    }
+    else
+    {
+        drupal_set_message(t("Oops ! An error occured !"), 'error');
+    }
+    drupal_exit();
+}
+
+/**
+ * Custom function way_you_imagined_img_intro().
+ * Type: Administration
+ *
+ * acruz: Permite visualizar en una tabla todos los registros de imagenes
+ * @return $build
+ */
+function way_you_imagined_img_intro()
+{
+    $header = array(
+        // The header gives the table the information it needs in order to make
+        // the query calls for ordering. TableSort uses the field information
+        // to know what database column to sort by.
+        //array('data' => t('Enabled'), 'field' => ''),
+        array('data' => t('#'), 'field' => 'id_way_you_imagined_img'),
+        array('data' => t('Name Image'), 'field' => 'name_img'),
+        array('data' => t('Actions'), 'field' => 'editar'),
+    );
+
+    $result = _way_you_imagined_get_images();
+    $rows = [];
+
+    if ($result !== FALSE)
+    {
+        foreach ($result as $k => $row)
+        {
+            $rows[] = ['data' => (array) $row];
+            $rows[$k]['data']['actions'] = l(t('Edit'), 'admin/structure/way_you_imagined/images/new/' . $row->id_way_you_imagined_img) . ' | '. l(t('Delete'), 'admin/structure/way_you_imagined/images/delete/'.$row -> id_way_you_imagined_img);
+        }
+    }
+    // Build the table for the nice output.
+    $build['ariadna_registro'] = [
+        '#theme' => 'table',
+        '#header' => $header,
+        '#rows' => $rows,
+    ];
+    return $build;
+}
+
+/**
+ * Custom function way_you_imagined_reg().
+ * Type: Administration
+ *
+ * acruz: Genera el formulario para creacion de cada imagen si se envia el parametro $id_img el formulario carga la informacion
+ *        de un imagen ya creado, para ser editado
+ * @return $form
+ */
+function way_you_imagined_img_reg($form, &$form_state, $id_img)
+{
+    $data_way_you_imagined_img_reg = array();
+    if($id_img != 0){
+        $data_way_you_imagined_img_reg = _way_you_imagined_img_get_by_id($id_img);
+    }
+
+    $form['id_way_you_imagined_img'] = array(
+        '#type' => 'hidden',
+        '#value' => $id_img,
+    );
+
+    $form['description'] = array(
+        '#type' => 'item',
+        '#title' => t('General information'),
+        '#description' => t('It allows to load image'),
+    );
+
+    $form['id_img'] = array(
+        '#type' => 'managed_file',
+        '#title' => t('Image'),
+        '#description' => t('Add Image, with extensions: jpg, jpeg, png, gif'),
+        '#required' => TRUE,
+        '#upload_location' => 'public://way_you_imagined/img/',
+        '#default_value' => isset($data_way_you_imagined_img_reg[0]['id_img']) ? $data_way_you_imagined_img_reg[0]['id_img'] : '',
+        '#theme' => 'way_you_imagined_image_upd',
+        '#upload_validators' => array(
+            'file_validate_extensions' => array('gif png jpg jpeg'),
+        ),
+    );
+
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Submit',
+        '#submit' => array('way_you_imagined_img_form_submit'),
+    );
+
+    return $form;
+}
+
+/**
+ * Implements hook_form_submit()
+ * Type: Administration (Process)
+ *
+ * acruz: guarda o edita la informacion obtenida en el formulario way_you_imagined_form()
+ */
+function way_you_imagined_img_form_submit($form, &$form_state)
+{
+    if($form_state['values']['id_way_you_imagined_img'] == 0)
+    {
+        drupal_set_message(t('Successful registration.', array(
+                '@id_img' => $form_state['values']['id_img'],
+            )
+        ));
+
+        $id_img = _way_you_imagined_insert_image($form_state);
+        if ($id_img !== FALSE)
+        {
+            _way_you_imagined_save_files($form_state['values']['id_img'], $form_state['values']['id_img'], 'img');
+        }
+
+    }
+    else
+    {
+        $res_way_you_imagined_img = _way_you_imagined_img_get_by_id($form_state['values']['id_way_you_imagined_img']);
+
+        if ($res_way_you_imagined_img !== FALSE)
+        {
+            $update = _way_you_imagined_update_img($form_state, $form_state['values']['id_way_you_imagined_img']);
+
+            if ($update !== FALSE)
+            {
+                if ($res_way_you_imagined_img[0]['id_img'] != $form_state['values']['id_img'])
+                {
+                    _way_you_imagined_remove_files($res_way_you_imagined_img[0]['id_img'], $res_way_you_imagined_img[0]['id_img'], 'img');
+                    _way_you_imagined_save_files($form_state['values']['id_img'], $form_state['values']['id_img'], 'img');
+                }
+            }
+        }
+    }
+    $form_state['redirect'] = 'admin/structure/way_you_imagined/images';
+}
+
+/**
+ * Custom function delete_image().
+ * Type: Administration (Process)
+ *
+ * acruz: Elimina la imagen de la base de datos
+ * @return $form
+ */
+function delete_image($form, &$form_state, $id_img)
+{
+    if($id_img != 0)
+    {
+        $num_deleted = db_delete('way_you_imagined_img')
+            ->condition('id_way_you_imagined_img', $id_img)
+            ->execute();
+    }
+    $form['description'] = array(
+        '#type' => 'item',
+        '#title' => t('General information'),
+        '#description' => t('The record was deleted'),
+    );
+    return $form;
+}
+
+/**
+ * Custom function home_way_you_imagined().
+ * Type: General user (Vista)
+ *
+ * acruz: Permite visualizar el home del modulo por medio del template
+ *
+ * @return string
+ */
+function home_way_you_imagined()
+{
+    $data_images = _way_you_imagined_get_all_images();
+
+    $variables = array('images' => $data_images);
+
+    return theme("way_you_imagined", $variables);
+}
+
+/**
+ * Helper function - since hook_menu now takes a function instead of a boolean,
+ * this function is used to compute the user's access.
+ *
+ * @return boolean
+ */
+function way_you_imagined_admin_or_manipulate() {
+    return user_access('administer way_you_imagined') || user_access('manipulate queues') || user_access('manipulate all queues');
+}
+
+/**
+ * Implements hook_permission().
+ */
+function way_you_imagined_permission() {
+    return array(
+        'administer way you imagined' => array(
+            'title' => t('Administer way yoy imagined'),
+            'description' => t('Perform administration tasks for my module.'),
+            // 'restrict access' => true,
+        )
+    );
+}
+
+/**
+ * Implements hook_theme()
+ * Type: General user (Process)
+ *
+ * acruz: Obtiene el template solicitado para visualizar
+ * @return array
+ */
+function way_you_imagined_theme($existing, $type, $theme, $path) {
+    return array(
+        'way_you_imagined' => array(
+            'template' => 'template/way_you_imagined_home',
+        ),
+        'way_you_imagined_image_upd' => array(
+            'render element' => 'element',
+        ),
+    );
+}
+
+/**
+ * Implements hook_theme()
+ * Type: General user (Process)
+ *
+ * acruz: No implementado - No funciona
+ *
+ * @return array|string
+ */
+function theme_way_you_imagined_image_upd($variables) {
+
+    $element = $variables['element'];
+    $output = '';
+    if ($element['fid']['#value'] != 0) {
+        // if image is uploaded show its thumbnail to the output HTML
+        $output .= '<div class="image-preview">';
+        $output .= theme('image_style', array('style_name' => 'medium', 'path' => file_load($element['fid']['#value'])->uri, 'getsize' => TRUE));
+        $output .= drupal_render_children($element);
+        $output .= '</div>';
+    }
+    return $output;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function way_you_imagined_block_info() {
+    $blocks = array();
+
+    $blocks['form_the_way_you_imagined'] = array(
+        'info' => t('The way you imagined - form'),
+        'cache' => DRUPAL_NO_CACHE,
+    );
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function way_you_imagined_block_view($delta = '') {
+    $block = array();
+
+    switch ($delta) {
+        case 'form_the_way_you_imagined':
+            $block['subject'] = t('THE BEST DAY OF YOUR LIFE STARTS HERE');
+            $block['content'] = drupal_get_form('way_you_imagined_form_info');
+            break;
+    }
+    return $block;
+}
+
+/**
+ * Implements hook_form().
+ * Type: General user (Vista)
+ *
+ * acruz: Visualiza el formulario
+ * @return $form
+ */
+function way_you_imagined_form_info($form, &$form_state)
+{
+    $form['descrip_ini'] = array(
+        '#markup' => '<div class="row" id="form">
+                        <div class="container" >
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <h1>'.t('THE BEST DAY OF YOUR LIFE STARTS HERE').'</h1>
+                                </div>
+                            </div>',
+        );
+
+    $form['box'] = array(
+        '#type' => 'markup',
+        '#prefix' => '<div id="box">',
+        '#suffix' => '</div>',
+        '#markup' => '',
+    );
+
+
+    $form['bride_name'] = array(
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#prefix' => '<div class="row"><div class="col-sm-6">',
+        '#suffix' => '</div>',
+        '#maxlength' => 200,
+        '#title' => t('BRIDE: '),
+        '#placeholder' => t('First Name'),
+    );
+
+    $form['bride_last_name'] = array(
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#prefix' => '<div class="col-sm-6">',
+        '#suffix' => '</div></div>',
+        '#maxlength' => 200,
+        '#placeholder' => t('Last Name'),
+    );
+
+    $form['groom_name'] = array(
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#prefix' => '<div class="row"><div class="col-sm-6">',
+        '#suffix' => '</div>',
+        '#maxlength' => 200,
+        '#title' => t('GROOM'),
+        '#placeholder' => t('First Name'),
+    );
+
+    $form['groom_last_name'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="col-sm-6">',
+        '#suffix' => '</div></div>',
+        '#required' => TRUE,
+        '#maxlength' => 200,
+        '#placeholder' => t('Last Name'),
+    );
+
+    $form['mail'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="row"><div class="col-sm-12">',
+        '#suffix' => '</div></div>',
+        '#required' => TRUE,
+        '#title' => t('E-MAIL: '),
+        '#maxlength' => 120,
+    );
+
+    $form['wedding_date_day'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="row"><div class="col-sm-4">',
+        '#suffix' => '</div>',
+        '#maxlength' => 200,
+        '#required' => TRUE,
+        '#title' => t('WEDDING DATE'),
+        '#placeholder' => t('Day'),
+    );
+
+    $form['wedding_date_month'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="col-sm-4">',
+        '#suffix' => '</div>',
+        '#maxlength' => 200,
+        '#placeholder' => t('Month'),
+    );
+
+    $form['wedding_date_year'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="col-sm-4">',
+        '#suffix' => '</div></div>',
+        '#maxlength' => 200,
+        '#placeholder' => t('Year'),
+    );
+
+    $form['video_link'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="row"><div class="col-sm-12">',
+        '#suffix' => '</div></div>',
+        '#required' => TRUE,
+        '#title' => t('MY VIDEO LINK: '),
+        '#maxlength' => 120,
+    );
+
+    $form['terms_of_use'] = array(
+        '#type' => 'checkbox',
+        '#title' => t("I accept the Terms & Conditions."),
+        '#required' => TRUE,
+    );
+
+    $form['send_promotion'] = array(
+        '#type' => 'checkbox',
+        '#title' => t("Send me promotions from Palace Resorts Weddings"),
+    );
+
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'SUBMIT',
+        '#ajax' => array(
+            'callback' => 'way_you_imagined_form_info_ajax_submit',
+            'wrapper' => 'box',
+        ),
+    );
+    $form['descrip_fin'] = array(
+        '#markup' => '</div>
+          </div>',
+    );
+
+    return $form;
+}
+
+/**
+
+ * Menu callback for AJAX additions. Render the new poll choices.
+
+ */
+
+function way_you_imagined_form_info_ajax_submit($form, $form_state)
+{
+    $element = $form['box'];
+    $errors = form_get_errors();
+    if (empty($errors))
+    {
+        $fields = array(
+            'bride_name' => $form_state['values']['bride_name'],
+            'bride_last_name' => $form_state['values']['bride_last_name'],
+            'groom_name' => $form_state['values']['groom_name'],
+            'groom_last_name' => $form_state['values']['groom_last_name'],
+            'mail' => $form_state['values']['mail'],
+            'wedding_date' => $form_state['values']['wedding_date_day']. ' '. $form_state['values']['wedding_date_month']. ' '. $form_state['values']['wedding_date_year'],
+            'video_link' => $form_state['values']['video_link'],
+            'send_promotion' => ($form_state['values']['send_promotion'] !== '' ? $form_state['values']['send_promotion'] : 0)
+        );
+
+        try
+        {
+            $id = db_insert('way_you_imagined_request')
+                ->fields($fields)
+                ->execute();
+            $form_state['rebuild'] = TRUE;
+            $element['#markup'] = '<div class="alert alert-block alert-success messages status">'. t('Thank you for your information.') .'</div>';
+        }
+        catch (Exception $e)
+        {
+            watchdog('way_you_imagined', 'Error guardando la informacion del formulario: '.$e->getMessage(), WATCHDOG_ERROR);
+            $element['#markup'] = '<div class="alert alert-block alert-danger messages error">'. t('Error saving the information sent.') .'</div>';
+        }
+    }
+    return $element;
+}
+
+function way_you_imagined_form_info_validate($form, &$form_state)
+{
+    if ($form_state['values']['bride_name'] !== '')
+    {
+        if (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['bride_name']))
+        {
+            form_set_error('bride_name', t('The bride name appears to be invalid.'));
+        }
+    }
+    else
+    {
+        form_set_error('bride_name', t('The bride name is required.'));
+    }
+
+    if ($form_state['values']['bride_last_name'] !== '')
+    {
+        if (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['bride_last_name']))
+        {
+            form_set_error('bride_last_name', t('The bride last name appears to be invalid.'));
+        }
+    }
+    else
+    {
+        form_set_error('bride_last_name', t('The bride last name is required.'));
+    }
+
+    if ($form_state['values']['groom_name'] !== '')
+    {
+        if (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['groom_name']))
+        {
+            form_set_error('groom_name', t('The groom name appears to be invalid.'));
+        }
+    }
+    else
+    {
+        form_set_error('groom_name', t('The groom name is required.'));
+    }
+
+    if ($form_state['values']['groom_last_name'] !== '')
+    {
+        if (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['groom_last_name']))
+        {
+            form_set_error('groom_last_name', t('The groom last name appears to be invalid.'));
+        }
+    }
+    else
+    {
+        form_set_error('groom_last_name', t('The groom last name is required.'));
+    }
+
+    if ($form_state['values']['mail'] !== '')
+    {
+        $mail = $form_state['values']['mail'];
+        if (!valid_email_address($mail))
+        {
+            form_set_error('mail', t('The e-mail address appears to be invalid.'));
+        }
+    }
+    else
+    {
+        form_set_error('mail', t('The e-mail address is required.'));
+    }
+
+    if ($form_state['values']['wedding_date_day'] === '' || $form_state['values']['wedding_date_month'] === '' || $form_state['values']['wedding_date_year'] === '')
+    {
+        form_set_error('wedding_date_day', t('The weddings date is required.'));
+    }
+
+    if ($form_state['values']['video_link'] !== '')
+    {
+        if (!preg_match('/^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/', $form_state['values']['video_link']))
+        {
+            form_set_error('video_link', t('The video link appears to be invalid for youtube url.'));
+        }
+    }
+    else
+    {
+        form_set_error('video_link', t('The video link is required.'));
+    }
+
+    if ($form_state['values']['terms_of_use'] === '')
+    {
+        form_set_error('mail', t('The term & conditions is required.'));
+    }
+}
+
+/**
+ * Funcion que retorna todos la informacion de imagenes almacenada
+ *
+ * @return bool|\DatabaseStatementInterface|null
+ */
+function _way_you_imagined_get_images()
+{
+    try
+    {
+        $query = db_select('way_you_imagined_img', 'd');
+        $query->fields('d', array('id_way_you_imagined_img'));
+        $query->join('file_managed', 'fi', 'd.id_img = fi.fid');
+        $query->fields('fi',array('filename'));
+        $result = $query->execute();
+
+        return $result;
+    }
+    catch (Exception $e)
+    {
+        watchdog('way_you_imagined', 'Error obteniendo la información de las imagenes. ERROR: '.$e->getMessage(), WATCHDOG_ERROR);
+        return FALSE;
+    }
+}
+
+/**
+ * Funcion que retorna todos la informacion enviada en el formulario
+ *
+ * @return bool|\DatabaseStatementInterface|null
+ */
+function _way_you_imagined_request_form()
+{
+    try
+    {
+        $query = db_select('way_you_imagined_request', 'd');
+        $query->fields('d');
+        $result = $query->execute();
+
+        return $result;
+    }
+    catch (Exception $e)
+    {
+        watchdog('way_you_imagined', 'Error obteniendo la información del formulario. ERROR: '.$e->getMessage(), WATCHDOG_ERROR);
+        return FALSE;
+    }
+}
+
+/**
+ * Funcion que retorna todos la informacion de imagenes almacenada
+ *
+ * @return bool|\DatabaseStatementInterface|null
+ */
+function _way_you_imagined_get_all_images()
+{
+    try
+    {
+        $query = db_select('way_you_imagined_img', 'd');
+        $query->fields('d');
+        $result = $query->execute();
+
+        return $result;
+    }
+    catch (Exception $e)
+    {
+        watchdog('way_you_imagined', 'Error obteniendo la información de las imagenes. ERROR: '.$e->getMessage(), WATCHDOG_ERROR);
+        return FALSE;
+    }
+}
+
+/**
+ * Funcion que permite obtener la informacion de un pdf por el identificador
+ * @param $id_img
+ *
+ * @return null
+ */
+function _way_you_imagined_img_get_by_id($id_img)
+{
+    $query = db_select('way_you_imagined_img', 'd');
+    $query->fields('d',array('id_way_you_imagined_img', 'id_img'))
+        ->condition('id_way_you_imagined_img', $id_img);
+    $result = $query->execute();
+
+    $numway_you_imagined_img = 0;
+    $data_way_you_imagined_img = NULL;
+    while($record = $result->fetchAssoc()) {
+        $data_way_you_imagined_img[$numway_you_imagined_img] = $record;
+        $numway_you_imagined_img++;
+    }
+    return $data_way_you_imagined_img;
+}
+
+/**
+ * Funcion encargada de almacenar la informacion de las imagenes
+ * @param $form_state
+ *
+ * @return bool|\DatabaseStatementInterface|int
+ */
+function _way_you_imagined_insert_image($form_state)
+{
+    try
+    {
+        $fields = array(
+            'id_img' => $form_state['values']['id_img']
+        );
+
+        $id_img = db_insert('way_you_imagined_img')
+            ->fields($fields)
+            ->execute();
+
+        return $id_img;
+    }
+    catch (Exception $e)
+    {
+        watchdog('way_you_imagined', 'Error guardando la información de la imagen. ERROR: '.$e->getMessage(), WATCHDOG_ERROR);
+        return FALSE;
+    }
+}
+
+/**
+ * Funcion para actualizar registros de download pdf
+ * @param $form_state
+ * @param $id_way_you_imagined_img
+ *
+ * @return bool|\DatabaseStatementInterface
+ */
+function _way_you_imagined_update_img($form_state, $id_way_you_imagined_img)
+{
+    try
+    {
+        $update = db_update('way_you_imagined_img')
+            ->fields([
+                'id_img' => $form_state['values']['id_img']
+            ])
+            ->condition('id_way_you_imagined_img', $id_way_you_imagined_img, '=')
+            ->execute();
+
+        return $update;
+    }
+    catch (Exception $e)
+    {
+        watchdog('way_you_imagined', 'Error actualizando la información de la imagen. ERROR: '.$e->getMessage(), WATCHDOG_ERROR);
+        return FALSE;
+    }
+}
+
+/**
+ * Funcion encargada de guardar archivos cargada en el formulario
+ * @author Sebastian Aristizabal - Ariadana CDI Manizales
+ *
+ * @param $form_state_file
+ * @param $id
+ * @param $type
+ */
+function _way_you_imagined_save_files($form_state_file, $id, $type)
+{
+    $file = file_load($form_state_file);
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+    file_usage_add($file, 'way_you_imagined', $type, $id);
+}
+
+/**
+ * Funcione encargada de remover una imagen cargada
+ * @author Sebastian Aristizabal - Ariadana CDI Manizales
+ *
+ * @param $id_file
+ * @param $id
+ * @param $type
+ */
+function _way_you_imagined_remove_files($id_file, $id, $type)
+{
+    $file = file_load($id_file);
+    $file->status = 0;
+    file_save($file);
+    file_usage_delete($file, 'way_you_imagined', $type, $id);
+}

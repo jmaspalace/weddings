@@ -1,0 +1,468 @@
+<?php
+/**
+ * @file
+ * Render an administrative menu as a dropdown menu at the top of the window.
+ */
+/**
+ * 20150410 CHG acruz Id de la lista de Quiz exactarget
+ */
+define('ID_LISTS_QUIZ', '18678821');
+
+/**
+ * Page callback for our general info page.
+ */
+function weddings_quiz_intro() {
+  $markup = t('Modulo que permite la administración de quices para Weddings');
+
+  $list[] = l(t('Diseño'), 'admin/structure/weddings_quiz/design/0');
+  $list[] = l(t('Quizzes'), 'admin/structure/weddings_quiz/list');
+
+  $variables['items'] = $list;
+  $variables['type'] = 'ul';
+  $markup .= theme('item_list', $variables);
+
+  return array('#markup' => $markup);
+}
+
+/**
+ * Implements hook_action_info().
+ */
+/**
+ * Implements hook_help().
+ */
+function weddings_quiz_help($path, $arg) {
+  switch ($path) {
+    case 'admin/structure/weddings_quiz/list':
+      return '<p>' . l(t('New Quiz'), 'admin/structure/weddings_quiz/design/0') . '</p>';
+  }
+}
+
+/**
+ * [weddings_quiz_menu description]
+ * @return [type]
+ */
+function weddings_quiz_menu() {
+  $items = array();
+  $items['admin/structure/weddings_quiz'] = array(
+    'title' => 'Weddings Quiz',
+    'access callback' => 'weddings_quiz_admin_or_manipulate',
+    'access arguments' => array('Administer weddings quiz'),
+    'page callback' => 'weddings_quiz_intro',
+    'expanded' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/weddings_quiz/design/%'] = array(
+    'title' => 'Design',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('weddings_quiz_reg', 4),
+    'access callback' => 'weddings_quiz_admin_or_manipulate',
+    'access arguments' => array('Administer weddings quiz'),
+    'description' => 'Crear un nuevo quiz',
+    'file' => 'weddings_quiz_design.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/weddings_quiz/list'] = array(
+    'title' => 'Quizzes',
+    'description' => 'Quizzes creados',
+    'page callback' => 'table_quizzes_page',
+    'access callback' => 'weddings_quiz_admin_or_manipulate',
+    'access arguments' => array('Administer weddings quiz'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/weddings_quiz/active/%'] = array(
+    'page callback' => 'weddings_quiz_active',
+    'page arguments' => array(4),
+    'access callback' => 'weddings_quiz_admin_or_manipulate',
+    'access arguments' => array('Administer weddings quiz'),
+    'file' => 'weddings_quiz_design.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/weddings_quiz/inactive/%'] = array(
+    'page callback' => 'weddings_quiz_inactive',
+    'page arguments' => array(4),
+    'access callback' => 'weddings_quiz_admin_or_manipulate',
+    'access arguments' => array('Administer weddings quiz'),
+    'file' => 'weddings_quiz_design.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  // Home de los quizzes
+  $items['quiz'] = array(
+    'title' => 'Palace Resorts Quizzes',
+    'page callback' => 'home_quizzes',
+    //'page arguments' => array('weddings_quiz_reg'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  // Primera pregunta del quiz
+  $items['quiz/ini/%'] = array(
+    'page callback' => 'weddings_quiz_ini',
+    'page arguments' => array(2),   //doesn't work as expected
+    'access callback' => TRUE,
+    'access arguments' => array('weddings_quiz access'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+
+  // Realiza el avance desde la segunda pregunta del quiz
+  $items['quiz/question/%/%/%'] = array(
+    'page callback' => 'weddings_quiz_question',
+    'page arguments' => array(2, 3, 4),   //doesn't work as expected
+    'access callback' => TRUE,
+    //'access arguments' => array('weddings_quiz access'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+
+  // Formulario de captura del quiz se encuentra en archivo weddings_quiz_design.inc
+  $items['quiz/lead/%/%'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('weddings_quiz_lead_form', 2, 3),
+    'access callback' => TRUE,
+    'file' => 'weddings_quiz_design.inc',
+    'type' =>  MENU_SUGGESTED_ITEM,
+  );
+
+  // Resultado del quiz
+  $items['quiz/result/%'] = array(
+    'page callback' => 'weddings_quiz_result',
+    'page arguments' => array( 2),
+    'access callback' => TRUE,
+    'type' =>  MENU_SUGGESTED_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Helper function - since hook_menu now takes a function instead of a boolean,
+ * this function is used to compute the user's access.
+ *
+ * @return boolean
+ */
+function weddings_quiz_admin_or_manipulate() {
+    return user_access('administer weddings_quiz') || user_access('manipulate queues') || user_access('manipulate all queues');
+}
+
+/**
+ * Implements hook_permission().
+ */
+/*function weddings_quiz_permission() {
+  return array(
+    'administer weddings quiz' => array(
+      'title' => t('Administer weddings quiz'),
+      'description' => t('Perform administration tasks for my module.'),
+      // 'restrict access' => true,
+    )
+  );
+}*/
+
+/*
+ * Funcion home_quizzes
+ * Home de los quizzes
+ * Obtiene el home, con imagenes con links para ingresar a cualquiert quiz
+ * @return template home
+ */
+function home_quizzes() {
+  global $language;
+
+  if(isset($_SESSION['quiz']))
+    unset( $_SESSION['quiz']);
+
+  $query = db_select('quiz', 'q');
+  $query->fields('q',array('id_quiz','nombre_quiz','descripcion', 'id_img_quiz', 'id_img_banner_preg', 'estado' ));
+  $query->condition('language', $language->language, '=');
+  $result = $query->execute();
+
+  $numquiz = 0;
+  $data_quiz = NULL;
+  while($record = $result->fetchAssoc()) {
+    $data_quiz[$numquiz] = $record;
+    $numquiz++;
+  }
+
+  $variables = array('home_quizzes' => $data_quiz);
+
+  return theme("home", $variables);
+
+}
+
+/*
+ * [weddings_quiz_ini description]
+ * Primera pregunta del quiz
+ * Obtiene la primera pregunta con las opciones de repuesta del quiz que se pueden
+ * seleccionar
+ * @param  [type] $id_quiz [description]
+ * @return [type]          [description] template pregunta la primera pregunta
+ * del quiz seleccionado
+ */
+function weddings_quiz_ini($id_quiz)
+{
+  module_load_include('inc', 'weddings_quiz', 'weddings_quiz_design');
+  if(isset($_SESSION['quiz']))
+    unset( $_SESSION['quiz']);
+
+  $data_quiz = _weddings_quiz_get_quiz_id($id_quiz);
+
+  if (isset($data_quiz))
+  {
+    $numpreg = 0;
+    $data_preguntas = _weddings_quiz_get_preguntas_by_quiz($id_quiz, $numpreg, TRUE);
+
+    if (isset($data_preguntas))
+    {
+      $numopciones = 0;
+
+      $data_opciones = _weddings_quiz_get_opciones_by_pregunta($data_preguntas[0]['id_pregunta'], $numopciones, TRUE);
+
+      if (isset($data_opciones))
+      {
+        $variables = array('num_preguntas' => $numpreg, 'data_quiz' => $data_quiz, 'data_pregunta' => $data_preguntas, 'data_opcion' => $data_opciones, 'apuntador_preg' => 0);
+
+        return theme("pregunta", $variables);
+      }
+    }
+  }
+  drupal_goto(url('quiz', array('absolute' => TRUE)));
+  exit();
+}
+
+/*
+ * Funcion weddings_quiz_question
+ * Preguntas del quiz
+ * Obtiene las pregunta apartir de la segunda pregunta del quiz, con sus respectivas
+ * opciones de repuesta
+ * @param integer $id_quiz
+ * @param integer $apuntador_pregunta determina en que numero de pregunta va
+ * @param integer $id_opcion opcion selecionada en la pregunta anterior
+ * @return template pregunta con informacion desde la segunda pregunta
+ */
+function weddings_quiz_question($id_quiz, $apuntador_pregunta, $id_opcion)
+{
+  module_load_include('inc', 'weddings_quiz', 'weddings_quiz_design');
+  $data_quiz = _weddings_quiz_get_quiz_id($id_quiz);
+
+  if (isset($data_quiz))
+  {
+    $numpreg = 0;
+    $data_preguntas = _weddings_quiz_get_preguntas_by_quiz($id_quiz, $numpreg, TRUE);
+
+    if (isset($data_preguntas))
+    {
+      $numopciones = 0;
+      $query1 = db_select('quiz_opcion', 'o');
+      $query1->fields('o', [
+        'id_pregunta',
+        'id_opcion',
+        'titulo',
+        'id_img_opcion',
+        'id_respuesta'
+      ])
+        ->condition('id_pregunta', $data_preguntas[$apuntador_pregunta]['id_pregunta'])
+        ->orderBy('RAND()');
+      $resultOpciones = $query1->execute();
+
+      $data_opciones = NULL;
+      while ($recordOpcion = $resultOpciones->fetchAssoc())
+      {
+        $data_opciones[$numopciones] = $recordOpcion;
+        if ($apuntador_pregunta == 1) {
+          $_SESSION['quiz']['result' . $data_opciones[$numopciones]['id_respuesta']] = 0;
+        }
+        $numopciones++;
+      }
+      if (isset($_SESSION['quiz']))
+      {
+        foreach ($_SESSION['quiz'] as $k => $val)
+        {
+          if ($k == 'result' . $id_opcion)
+          {
+            $_SESSION['quiz'][$k] = $_SESSION['quiz'][$k] + 1;
+          }
+        }
+      }
+      if (isset($data_opciones))
+      {
+        $variables = [
+          'num_preguntas' => $numpreg,
+          'data_quiz' => $data_quiz,
+          'data_pregunta' => $data_preguntas,
+          'data_opcion' => $data_opciones,
+          'apuntador_preg' => $apuntador_pregunta
+        ];
+        return theme("pregunta", $variables);
+      }
+    }
+  }
+  drupal_goto(url('quiz', array('absolute' => TRUE)));
+  exit();
+}
+
+/*
+ * Funcion weddings_quiz_result
+ * Resultado de los quizzes
+ * Obtiene el resultado final por medio del $id_result, adicional el template genera los
+ * links de Share de pinterest, facebook y twitter
+ * @param integer $id_result
+ * @return template resultado informacion del resultado final
+ */
+function weddings_quiz_result($id_result)
+{
+  $query = db_select('quiz_respuesta', 'r');
+  $query->fields('r');
+  $query->condition('id_respuesta', $id_result);
+  $result = $query->execute();
+
+  $numresultado = 0;
+  $data_resultado = NULL;
+  while($record = $result->fetchAssoc()) {
+    $data_resultado[$numresultado] = $record;
+    $numresultado++;
+  }
+
+  if (isset($data_resultado))
+  {
+    $nameQuiz = get_name_quiz_result ($data_resultado[0]['id_quiz']);
+    $variables = array('data_resultado' => $data_resultado, 'name_quiz' => strip_tags($nameQuiz));
+    return theme("resultado", $variables);
+  }
+  else
+  {
+    drupal_goto(url('quiz', array('absolute' => TRUE)));
+    exit();
+  }
+}
+
+/*
+ * @param integer $id_quiz
+ * @return string $nameQuiz
+ *   El nombre del Quiz solicitado.
+ */
+
+function get_name_quiz ($id_quiz) {
+
+  $query = db_select('quiz', 'q');
+  $query->fields('q',array('nombre_quiz'))
+    ->condition('id_quiz', $id_quiz);
+  $result = $query->execute();
+
+  //$numquiz = 0;
+  while($record = $result->fetchAssoc()) {
+    $nameQuiz = $record['nombre_quiz'];
+    // $data_quiz[$numquiz] = $record;
+    // $numquiz++;
+  }
+
+  return $nameQuiz;
+
+}
+
+/*
+ * @param integer $id_respuesta
+ * @return string $nameQuiz
+ *   El nombre del Quiz solicitado.
+ */
+
+function get_name_quiz_result ($id_respuesta) {
+
+  $query = db_select('quiz_respuesta', 'r');
+  $query->join('quiz', 'q', 'r.id_quiz = q.id_quiz');
+  $query->fields('q',array('nombre_quiz'))
+    ->condition('id_respuesta', $id_respuesta);
+  $result = $query->execute();
+
+  //$numquiz = 0;
+  while($record = $result->fetchAssoc()) {
+    $nameQuiz = $record['nombre_quiz'];
+    // $data_quiz[$numquiz] = $record;
+    // $numquiz++;
+  }
+
+  return $nameQuiz;
+
+}
+
+/**
+ * Build the table render array.
+ *
+ * @return array
+ *   A render array set for theming by theme_table().
+ */
+function table_quizzes_page() {
+
+  // We are going to output the results in a table with a nice header.
+  $header = array(
+    // The header gives the table the information it needs in order to make
+    // the query calls for ordering. TableSort uses the field information
+    // to know what database column to sort by.
+    array('data' => t('Id'), 'field' => 'q.id_quiz'),
+    array('data' => t('Name'), 'field' => 'q.nombre_quiz'),
+    array('data' => t('Language'), 'field' => 'q.language'),
+    array('data' => t('Status'), 'field' => 'q.estado'),
+    array('data' => t('Actions')),
+  );
+
+  // Using the TableSort Extender is what tells the the query object that we
+  // are sorting.
+  $rows = array();
+  $query = db_select('quiz', 'q')
+    ->extend('TableSort');
+  $query->fields('q',array('id_quiz','nombre_quiz', 'language', 'estado'));
+
+  // Don't forget to tell the query object how to find the header information.
+  $result = $query
+    ->orderByHeader($header)
+    ->execute();
+
+  $campos = array();
+  $languages = locale_language_list('name');
+  foreach ($result as $key => $row) {
+    $campos['id_quiz'] = $row->id_quiz;
+    $campos['nombre_quiz'] = $row->nombre_quiz;
+    $campos['language'] = $languages[$row->language];
+    $accionActive = '';
+    if($row->estado == 1){
+      $campos['estado'] = t('Active');
+      $accionActive = l(t('Inactive'), 'admin/structure/weddings_quiz/inactive/'.$row->id_quiz);
+    }else if($row->estado == 2){
+      $campos['estado'] = t('Inactive');
+      $accionActive = l(t('Active'), 'admin/structure/weddings_quiz/active/'.$row->id_quiz);
+    }
+    $campos['editar'] = l(t('Edit'), 'admin/structure/weddings_quiz/design/'.$row->id_quiz).' | '. $accionActive;
+    $rows[] = array('data' => $campos);
+  }
+
+  $build['aspera_registro'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+  );
+
+  return $build;
+}
+
+function weddings_quiz_theme($existing, $type, $theme, $path) {
+  return array(
+    'home' => array(
+      'template' => 'template/weddings_quiz_home',
+    ),
+    'pregunta' => array(
+      'template' => 'template/weddings_quiz_pregunta',
+    ),
+    'resultado' => array(
+      'template' => 'template/weddings_quiz_resultado',
+    ),
+    'weddings_quiz_lead' => array(
+      'render element' => 'form',
+      'template' => 'template/weddings_quiz_lead',
+      // this will set to module/theme path by default:
+      'path' => drupal_get_path('module', 'weddings_quiz'),
+    ),
+    'weddings_quiz_image_upd' => array(
+      'render element' => 'element',
+    ),
+  );
+}

@@ -1,0 +1,15 @@
+name = The way you imagined
+description = "Permite la administración y visualizacion del landing 'The way you imagined'."
+package = The way you imagined
+core = 7.x
+dependencies[] = placeholder
+
+scripts[] = js/script.min.js
+
+stylesheets[all][] = css/pagestatic.css
+
+; Information added by drupal.org packaging script on 2015-02-09
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "way_you_imagined"
+datestamp = "1423516584"

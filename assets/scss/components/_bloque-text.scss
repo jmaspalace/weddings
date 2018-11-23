@@ -1,0 +1,11 @@
+.bloque-text {
+	h1, h2, h3, h4, h5, h6 {
+		color: $vinoTinto;
+		font-weight: 100;
+		font-family: $miso;
+	}
+	p, li, a {
+		color: $gris;
+		font-family: $roboto;
+	}
+}

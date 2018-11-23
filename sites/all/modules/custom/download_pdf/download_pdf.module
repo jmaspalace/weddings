@@ -1,0 +1,3198 @@
+<?php
+
+/**
+ * Implements hook_help().
+ * Type: Administration
+ *
+ * Show a bit of information about this module on the example page
+ * acruz: Agrega un links al path determinado
+ * @return html
+ */
+function download_pdf_help($path, $arg)
+{
+  switch ($path) {
+    case 'admin/structure/download_pdf':
+      return '<p>' . l(t('Reporte Wedding Request Form'), 'admin/structure/download_pdf/repo_wrf') . '</p><p>' . l(t('Reporte Site Inspection Request Form'), 'admin/structure/download_pdf/repo_sirf') . '</p><p>' . l(t('New'), 'admin/structure/download_pdf/design/0') . '</p>';
+    case 'admin/structure/download_pdf/faq':
+      return '<p>' . l(t('New'), 'admin/structure/download_pdf/faq/design/0') . '</p>';
+    case 'admin/structure/download_pdf/faq/delete/%':
+      return '<p>' . l(t('Back'), 'admin/structure/download_pdf/faq') . '</p>';
+    case 'admin/structure/download_pdf/tag':
+      return '<p>' . l(t('New'), 'admin/structure/download_pdf/tag/design/0') . '</p>';
+    case 'admin/structure/download_pdf/tag/design/%':
+      return '<p>' . l(t('Back'), 'admin/structure/download_pdf/tag') . '</p>';
+    case 'admin/structure/download_pdf/tag/delete/%':
+      return '<p>' . l(t('Back'), 'admin/structure/download_pdf/tag') . '</p>';
+    case 'admin/structure/download_pdf/seller':
+      return '<p>' . l(t('New'), 'admin/structure/download_pdf/seller/design/0') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_menu().
+ * Type: Administration
+ *
+ * acruz: Agrega un link de tipo menu segun la opcion "type"
+ * @return $items
+ */
+function download_pdf_menu()
+{
+  $items = array();
+  $items['admin/structure/download_pdf'] = array(
+    'title' => 'Manage PDF downloads',
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Administer Download PDF'),
+    'page callback' => 'download_pdf_intro',
+    'expanded' => true,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/design/%'] = array(
+    'title' => 'New Download PDF',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('download_pdf_reg', 4),
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Administer Download PDF'),
+    'description' => 'New Download PDF',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/active/%'] = array(
+    'page callback' => 'download_pdf_active',
+    'page arguments' => array(4),
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Administer Download PDF'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/inactive/%'] = array(
+    'page callback' => 'download_pdf_inactive',
+    'page arguments' => array(4),
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Administer Download PDF'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/tag'] = array(
+    'title' => 'Manage Tags',
+    //'access callback' => 'user_access',
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Administer Tags'),
+    'page callback' => 'download_pdf_intro_tags',
+    'expanded' => true,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/tag/design/%'] = array(
+    'title' => 'New TAG Download PDF',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('download_pdf_reg_tag', 5),
+    //'access callback' => 'user_access',
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Administer TAG Download PDF'),
+    'description' => 'New TAG Download PDF',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/tag/delete/%'] = array(
+    'title' => 'Delete TAG Download PDF',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('delete_tag', 5),
+    //'access callback' => 'user_access',
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Delete TAG Download PDF'),
+    'description' => 'Delete TAG Download PDF',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/faq'] = array(
+    'title' => 'Manage FAQs',
+    //'access callback' => 'user_access',
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Administer FAQs'),
+    'page callback' => 'download_pdf_intro_faq',
+    'expanded' => true,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/faq/design/%'] = array(
+    'title' => 'New Question Download PDF',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('download_pdf_reg_faq', 5),
+    //'access callback' => 'user_access',
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Administer Question Download PDF'),
+    'description' => 'New FAQ Download PDF',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/faq/delete/%'] = array(
+    'title' => 'Delete FAQ Download PDF',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('delete_faq', 5),
+    //'access callback' => 'user_access',
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Delete FAQ Download PDF'),
+    'description' => 'Delete FAQ Download PDF',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/seller'] = array(
+    'title' => 'Manage Sellers',
+    //'access callback' => 'user_access',
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Administer Sellers'),
+    'page callback' => 'download_pdf_intro_seller',
+    'expanded' => true,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/seller/design/%'] = array(
+    'title' => 'New Seller Download PDF',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('download_pdf_reg_seller_form', 5),
+    //'access callback' => 'user_access',
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Administer Seller Download PDF'),
+    'description' => 'New Seller Download PDF',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/seller/delete/%'] = array(
+    'title' => 'Delete Seller Download PDF',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('delete_seller', 5),
+    //'access callback' => 'user_access',
+    'access callback' => 'download_pdf_admin_or_manipulate',
+    'access arguments' => array('Delete Seller Download PDF'),
+    'description' => 'Delete Seller Download PDF',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/repo_wrf'] = array(
+    'page callback' => 'download_pdf_generaxls_wrf',
+    'access callback' => true,
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+
+  $items['admin/structure/download_pdf/repo_sirf'] = array(
+    'page callback' => 'download_pdf_generaxls_sirf',
+    'access callback' => true,
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+
+  $items['downloadpdf'] = array(
+    'title' => 'Download PDF',
+    'page callback' => 'home_download_pdf',
+    'access callback' => true,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['ajax_link_callback/%/%'] = array(
+    'page callback' => 'ajax_link_downloadpdf',
+    'page arguments' => array(1, 2),
+    'access arguments' => array('access content'),
+  );
+
+  $items['downloadpdf/contact_agency'] = array(
+    'title' => 'Download Contact Agency',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('download_pdf_contact_form'),
+    'access callback' => true,
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+
+  $items['requestform'] = array(
+    'title' => 'WEDDING REQUEST FORM',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('download_pdf_request_form', 1),
+    'access callback' => true,
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+
+  $items['downloadpdf/faq'] = array(
+    'title' => 'Download PDF FAQ',
+    'page callback' => 'faq_download_pdf',
+    'access callback' => true,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['siteinspectionrequestform'] = array(
+    'title' => 'SITE INSPECTION REQUEST FORM',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('download_pdf_site_inspection_request_form', 1),
+    'access callback' => true,
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Custom function download_pdf_intro().
+ * Type: Administration
+ *
+ * acruz: Permite visualizar en una tabla todos los registros PDFs existentes
+ * @return $build
+ */
+function download_pdf_intro()
+{
+
+  $header = array(
+    // The header gives the table the information it needs in order to make
+    // the query calls for ordering. TableSort uses the field information
+    // to know what database column to sort by.
+    //array('data' => t('Enabled'), 'field' => ''),
+    array('data' => t('#'), 'field' => 'reg_id'),
+    array('data' => t('Tags'), 'field' => 'tags'),
+    array('data' => t('Name PDF'), 'field' => 'name_pdf'),
+    array('data' => t('Name Image'), 'field' => 'name_img'),
+    array('data' => t('Status'), 'field' => 'estado'),
+    array('data' => t('Actions'), 'field' => 'editar'),
+  );
+
+  $result = _download_pdf_get_pdfs();
+  $rows = [];
+
+  if ($result !== false) {
+    foreach ($result as $k => $row) {
+      $tag_row = explode(',', $row->tags);
+      $tag_empty = array_pop($tag_row);
+
+      $row->tags = _download_pdf_get_tags_by_tags($tag_row);
+      $accionActive = '';
+      if ($row->estado == 1) {
+        $row->estado = t('Active');
+        $accionActive = l(t('Inactive'), 'admin/structure/download_pdf/inactive/' . $row->id_download_pdf);
+      } else if ($row->estado == 2) {
+        $row->estado = t('Inactive');
+        $accionActive = l(t('Active'), 'admin/structure/download_pdf/active/' . $row->id_download_pdf);
+      }
+
+      $rows[] = ['data' => (array)$row];
+      $rows[$k]['data']['editar'] = l(t('Edit'), 'admin/structure/download_pdf/design/' . $row->id_download_pdf) . ' | ' . $accionActive;
+    }
+  }
+  // Build the table for the nice output.
+  $build['ariadna_registro'] = [
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+  ];
+  return $build;
+}
+
+/**
+ * Custom function download_pdf_reg().
+ * Type: Administration
+ *
+ * acruz: Genera el formulario para creacion de cada PDF si se envia el parametro $id_download el formulario carga la informacion
+ *        de un PDF ya creado, para ser editado
+ * @return $form
+ */
+function download_pdf_reg($form, &$form_state, $id_download)
+{
+  $data_download_pdf = array();
+  if ($id_download != 0) {
+    $data_download_pdf = _download_pdf_get_by_id($id_download);
+  }
+
+  $form['id_download'] = array(
+    '#type' => 'hidden',
+    '#value' => $id_download,
+  );
+
+  $form['description'] = array(
+    '#type' => 'item',
+    '#title' => t('General information'),
+    '#description' => t('It allows to configure the general data of "PDF download"'),
+  );
+
+  $form['img_hotel_pdf'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Image'),
+    '#description' => t('Add Image, with extensions: jpg, jpeg, png, gif'),
+    '#required' => true,
+    '#upload_location' => 'public://download_pdf/img/',
+    '#default_value' => isset($data_download_pdf[0]['id_img']) ? $data_download_pdf[0]['id_img'] : '',
+    '#theme' => 'download_pdf_image_upd',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('gif png jpg jpeg'),
+    ),
+  );
+
+  $form['hotel_dowload_pdf'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('File PDF'),
+    '#description' => t('Add File, with extensions: pdf'),
+    '#required' => true,
+    '#upload_location' => 'public://download_pdf/pdf/',
+    '#default_value' => isset($data_download_pdf[0]['id_pdf']) ? $data_download_pdf[0]['id_pdf'] : '',
+    '#theme' => 'download_pdf_file_upd',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('pdf'),
+    ),
+  );
+
+  $form['tag_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Tags'),
+    '#collapsible' => true,
+    '#collapsed' => false,
+    '#prefix' => '<div id="tag-fieldset-wrapper">',
+    '#suffix' => '</div>'
+  );
+
+  $stringTag = isset($data_download_pdf[0]['tags']) ? explode(',', $data_download_pdf[0]['tags']) : array();
+  $tagEmpty = array_pop($stringTag);
+
+  $form['tag_fieldset']['tags'] = array(
+    '#title' => t('Tags'),
+    '#type' => 'checkboxes',
+    //'#required' => TRUE,
+    '#description' => t('Select the tag.'),
+    '#options' => _download_pdf_get_tags(),
+    '#default_value' => $stringTag,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+    '#submit' => array('download_pdf_form_submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_form_submit()
+ * Type: Administration (Process)
+ *
+ * acruz: guarda o edita la informacion obtenida en el formulario download_pdf_form()
+ */
+function download_pdf_form_submit($form, &$form_state)
+{
+  if ($form_state['values']['id_download'] == 0) {
+    $tags_select = array();
+    foreach ($form_state['values']['tags'] as $key => $val) {
+      if ($val != 0) {
+        $tags_select[] = $val;
+      }
+    }
+    $tags = implode(',', $tags_select) . ',';
+    drupal_set_message(t('Successful registration.', array(
+      '@id_img' => $form_state['values']['img_hotel_pdf'],
+      '@id_pdf' => $form_state['values']['hotel_dowload_pdf'],
+      '@tags' => $form_state['values']['tags'],
+    )));
+
+    $id_dowload_pdf = _download_pdf_insert_pdf($form_state, $tags);
+    if ($id_dowload_pdf !== false) {
+      _download_pdf_save_files($form_state['values']['img_hotel_pdf'], $form_state['values']['img_hotel_pdf'], 'img');
+      _download_pdf_save_files($form_state['values']['hotel_dowload_pdf'], $form_state['values']['hotel_dowload_pdf'], 'pdf');
+    }
+
+  } else {
+    $res_download_pdf = _download_pdf_get_by_id($form_state['values']['id_download']);
+
+    if ($res_download_pdf !== false) {
+      $tags_select = array();
+      foreach ($form_state['values']['tags'] as $key => $val) {
+        if ($val != 0) {
+          $tags_select[] = $val;
+        }
+      }
+      $tags = implode(',', $tags_select) . ',';
+      $update = _download_pdf_update_pdf($form_state, $tags, $form_state['values']['id_download']);
+
+      if ($update !== false) {
+        if ($res_download_pdf[0]['id_img'] != $form_state['values']['img_hotel_pdf']) {
+          _download_pdf_remove_files($res_download_pdf[0]['id_img'], $res_download_pdf[0]['id_img'], 'img');
+          _download_pdf_save_files($form_state['values']['img_hotel_pdf'], $form_state['values']['img_hotel_pdf'], 'img');
+        }
+
+        if ($res_download_pdf[0]['id_pdf'] != $form_state['values']['hotel_dowload_pdf']) {
+          _download_pdf_remove_files($res_download_pdf[0]['id_pdf'], $res_download_pdf[0]['id_pdf'], 'pdf');
+          _download_pdf_save_files($form_state['values']['hotel_dowload_pdf'], $form_state['values']['hotel_dowload_pdf'], 'pdf');
+        }
+      }
+    }
+  }
+  $form_state['redirect'] = 'admin/structure/download_pdf';
+}
+
+/**
+ * Procesa la accion de inactivar un item
+ * @param $id_pdf
+ */
+function download_pdf_inactive($id_pdf)
+{
+  $update = db_update('download_pdf')
+    ->fields(array(
+      'estado' => 2,
+    ))
+    ->condition('id_download_pdf', $id_pdf, '=')
+    ->execute();
+
+  drupal_goto(url('admin/structure/download_pdf', array('absolute' => true)));
+
+  //$form_state['redirect'] = 'admin/structure/weddings_quiz';
+}
+
+/**
+ * Procesa la accion de activar un item
+ * @param $id_pdf
+ */
+function download_pdf_active($id_pdf)
+{
+  $update = db_update('download_pdf')
+    ->fields(array(
+      'estado' => 1,
+    ))
+    ->condition('id_download_pdf', $id_pdf, '=')
+    ->execute();
+
+  drupal_goto(url('admin/structure/download_pdf', array('absolute' => true)));
+}
+
+/**
+ * Custom function download_pdf_intro_faq().
+ * Type: Administration
+ *
+ * acruz: Permite visualizar en una tabla todos los registros FAQs existentes con opcion para editar o eliminar cualquier registro
+ * @return $build
+ */
+function download_pdf_intro_tags()
+{
+  $header = array(
+    // The header gives the table the information it needs in order to make
+    // the query calls for ordering. TableSort uses the field information
+    // to know what database column to sort by.
+    array('data' => t('#'), 'field' => 'reg_id'),
+    array('data' => t('Tag'), 'field' => 'tag'),
+    array('data' => t('Editar'), 'field' => 'editar'),
+    array('data' => t('Delete'), 'field' => 'delete'),
+  );
+
+  $result = _download_pdf_get_tag_all();
+  $rows = array();
+  if ($result !== false) {
+    if ($result !== false) {
+      foreach ($result as $k => $row) {
+        $rows[] = array('data' => (array)$row);
+        $rows[$k]['data']['editar'] = l(t('Edit'), 'admin/structure/download_pdf/tag/design/' . $row->id_download_pdf_tag);
+        $rows[$k]['data']['delete'] = l(t('Delete'), 'admin/structure/download_pdf/tag/delete/' . $row->id_download_pdf_tag);
+      }
+    }
+  }
+
+  $build['ariadna_registro'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+  );
+  return $build;
+}
+
+/**
+ * Custom function download_pdf_reg_tag().
+ * Type: Administration
+ *
+ * acruz: Genera el formulario para creacion de cada TAG si se envia el parametro $id_tag el formulario carga la informacion
+ *        de un TAG ya creado, para ser editado
+ * @return $form
+ */
+function download_pdf_reg_tag($form, &$form_state, $id_tag)
+{
+  $data_tag = array();
+  if ($id_tag != 0) {
+    $data_tag = _download_pdf_get_tag_by_id($id_tag);
+  }
+
+  $form['id_tag'] = array(
+    '#type' => 'hidden',
+    '#value' => $id_tag,
+  );
+
+  $form['description'] = array(
+    '#type' => 'item',
+    '#title' => t('General information'),
+    '#description' => t('Allows the management of tags'),
+  );
+
+  $form['tag'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Tag'),
+    '#resizable' => false,
+    "#default_value" => isset($data_tag[0]['tag']) ? $data_tag[0]['tag'] : '',
+    '#required' => true,
+  );
+
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+    '#submit' => array('tag_form_submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_form_submit()
+ * Type: Administration (Process)
+ *
+ * acruz: guarda o edita la informacion obtenida en el formulario download_pdf_reg_tag()
+ */
+function tag_form_submit($form, &$form_state)
+{
+  if ($form_state['values']['id_tag'] == 0) {
+    drupal_set_message(t('Successful registration.', array(
+      '@tag' => $form_state['values']['tag'],
+    )));
+
+    $fields = array(
+      'tag' => $form_state['values']['tag'],
+    );
+    $id_faq = db_insert('download_pdf_tags')
+      ->fields($fields)
+      ->execute();
+  } else {
+    $update = db_update('download_pdf_tags')
+      ->fields(array(
+        'tag' => $form_state['values']['tag'],
+      ))
+      ->condition('id_download_pdf_tag', $form_state['values']['id_tag'], '=')
+      ->execute();
+  }
+  $form_state['redirect'] = 'admin/structure/download_pdf/tag';
+}
+
+/**
+ * Custom function delete_tag().
+ * Type: Administration (Process)
+ *
+ * acruz: Elimina el TAG de la base de datos
+ * @return $form
+ */
+function delete_tag($form, &$form_state, $id_tag)
+{
+  if ($id_tag != 0) {
+    $num_deleted = db_delete('download_pdf_tags')
+      ->condition('id_download_pdf_tag', $id_tag)
+      ->execute();
+  }
+  $form['description'] = array(
+    '#type' => 'item',
+    '#title' => t('General information'),
+    '#description' => t('The record was deleted'),
+  );
+  return $form;
+}
+
+/**
+ * Custom function download_pdf_intro_faq().
+ * Type: Administration
+ *
+ * acruz: Permite visualizar en una tabla todos los registros FAQs existentes con opcion para editar o eliminar cualquier registro
+ * @return $build
+ */
+function download_pdf_intro_faq()
+{
+  $header = array(
+    // The header gives the table the information it needs in order to make
+    // the query calls for ordering. TableSort uses the field information
+    // to know what database column to sort by.
+    array('data' => t('#'), 'field' => 'reg_id'),
+    array('data' => t('Question'), 'field' => 'pregunta'),
+    array('data' => t('Answer'), 'field' => 'respuesta'),
+    array('data' => t('Edit'), 'field' => 'editar'),
+    array('data' => t('Delete'), 'field' => 'delete'),
+  );
+  $result = _download_pdf_get_faqs_all();
+  $rows = array();
+  if ($result !== false) {
+    foreach ($result as $k => $row) {
+      $rows[] = array('data' => (array)$row);
+      $rows[$k]['data']['editar'] = l(t('Edit'), 'admin/structure/download_pdf/faq/design/' . $row->id_download_pdf_faq);
+      $rows[$k]['data']['delete'] = l(t('Delete'), 'admin/structure/download_pdf/faq/delete/' . $row->id_download_pdf_faq);
+    }
+  }
+
+  $build['ariadna_registro'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+  );
+  return $build;
+}
+
+/**
+ * Custom function download_pdf_reg_faq().
+ * Type: Administration
+ *
+ * acruz: Genera el formulario para creacion de cada FAQ si se envia el parametro $id_faq el formulario carga la informacion
+ *        de un FAQ ya creado, para ser editado
+ * @return $form
+ */
+function download_pdf_reg_faq($form, &$form_state, $id_faq)
+{
+  $data_faq = array();
+  if ($id_faq != 0) {
+    $data_faq = _download_pdf_get_faq_by_id($id_faq);
+  }
+
+  $form['id_faq'] = array(
+    '#type' => 'hidden',
+    '#value' => $id_faq,
+  );
+
+  $form['description'] = array(
+    '#type' => 'item',
+    '#title' => t('General information'),
+    '#description' => t('Allows the creation of faqs'),
+  );
+
+  $form['question'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Question'),
+    '#resizable' => false,
+    '#cols' => 5,
+    '#rows' => 2,
+    "#default_value" => isset($data_faq[0]['pregunta']) ? $data_faq[0]['pregunta'] : '',
+    '#required' => true,
+  );
+
+  $form['answer'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Answer'),
+    '#resizable' => false,
+    '#cols' => 5,
+    '#rows' => 2,
+    "#default_value" => isset($data_faq[0]['respuesta']) ? $data_faq[0]['respuesta'] : '',
+    '#required' => true,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+    '#submit' => array('download_pdf_faq_form_submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_form_submit()
+ * Type: Administration (Process)
+ *
+ * acruz: guarda o edita la informacion obtenida en el formulario download_pdf_reg_faq()
+ */
+function download_pdf_faq_form_submit($form, &$form_state)
+{
+  if ($form_state['values']['id_faq'] == 0) {
+    drupal_set_message(t('Registro Exitoso.', array(
+      '@question' => $form_state['values']['question'],
+      '@answer' => $form_state['values']['answer'],
+    )));
+    $id_faq = _download_pdf_insert_faq($form_state);
+  } else {
+    $update = _download_pdf_update_faq($form_state, $form_state['values']['id_faq']);
+  }
+  $form_state['redirect'] = 'admin/structure/download_pdf/faq';
+}
+
+/**
+ * Custom function delete_faq().
+ * Type: Administration (Process)
+ *
+ * acruz: Elimina el FAQ de la base de datos
+ * @return $form
+ */
+function delete_faq($form, &$form_state, $id_faq)
+{
+  if ($id_faq != 0) {
+    $num_deleted = db_delete('download_pdf_faqs')
+      ->condition('id_download_pdf_faq', $id_faq)
+      ->execute();
+  }
+
+  $form['description'] = array(
+    '#type' => 'item',
+    '#title' => t('General information'),
+    '#description' => t('The record was deleted'),
+  );
+  return $form;
+}
+
+/**
+ * Custom function download_pdf_intro_seller().
+ * Type: Administration
+ *
+ * acruz: Permite visualizar en una tabla todos los vendedores existentes con opcion para editar o eliminar cualquier registro
+ * @return $build
+ */
+function download_pdf_intro_seller()
+{
+  $header = array(
+    // The header gives the table the information it needs in order to make
+    // the query calls for ordering. TableSort uses the field information
+    // to know what database column to sort by.
+    array('data' => t('#'), 'field' => 'reg_id'),
+    array('data' => t('Name'), 'field' => 'name'),
+    array('data' => t('Mail'), 'field' => 'mail'),
+    array('data' => t('Edit'), 'field' => 'editar'),
+    array('data' => t('Delete'), 'field' => 'delete'),
+  );
+  $result = _download_pdf_get_all_seller();
+  $rows = array();
+  if ($result !== false) {
+    foreach ($result as $k => $row) {
+      $rows[] = array('data' => (array)$row);
+      $rows[$k]['data']['editar'] = l(t('Edit'), 'admin/structure/download_pdf/seller/design/' . $row->id_download_seller);
+      $rows[$k]['data']['delete'] = l(t('Delete'), 'admin/structure/download_pdf/seller/delete/' . $row->id_download_seller);
+    }
+  }
+  // Build the table for the nice output.
+  $build['ariadna_registro'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+  );
+  return $build;
+}
+
+/**
+ * Custom function download_pdf_reg_tag().
+ * Type: Administration
+ *
+ * acruz: Genera el formulario para creacion de cada TAG si se envia el parametro $id_tag el formulario carga la informacion
+ *        de un TAG ya creado, para ser editado
+ * @return $form
+ */
+function download_pdf_reg_seller_form($form, &$form_state, $id_seller)
+{
+  $data_seller = array();
+  if ($id_seller != 0) {
+    $query = db_select('download_seller', 's');
+    $query->fields('s', array('id_download_seller', 'name', 'mail'))
+      ->condition('id_download_seller', $id_seller);
+    $result = $query->execute();
+
+    $numseller = 0;
+    while ($record = $result->fetchAssoc()) {
+      $data_seller[$numseller] = $record;
+      $numseller++;
+    }
+  }
+
+  $form['id_seller'] = array(
+    '#type' => 'hidden',
+    '#value' => $id_seller,
+  );
+
+  $form['description'] = array(
+    '#type' => 'item',
+    '#title' => t('General Information'),
+    '#description' => t('Allows seller management'),
+  );
+
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Name'),
+    '#resizable' => false,
+    "#default_value" => isset($data_seller[0]['name']) ? $data_seller[0]['name'] : '',
+    '#required' => true,
+  );
+
+  $form['mail'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email'),
+    '#resizable' => false,
+    "#default_value" => isset($data_seller[0]['mail']) ? $data_seller[0]['mail'] : '',
+    '#required' => true,
+  );
+
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+    //'#submit' => array('seller_form_submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_form_submit()
+ * Type: Administration (Process)
+ *
+ * acruz: guarda o edita la informacion obtenida en el formulario download_pdf_reg_seller()
+ */
+function download_pdf_reg_seller_form_submit($form, &$form_state)
+{
+
+  if ($form_state['values']['id_seller'] == 0) {
+
+    drupal_set_message(t('Successful registration.', array(
+      '@name' => $form_state['values']['name'],
+      '@mail' => $form_state['values']['mail'],
+    )));
+
+    $fields = array(
+      'name' => $form_state['values']['name'],
+      'mail' => $form_state['values']['mail'],
+    );
+    $id_faq = db_insert('download_seller')
+      ->fields($fields)
+      ->execute();
+
+  } else {
+    $update = db_update('download_seller')
+      ->fields(array(
+        'name' => $form_state['values']['name'],
+        'mail' => $form_state['values']['mail'],
+      ))
+      ->condition('id_download_seller', $form_state['values']['id_seller'], '=')
+      ->execute();
+  }
+  $form_state['redirect'] = 'admin/structure/download_pdf/seller';
+}
+
+/**
+ * Implements hook_form_validate().
+ * Type: Administration
+ *
+ * acruz: Valida el envio de información de los vendedores
+ */
+function download_pdf_reg_seller_form_validate($form, &$form_state)
+{
+  $mail = $form_state['values']['mail'];
+  if (!valid_email_address($mail)) {
+    form_set_error('mail', t('The email address appears to be invalid.'));
+  }
+
+  if (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['name'])) {
+    form_set_error('name', t('The name appears to be invalid.'));
+  }
+}
+
+/**
+ * Custom function delete_seller().
+ * Type: Administration (Process)
+ *
+ * acruz: Elimina el seller de la base de datos
+ * @return $form
+ */
+function delete_seller($form, &$form_state, $id_seller)
+{
+
+  if ($id_seller != 0) {
+    $num_deleted = db_delete('download_seller')
+      ->condition('id_download_seller', $id_seller)
+      ->execute();
+  }
+
+  $form['description'] = array(
+    '#type' => 'item',
+    '#title' => t('General information'),
+    '#description' => t('The record was deleted'),
+  );
+
+  return $form;
+
+}
+
+/**
+ * Custom function download_pdf_generaxls_wrf().
+ * Type: Administration
+ *
+ * acruz: Genera archivo excel y permite su descarga con info del Formulario WEDDING REQUEST FORM
+ */
+function download_pdf_generaxls_wrf()
+{
+  module_load_include('inc', 'phpexcel');
+
+  $data = array();
+
+  $headers = array(
+    'id', 'Bride', 'Groom', 'Mail', 'Phone', 'Address', 'Zip',
+    'City', 'State', 'Country', 'Ceremony type', 'Legal or symbolic',
+    'Resort', 'Preferred ceremony date and time', 'arrival date', 'Departure day', 'Are you flexible with your wedding date?', 'Number of guests adults', 'Number of guests children', 'ARE YOU WORKING WITH A TRAVEL AGENT?', 'Travel agent\'s name', 'Travel agency', 'Iata#', 'Agency\'s address', 'Zip code', 'City', 'State', 'Country', 'Agency email address', 'Agency phone'
+  );
+
+  // Get the latest revisions
+  $query = db_select('download_request', 'r');
+  $query->fields('r');
+  $result = $query->execute();
+
+  while ($row = $result->fetchAssoc()) {
+    $row['ceremony_date'] = date('m/d/Y h:i', $row['ceremony_date']);
+    $row['arrival_date'] = date('m/d/Y', $row['arrival_date']);
+    $row['departure_day'] = date('m/d/Y', $row['departure_day']);
+    // Add the data
+    $data[] = array_values($row);
+  }
+
+  if (count($data) == 0) {
+    $data[0] = array('No existen Registros');
+  }
+
+  $caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; //posibles caracteres a usar
+  $numerodeletras = 3; //numero de letras para generar el texto
+  $cadena = ''; //variable para almacenar la cadena generada
+  for ($i = 0; $i < $numerodeletras; $i++) {
+    $cadena .= substr($caracteres, rand(0, strlen($caracteres)), 1);
+  }
+
+  $dir = file_stream_wrapper_get_instance_by_uri('public://download_pdf/repo/')->realpath();
+  $filename = 'repo_wrf_' . $cadena . '.xls';
+  $path = "$dir/$filename";
+  $options = array('format' => 'xls');
+
+  $new_folder = 'public:///download_pdf/repo/';
+  file_prepare_directory($new_folder, FILE_CREATE_DIRECTORY);
+
+  $result = phpexcel_export($headers, $data, $path, $options);
+
+  if ($result == PHPEXCEL_SUCCESS) {
+    drupal_add_http_header('Content-disposition', 'attachment; filename=' . $filename);
+    readfile($path);
+  } else {
+    drupal_set_message(t("Oops ! An error occured !"), 'error');
+  }
+  drupal_exit();
+}
+
+/**
+ * Custom function download_pdf_generaxls_sirf().
+ * Type: Administration
+ *
+ * acruz: Genera archivo excel y permite su descarga con info del Formulario SITE INSPECTION REQUEST FORM
+ */
+function download_pdf_generaxls_sirf()
+{
+  module_load_include('inc', 'phpexcel');
+  $data = array();
+  $headers = array(
+    'id', 'Full name (Travel Agent)', 'Agency\'s name (Travel Agent)',
+    'Email (Travel Agent)', 'Phone (Travel Agent)', 'Fax (Travel Agent)',
+    'Bride\'s name', 'Groo\'s name', 'Address', 'City', 'State', 'Zip', 'Country',
+    'E-mail', 'Phone', 'Folio', 'Wedding date', 'Number of guests', 'Wedding type',
+    'Are you staying at a Palace Resorts?', 'If not, where will you de staying at?',
+    'Are you requesting accommodation at Palace Resorts?', 'How will you be arriving at the resort?',
+    'Do you need to arrange transfers?', 'Arrival date & time', 'Departure date & time',
+    'Specify preferred language for site inspection', 'Date time requested', 'Resort'
+  );
+
+  // Get the latest revisions
+  $query = db_select('download_site_request', 's');
+  $query->fields('s');
+  $result = $query->execute();
+
+  while ($row = $result->fetchAssoc()) {
+    $row['wedding_date'] = date('m/d/Y', $row['wedding_date']);
+    $row['arrival_date'] = date('m/d/Y h:i', $row['arrival_date']);
+    $row['departure_day'] = date('m/d/Y h:i', $row['departure_day']);
+    $row['date_time_requested'] = date('m/d/Y h:i', $row['date_time_requested']);
+    // Add the data
+    $data[] = array_values($row);
+  }
+
+  if (count($data) == 0) {
+    $data[0] = array('No existen Registros');
+  }
+
+  $caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; //posibles caracteres a usar
+  $numerodeletras = 3; //numero de letras para generar el texto
+  $cadena = ''; //variable para almacenar la cadena generada
+  for ($i = 0; $i < $numerodeletras; $i++) {
+    $cadena .= substr($caracteres, rand(0, strlen($caracteres)), 1);
+  }
+
+  // Store the file in sites/default/files
+  $dir = file_stream_wrapper_get_instance_by_uri('public://download_pdf/repo/')->realpath();
+  $filename = 'repo_sirf_' . $cadena . '.xls';
+  $path = "$dir/$filename";
+  $options = array('format' => 'xls');
+
+  $new_folder = 'public:///download_pdf/repo/';
+  file_prepare_directory($new_folder, FILE_CREATE_DIRECTORY);
+
+  $result = phpexcel_export($headers, $data, $path, $options);
+  if ($result == PHPEXCEL_SUCCESS) {
+    drupal_add_http_header('Content-disposition', 'attachment; filename=' . $filename);
+    readfile($path);
+  } else {
+    drupal_set_message(t("Oops ! An error occured !"), 'error');
+  }
+}
+
+/**
+ * Custom function home_download_pdf().
+ * Type: General user (Vista)
+ *
+ * acruz: Permite visualizar el home del modulo por medio del template
+ *
+ * @return string
+ */
+function home_download_pdf()
+{
+  //acruz: Llama la libreria ajax de drupal
+  drupal_add_library('system', 'drupal.ajax');
+
+  $data_downloadpdf = _download_pdf_get_all_pdf();
+
+  $data_tag = _download_pdf_get_tag_all();
+
+  $data_seller = _download_pdf_get_all_seller();
+
+  $variables = array('downloads' => $data_downloadpdf, 'tags' => $data_tag, 'sellers' => $data_seller);
+
+  return theme("download", $variables);
+
+}
+
+/**
+ * Implements hook ajax_link_()
+ * Type: General user (Process)
+ *
+ * acruz: Reliza el ajax del filtro generado al seleccionar algun tag
+ * @return template faq
+ */
+function ajax_link_downloadpdf($type = 'ajax', $var)
+{
+  if ($type == 'ajax') {
+    //debug($var);
+
+    $data_downloadpdf = array();
+
+    $query = db_select('download_pdf', 'd');
+    $query->fields('d', array('id_download_pdf', 'id_img', 'id_pdf', 'tags', 'estado'));
+    $query->join('file_managed', 'f', 'd.id_pdf = f.fid');
+    $query->fields('f', array('filename'));
+    $query->condition('estado', 1, '=');
+    $query->condition(db_or()->condition('tags', db_like($var) . ',%', 'LIKE')->condition('tags', '%,' . db_like($var) . ',%', 'LIKE'));
+    //($var == '1')?$query->condition('tags', db_like($var) . ',%', 'LIKE'):$query->condition('tags', '%' . db_like($var) . ',%', 'LIKE');
+    $result = $query->execute();
+
+    $numdownloadpdf = 0;
+    while ($record = $result->fetchAssoc()) {
+      $data_downloadpdf[$numdownloadpdf] = $record;
+      $numdownloadpdf++;
+    }
+
+    $output = '';
+    //$output .= drupal_add_js('path/fichero.js', 'theme');
+    //$output .= '<div id="download_content" class="row">';
+    $output .= '<div id="download-slider" class="owl-carousel">';
+    foreach ($data_downloadpdf as $key => $value) {
+      $image = file_load($value['id_img']);
+      $img_url = $image->uri;
+      $output .= '<div class="owl-item">';
+      $output .= '<img src="' . image_style_url("large", $img_url) . '" alt="" class="img-responsive">';
+      //$output .= '<p class="text">URL Descarga PDF</p>';
+      $file = file_load($value['id_pdf']);
+      $uri = $file->uri;
+      $urlPDF = file_create_url($uri);
+
+      $output .= '<p class="text">Copy URL for <span>PDF</span> Download</p>';
+      $output .= '<input onclick="this.focus();this.select()" type="text" value="' . $urlPDF . '">';
+      $output .= '</div>';
+
+    }
+    $output .= '</div>';
+    //$output .= '</div>';
+
+    $commands = array();
+    // See ajax_example_advanced.inc for more details on the available commands
+    // and how to use them.
+
+    $commands[] = ajax_command_html('#download_content', render($output));
+    $commands[] = ajax_command_invoke(null, "filterPdfs");
+
+    $page = array('#type' => 'ajax', '#commands' => $commands);
+    ajax_deliver($page);
+  } else {
+    $output = t("This is some content delivered via a page load.");
+    return $output;
+  }
+}
+
+/**
+ * Implements hook_form().
+ * Type: General user (Vista)
+ *
+ * acruz: Visualiza el formulario "CONTACT AGENCY"
+ * @return $form
+ */
+function download_pdf_contact_form($form, &$form_state)
+{
+  //$alter = db_query("ALTER TABLE `download_request` CHANGE `zip` `zip` VARCHAR(15) NOT NULL COMMENT 'Zip.'");
+  //$strings = $alter->fetchAll();
+  /* $sql = "ALTER TABLE `download_site_request` CHANGE `zip` `zip` VARCHAR(100) NOT NULL COMMENT 'Zip.'";
+   db_query($sql);
+
+   $sql = "ALTER TABLE `download_request` CHANGE `zip` `zip` VARCHAR(100) NOT NULL COMMENT 'Zip.'";
+   db_query($sql);
+
+   $result = db_query("describe `download_site_request`");
+   $strings = $result->fetchAll();
+   echo '<pre>';
+   print_r($strings[12]);
+   echo '</pre>';
+
+   $result1 = db_query("describe `download_request`");
+   $strings1 = $result1->fetchAll();
+   echo '<pre>';
+   print_r($strings1[6]);
+   echo '</pre>';
+
+   $result = db_query("SELECT * FROM `download_site_request`");
+   $strings = $result->fetchAll();
+   echo '<pre>';
+   print_r($strings);
+   echo '</pre>';*/
+
+  preg_match('/MSIE (.*?);/', $_SERVER['HTTP_USER_AGENT'], $matches);
+  if (count($matches) < 2) {
+    preg_match('/Trident\/\d{1,2}.\d{1,2}; rv:([0-9]*)/', $_SERVER['HTTP_USER_AGENT'], $matches);
+  }
+
+  $txtIE = '';
+
+  if (count($matches) > 1) {
+    $version = $matches[1];
+    if (($version <= 9)) {
+      $txtIE = '<p>Your browser (Internet Explorer ) is out of date and may not display all features of this and other websites. Update your browser
+                        <a href="http://windows.microsoft.com/es-CO/internet-explorer/download-ie" target="_blank" >here</a>
+                        </p>';
+      /*$form['descrip_ie'] = array(
+      '#markup' => '
+          <div class="row">
+            <div class="col-xs-12">
+              <p>Your browser (Internet Explorer ) is out of date and may not display all features of this and other websites. Update your browser
+              <a href="http://windows.microsoft.com/es-CO/internet-explorer/download-ie" target="_blank" >here</a>
+              </p>
+            </div>
+           </div>',
+    );*/
+    }
+  }
+
+  $form['descrip_ini'] = array(
+    '#markup' => '<div class="row" id="form">
+        <div id="dwlspdf" class="container" >
+          <div class="row">
+            <div class="col-xs-12 dl-title">
+              <h1>' . t('Dear Call Center team member') . '</h1>
+              <p>' . t('Feel free to use the form below if you have any questions, feedback or suggestion regarding  this call center tool') . '.</p>' . $txtIE . '
+            </div>
+           </div>
+          <div class="row">
+        <div class="formBox col-lg-4 col-md-4 col-sm-6 col-lg-offset-4 col-md-offset-4 col-sm-offset-3">',
+  );
+
+
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 200,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('Name'),
+  );
+
+  $form['email'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 120,
+    '#placeholder' => t('Enter your email address'),
+  );
+  $form['phone'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('Phone'),
+  );
+  $form['ext'] = array(
+    '#type' => 'textfield',
+    '#required' => false,
+    '#size' => 20,
+    '#maxlength' => 6,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('Ext'),
+  );
+  $form['comments'] = array(
+    '#type' => 'textarea',
+    '#required' => true,
+    '#resizable' => false,
+    '#cols' => 5,
+    '#rows' => 2,
+    "#default_value" => '',
+    //'#title' => t('Enter Your Last Name'),
+    '#placeholder' => t('Comments'),
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+  $form['descrip_fin'] = array(
+    '#markup' => '</div>
+          </div>
+        <div class="row">
+        <div class="back-pdf col-lg-4 col-md-4 col-lg-offset-4 col-md-offset-4">' .
+      l(t('<< BACK'), 'downloadpdf')
+      . '</div>
+       </div>
+        </div>
+      </div>',
+  );
+
+  return $form;
+
+}
+
+/**
+ * Implements hook_form_submit().
+ * Type: General user (Process)
+ *
+ * acruz: Procesa la información suministrada en el formulario "CONTACT AGENCY"
+ * Ejecuta funcion download_pdf_mail
+ */
+function download_pdf_contact_form_submit($form, &$form_state)
+{
+  drupal_set_message(t('Thank you for your information.', array(
+    '@name' => $form_state['values']['name'],
+    '@mail' => $form_state['values']['email'],
+    '@phone' => $form_state['values']['phone'],
+    '@comments' => $form_state['values']['comments'],
+  )));
+
+  $fields = array(
+    'name' => $form_state['values']['name'],
+    'mail' => $form_state['values']['email'],
+    'phone' => $form_state['values']['phone'] . 'ext' . $form_state['values']['ext'],
+    'descripcion' => $form_state['values']['comments'],
+  );
+  $id_faq = db_insert('download_contact')
+    ->fields($fields)
+    ->execute();
+
+  $body = '';
+  $body .= '<p>' . t('Submitted values are') . ':</p>';
+  $body .= '<p>' . t('Name') . ': ' . $form_state['values']['name'] . '</p>';
+  $body .= '<p>' . t('Email') . ': ' . $form_state['values']['email'] . '</p>';
+  $body .= '<p>' . t('Phone') . ': ' . $form_state['values']['phone'] . ' ext' . $form_state['values']['ext'] . '</p>';
+  $body .= '<p>' . t('Comments') . ': ' . $form_state['values']['comments'] . '</p>';
+
+  //download_pdf_mail('"weddings.palaceresorts.com" <info@weddings.com>', 'sebastian.aristizabal@ariadnacg.com', 'Form submission from: Contact Form', $body);
+  download_pdf_mail('"weddings.palaceresorts.com" <info@weddings.com>', 'psalazar@palaceresorts.com', 'Form submission from: Contact Form', $body);
+}
+
+/**
+ * Funcion que valida la informacion del formulario de quiz
+ * @param $form
+ * @param $form_state
+ */
+function download_pdf_contact_form_validate($form, &$form_state)
+{
+  $mail = $form_state['values']['email'];
+  if (!valid_email_address($mail)) {
+    form_set_error('email', t('The email address appears to be invalid.'));
+  }
+
+  if (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['name'])) {
+    form_set_error('name', t('The name appears to be invalid.'));
+  }
+
+  if (preg_match('/^.*(?=.*[@$%^&=a-zA-Z]).*$/', $form_state['values']['phone'])) {
+    form_set_error('phone', t('The phone appears to be invalid.'));
+  }
+
+  if (preg_match('/^.*(?=.*[@$%^&=a-zA-Z]).*$/', $form_state['values']['ext'])) {
+    form_set_error('ext', t('The phone appears to be invalid.'));
+  }
+}
+
+/**
+ * Implements hook_form().
+ * Type: General user (Vista)
+ *
+ * acruz: Visualiza el formulario "WEDDING REQUEST FORM"
+ * @return $form
+ */
+function download_pdf_request_form($form, &$form_state, $id_seller = 0)
+{
+  preg_match('/MSIE (.*?);/', $_SERVER['HTTP_USER_AGENT'], $matches);
+  if (count($matches) < 2) {
+    preg_match('/Trident\/\d{1,2}.\d{1,2}; rv:([0-9]*)/', $_SERVER['HTTP_USER_AGENT'], $matches);
+  }
+  $txtIE = '';
+
+  if (count($matches) > 1) {
+    $version = $matches[1];
+    if (($version <= 9)) {
+      $txtIE = '<p>Your browser (Internet Explorer ) is out of date and may not display all features of this and other websites. Update your browser
+                        <a href="http://windows.microsoft.com/es-CO/internet-explorer/download-ie" target="_blank" >here</a>
+                        </p>';
+      /*$form['descrip_ie'] = array(
+      '#markup' => '
+          <div class="row">
+            <div class="col-xs-12">
+              <p>Your browser (Internet Explorer ) is out of date and may not display all features of this and other websites. Update your browser
+              <a href="http://windows.microsoft.com/es-CO/internet-explorer/download-ie" target="_blank" >here</a>
+              </p>
+            </div>
+           </div>',
+    );*/
+    }
+  }
+
+  $form['descrip_ini'] = array(
+    '#markup' => '<div class="row" id="form">
+        <div id="wr-form" class="container" >
+          <div class="row">
+            <div class="col-xs-12 dl-title">
+              <h1>' . t('WEDDING REQUEST FORM') . '</h1>
+              <p>' . t('Please fill out the form below for more information, so we can start planning your dream destination wedding!') . '</p>' . $txtIE . '
+            </div>
+           </div>
+          <div class="row">
+        <div class="formBox col-xs-12">',
+  );
+
+  $mailSeller = '';
+
+  if ($id_seller != 0) {
+    $query = db_select('download_seller', 's');
+    $query->fields('s', array('mail'))
+      ->condition('id_download_seller', $id_seller);
+    $result = $query->execute();
+
+    $numfaq = 0;
+    while ($record = $result->fetchAssoc()) {
+      $res_faq[$numfaq] = $record;
+      $numfaq++;
+    }
+    $mailSeller = $res_faq[0]['mail'];
+
+  }
+  $form['mail_seller'] = array(
+    '#type' => 'hidden',
+    '#value' => $mailSeller,
+  );
+  $form['bride_name'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 200,
+    //'#title' => t('Enter Your Bride'),
+    '#placeholder' => t('Bride full name'),
+  );
+  $form['groom_name'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 200,
+    //'#title' => t('Enter Your Groom'),
+    '#placeholder' => t('Groom full name'),
+  );
+  $form['email'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 120,
+    '#placeholder' => t('Enter your email address'),
+  );
+  $form['phone'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Phone'),
+    '#placeholder' => t('Phone'),
+  );
+  $form['address'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Address'),
+    '#placeholder' => t('Address'),
+  );
+  $form['zip'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Zip'),
+    '#placeholder' => t('Zip'),
+  );
+  $form['city'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your City'),
+    '#placeholder' => t('City'),
+  );
+  $form['state'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your State'),
+    '#placeholder' => t('State'),
+  );
+  $form['country'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Country'),
+    '#placeholder' => t('Country'),
+  );
+  $form['ceremony_date'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Preferred ceremony date and time'),
+    '#placeholder' => t('Preferred ceremony date and time'),
+    '#attributes' => array('id' => array('ceremony_date_picker'), 'class' => array('form-control')),
+    '#prefix' => '<div class="form-group"><div class="input-group date" id="ceremony_date_picker" >',
+    '#suffix' => '<span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    </div></div>',
+  );
+  $form['arrival_date'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Arrival date'),
+    '#placeholder' => t('Arrival date'),
+    '#attributes' => array('id' => array('arrival_date_picker'), 'class' => array('form-control')),
+    '#prefix' => '<div class="form-group"><div class="input-group date" id="arrival_date_picker" >',
+    '#suffix' => '<span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    </div></div>',
+  );
+  $form['departure_day'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Departure day'),
+    '#placeholder' => t('Departure day'),
+    '#attributes' => array('id' => array('departure_day_picker'), 'class' => array('form-control')),
+    '#prefix' => '<div class="form-group"><div class="input-group date" id="departure_day_picker" >',
+    '#suffix' => '<span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    </div></div>',
+  );
+
+  $form['request_line'] = array(
+    '#markup' => '<div class="request_line col-xs-12"></div>',
+  );
+
+  $form['flexible_wedding'] = array(
+    '#type' => 'radios',
+    '#title' => t('Are you flexible with your wedding Date?'),
+    '#required' => true,
+    '#options' => array('yes' => t('Yes'), 'no' => t('No')),
+  );
+
+  $form['request_line_one'] = array(
+    '#markup' => '<div class="request_line col-xs-12"></div>',
+  );
+
+  $form['guests_adults'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 3,
+    '#maxlength' => 3,
+    //'#title' => t('Enter Your Country'),
+    '#placeholder' => t('Number of guests - Adults'),
+  );
+  $form['guests_children'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 3,
+    '#maxlength' => 3,
+    //'#title' => t('Enter Your Country'),
+    '#placeholder' => t('Number of guests - Children'),
+  );
+  $form['ceremony_type'] = array(
+    '#type' => 'select',
+    '#title' => t('Ceremony type'),
+    '#description' => null,
+    '#required' => true,
+    '#options' => drupal_map_assoc(array(t('Non-Denominational Weddings'), t('Catholic Weddings ( Moon Palace Cancun only)'), t('Jewish and Interfaith Weddings'), t('Indian Weddings'), t('Same Sex Wedding'))),
+  );
+  $form['legal_ceremony'] = array(
+    '#type' => 'select',
+    '#title' => t('Legal or Symbolic'),
+    '#description' => null,
+    '#required' => true,
+    '#options' => drupal_map_assoc(array(t('Legal Ceremony'), t('Symbolic Ceremony'))),
+  );
+  $form['resort'] = array(
+    '#type' => 'select',
+    '#title' => t('Available Resorts'),
+    '#description' => null,
+    '#required' => true,
+    '#options' => drupal_map_assoc(array(
+      t('Beach Palace (Mexico)'),
+      t('Cozumel Palace (Mexico)'),
+      t('Isla Mujeres Palace (Mexico)'),
+      t('Le Blanc Spa Resort (Mexico)'),
+      t('Moon Palace Cancun (Mexico)'),
+      t('Moon Palace Jamaica (Jamaica)'),
+      t('Playacar Palace (Mexico)'),
+      t('Sun Palace (Mexico)'),
+      t('The Grand at Moon Palace (Mexico)'),
+      t('Le Blanc Los Cabos (Mexico)')
+    )),
+  );
+
+  $form['request_line_two'] = array(
+    '#markup' => '<div class="request_line col-xs-12"></div>',
+  );
+
+  $form['travel_agent'] = array(
+    '#type' => 'radios',
+    '#title' => t('Are you working with a travel agent?'),
+    '#required' => true,
+    '#options' => array('yes' => t('Yes'), 'no' => t('No')),
+    /*'#ajax' => array(
+        'callback' => 'ciudades_callback',
+      //  'wrapper' => 'ciudad_id',
+    ),*/
+  );
+  $form['info_agent'] = array(
+    '#markup' => '<div id="info_agent" >',
+  );
+  $form['agent_name'] = array(
+    '#type' => 'textfield',
+    //'#required' => array(':input[name="travel_agent[yes]"]' =>  array('checked' => TRUE)),
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('Travel Agent\'s name'),
+  );
+  $form['travel_agency'] = array(
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('Travel Agency'),
+  );
+  $form['iata'] = array(
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('IATA #'),
+  );
+  $form['agency_address'] = array(
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('Agency\'s Address'),
+  );
+  $form['agency_zip'] = array(
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('Zip Code'),
+  );
+  $form['agency_city'] = array(
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('City'),
+  );
+  $form['agency_state'] = array(
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('State'),
+  );
+  $form['agency_country'] = array(
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('Country'),
+  );
+  $form['agency_email'] = array(
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#maxlength' => 120,
+    '#placeholder' => t('Agency email address'),
+  );
+  $form['agency_phone'] = array(
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Name'),
+    '#placeholder' => t('Agency Phone'),
+  );
+  $form['info_agent_end'] = array(
+    '#markup' => '</div>',
+  );
+
+  $form['request_line_three'] = array(
+    '#markup' => '<div class="request_line col-xs-12"></div>',
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+    '#submit' => array('request_form_submit'),
+  );
+
+  $form['descrip_fin'] = array(
+    '#markup' => '</div>
+          </div>
+        <div class="row">
+       </div>
+        </div>
+      </div>',
+  );
+
+  return $form;
+
+}
+
+/**
+ * Implements hook_form_submit().
+ * Type: General user (Process)
+ *
+ * acruz: Procesa la información suministrada en el formulario "WEDDING REQUEST FORM"
+ * Ejecuta funcion download_pdf_mail
+ */
+function request_form_submit($form, &$form_state)
+{
+
+  if ($form_state['values']['travel_agent'] == 'yes') {
+    drupal_set_message(t('Thank you for your information.', array(
+      '@bride' => $form_state['values']['bride_name'],
+      '@groom' => $form_state['values']['groom_name'],
+      '@mail' => $form_state['values']['email'],
+      '@phone' => $form_state['values']['phone'],
+      '@address' => $form_state['values']['address'],
+      '@zip' => $form_state['values']['zip'],
+      '@state' => $form_state['values']['state'],
+      '@country' => $form_state['values']['country'],
+      '@ceremony_date' => $form_state['values']['ceremony_date'],
+      '@arrival_date' => $form_state['values']['arrival_date'],
+      '@departure_day' => $form_state['values']['departure_day'],
+      '@flexible_wedding' => $form_state['values']['flexible_wedding'],
+      '@guests_adults' => $form_state['values']['guests_adults'],
+      '@guests_children' => $form_state['values']['guests_children'],
+      '@ceremony_type' => $form_state['values']['ceremony_type'],
+      '@legal_ceremony' => $form_state['values']['legal_ceremony'],
+      '@resort' => $form_state['values']['resort'],
+      '@exist_travel_agent' => $form_state['values']['travel_agent'],
+      '@travel_agent_name' => $form_state['values']['agent_name'],
+      '@travel_agency' => $form_state['values']['travel_agency'],
+      '@iata' => $form_state['values']['iata'],
+      '@agency_address' => $form_state['values']['agency_address'],
+      '@agency_city' => $form_state['values']['agency_city'],
+      '@agency_email' => $form_state['values']['agency_email'],
+      '@agency_phone' => $form_state['values']['agency_phone'],
+    )));
+
+    $timeCeremonyDate = strtotime($form_state['values']['ceremony_date']);
+    $timeArrivalDay = strtotime($form_state['values']['arrival_date']);
+    $timeDepartureDay = strtotime($form_state['values']['departure_day']);
+
+    $fields = array(
+      'bride' => $form_state['values']['bride_name'],
+      'groom' => $form_state['values']['groom_name'],
+      'mail' => $form_state['values']['email'],
+      'phone' => $form_state['values']['phone'],
+      'address' => $form_state['values']['address'],
+      'zip' => $form_state['values']['zip'],
+      'state' => $form_state['values']['state'],
+      'country' => $form_state['values']['country'],
+      'ceremony_date' => $timeCeremonyDate,
+      'arrival_date' => $timeArrivalDay,
+      'departure_day' => $timeDepartureDay,
+      'flexible_wedding' => $form_state['values']['flexible_wedding'],
+      'guests_adults' => $form_state['values']['guests_adults'],
+      'guests_children' => $form_state['values']['guests_children'],
+      'ceremony_type' => $form_state['values']['ceremony_type'],
+      'legal_ceremony' => $form_state['values']['legal_ceremony'],
+      'resort' => $form_state['values']['resort'],
+      'exist_travel_agent' => $form_state['values']['travel_agent'],
+
+      'travel_agent_name' => $form_state['values']['agent_name'],
+      'travel_agency' => $form_state['values']['travel_agency'],
+      'iata' => $form_state['values']['iata'],
+      'agency_address' => $form_state['values']['agency_address'],
+      'agency_city' => $form_state['values']['agency_city'],
+      'agency_email' => $form_state['values']['agency_email'],
+      'agency_phone' => $form_state['values']['agency_phone'],
+    );
+
+    $id_faq = db_insert('download_request')
+      ->fields($fields)
+      ->execute();
+
+    $body = '';
+    $body .= '<p>' . t('Submitted values are') . ':</p>';
+    $body .= '<p>' . t('Bride') . ': ' . $form_state['values']['bride_name'] . '</p>';
+    $body .= '<p>' . t('Groom') . ': ' . $form_state['values']['groom_name'] . '</p>';
+    $body .= '<p>' . t('Email') . ': ' . $form_state['values']['email'] . '</p>';
+    $body .= '<p>' . t('Phone') . ': ' . $form_state['values']['phone'] . '</p>';
+    $body .= '<p>' . t('Address') . ': ' . $form_state['values']['address'] . '</p>';
+    $body .= '<p>' . t('Zip') . ': ' . $form_state['values']['zip'] . '</p>';
+    $body .= '<p>' . t('State') . ': ' . $form_state['values']['state'] . '</p>';
+    $body .= '<p>' . t('Country') . ': ' . $form_state['values']['country'] . '</p>';
+    $body .= '<p>' . t('Ceremony Date') . ': ' . $form_state['values']['ceremony_date'] . '</p>';
+    $body .= '<p>' . t('Arrival Date') . ': ' . $form_state['values']['arrival_date'] . '</p>';
+    $body .= '<p>' . t('Departure Day') . ': ' . $form_state['values']['departure_day'] . '</p>';
+    $body .= '<p>' . t('Are you flexible with your wedding Date?') . ': ' . $form_state['values']['flexible_wedding'] . '</p>';
+    $body .= '<p>' . t('Guests Adults') . ': ' . $form_state['values']['guests_adults'] . '</p>';
+    $body .= '<p>' . t('Guests Children') . ': ' . $form_state['values']['guests_children'] . '</p>';
+    $body .= '<p>' . t('Ceremony Type') . ': ' . $form_state['values']['ceremony_type'] . '</p>';
+    $body .= '<p>' . t('Legal or Symbolic') . ': ' . $form_state['values']['legal_ceremony'] . '</p>';
+    $body .= '<p>' . t('Resort') . ': ' . $form_state['values']['resort'] . '</p>';
+    $body .= '<p>' . t('Exist Travel Agent') . ': ' . $form_state['values']['travel_agent'] . '</p>';
+    $body .= '<p>' . t('Agent name') . ': ' . $form_state['values']['agent_name'] . '</p>';
+    $body .= '<p>' . t('Travel Agency') . ': ' . $form_state['values']['travel_agency'] . '</p>';
+    $body .= '<p>' . t('IATA') . ': ' . $form_state['values']['iata'] . '</p>';
+    $body .= '<p>' . t('Agency Address') . ': ' . $form_state['values']['agency_address'] . '</p>';
+    $body .= '<p>' . t('Agency City') . ': ' . $form_state['values']['agency_city'] . '</p>';
+    $body .= '<p>' . t('Agency Email') . ': ' . $form_state['values']['agency_email'] . '</p>';
+    $body .= '<p>' . t('Agency Phone') . ': ' . $form_state['values']['agency_phone'] . '</p>';
+
+    $mailSeller = 'psalazar@palaceresorts.com';
+
+    if ($form_state['values']['mail_seller'] != '')
+      $mailSeller = $mailSeller . ',' . $form_state['values']['mail_seller'];
+
+    $mailSeller = $mailSeller . ',' . $form_state['values']['email'];
+
+    download_pdf_mail('"weddings.palaceresorts.com" <info@weddings.com>', $mailSeller, 'Form submission from: Weddings request form', $body);
+
+  } else {
+    drupal_set_message(t('Thank you for your information.', array(
+      '@bride' => $form_state['values']['bride_name'],
+      '@groom' => $form_state['values']['groom_name'],
+      '@mail' => $form_state['values']['email'],
+      '@phone' => $form_state['values']['phone'],
+      '@address' => $form_state['values']['address'],
+      '@zip' => $form_state['values']['zip'],
+      '@state' => $form_state['values']['state'],
+      '@country' => $form_state['values']['country'],
+      '@ceremony_date' => $form_state['values']['ceremony_date'],
+      '@arrival_date' => $form_state['values']['arrival_date'],
+      '@departure_day' => $form_state['values']['departure_day'],
+      '@flexible_wedding' => $form_state['values']['flexible_wedding'],
+      '@guests_adults' => $form_state['values']['guests_adults'],
+      '@guests_children' => $form_state['values']['guests_children'],
+      '@ceremony_type' => $form_state['values']['ceremony_type'],
+      '@legal_ceremony' => $form_state['values']['legal_ceremony'],
+      '@resort' => $form_state['values']['resort'],
+      '@exist_travel_agent' => $form_state['values']['travel_agent'],
+    )));
+
+    $timeCeremonyDate = strtotime($form_state['values']['ceremony_date']);
+    $timeArrivalDay = strtotime($form_state['values']['arrival_date']);
+    $timeDepartureDay = strtotime($form_state['values']['departure_day']);
+
+    $fields = array(
+      'bride' => $form_state['values']['bride_name'],
+      'groom' => $form_state['values']['groom_name'],
+      'mail' => $form_state['values']['email'],
+      'phone' => $form_state['values']['phone'],
+      'address' => $form_state['values']['address'],
+      'zip' => $form_state['values']['zip'],
+      'state' => $form_state['values']['state'],
+      'country' => $form_state['values']['country'],
+      'ceremony_date' => $timeCeremonyDate,
+      'arrival_date' => $timeArrivalDay,
+      'departure_day' => $timeDepartureDay,
+      'flexible_wedding' => $form_state['values']['flexible_wedding'],
+      'guests_adults' => $form_state['values']['guests_adults'],
+      'guests_children' => $form_state['values']['guests_children'],
+      'ceremony_type' => $form_state['values']['ceremony_type'],
+      'legal_ceremony' => $form_state['values']['legal_ceremony'],
+      'resort' => $form_state['values']['resort'],
+      'exist_travel_agent' => $form_state['values']['travel_agent'],
+    );
+
+    $id_faq = db_insert('download_request')
+      ->fields($fields)
+      ->execute();
+
+    $body = '';
+    $body .= '<p>' . t('Submitted values are') . ':</p>';
+    $body .= '<p>' . t('Bride') . ': ' . $form_state['values']['bride_name'] . '</p>';
+    $body .= '<p>' . t('Groom') . ': ' . $form_state['values']['groom_name'] . '</p>';
+    $body .= '<p>' . t('Email') . ': ' . $form_state['values']['email'] . '</p>';
+    $body .= '<p>' . t('Phone') . ': ' . $form_state['values']['phone'] . '</p>';
+    $body .= '<p>' . t('Address') . ': ' . $form_state['values']['address'] . '</p>';
+
+    $body .= '<p>' . t('Zip') . ': ' . $form_state['values']['zip'] . '</p>';
+    $body .= '<p>' . t('State') . ': ' . $form_state['values']['state'] . '</p>';
+    $body .= '<p>' . t('Country') . ': ' . $form_state['values']['country'] . '</p>';
+    $body .= '<p>' . t('Ceremony Date') . ': ' . $form_state['values']['ceremony_date'] . '</p>';
+    $body .= '<p>' . t('Arrival Date') . ': ' . $form_state['values']['arrival_date'] . '</p>';
+    $body .= '<p>' . t('Departure Day') . ': ' . $form_state['values']['departure_day'] . '</p>';
+    $body .= '<p>' . t('Are you flexible with your wedding Date?') . ': ' . $form_state['values']['flexible_wedding'] . '</p>';
+    $body .= '<p>' . t('Guests Adults') . ': ' . $form_state['values']['guests_adults'] . '</p>';
+    $body .= '<p>' . t('Guests Children') . ': ' . $form_state['values']['guests_children'] . '</p>';
+    $body .= '<p>' . t('Ceremony Type') . ': ' . $form_state['values']['ceremony_type'] . '</p>';
+    $body .= '<p>' . t('Legal or Symbolic') . ': ' . $form_state['values']['legal_ceremony'] . '</p>';
+    $body .= '<p>' . t('Resort') . ': ' . $form_state['values']['resort'] . '</p>';
+    $body .= '<p>' . t('Exist Travel Agent') . ': ' . $form_state['values']['travel_agent'] . '</p>';
+
+    $mailSeller = 'psalazar@palaceresorts.com';
+
+    if ($form_state['values']['mail_seller'] != '')
+      $mailSeller = $mailSeller . ',' . $form_state['values']['mail_seller'];
+
+    $mailSeller = $mailSeller . ',' . $form_state['values']['email'];
+
+    download_pdf_mail('"weddings.palaceresorts.com" <info@weddings.com>', $mailSeller, 'Form submission from: Weddings request form', $body);
+
+  }
+
+}
+
+/**
+ * Implements hook_form_validate().
+ * Type: General user (Process)
+ *
+ * acruz: Valida el formulario "WEDDING REQUEST FORM"
+ */
+function download_pdf_request_form_validate($form, &$form_state)
+{
+  if (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['bride_name'])) {
+    form_set_error('bride_name', t('The bride name appears to be invalid.'));
+  }
+
+  if (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['groom_name'])) {
+    form_set_error('groom_name', t('The groom name name appears to be invalid.'));
+  }
+
+  $mail = $form_state['values']['email'];
+  if (!valid_email_address($mail)) {
+    form_set_error('email', t('The email address appears to be invalid.'));
+  }
+
+  if (preg_match('/^.*(?=.*[@$%^&=]).*$/', $form_state['values']['phone'])) {
+    form_set_error('phone', t('The phone appears to be invalid.'));
+  }
+
+  /*if (preg_match('/^.*(?=.*[@$%^&=+a-zA-Z]).*$/', $form_state['values']['zip'])) {
+    form_set_error('zip', t('The zip appears to be invalid.'));
+  }*/
+
+  if (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['city'])) {
+    form_set_error('city', t('The city appears to be invalid.'));
+  }
+
+  if (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['state'])) {
+    form_set_error('state', t('The state appears to be invalid.'));
+  }
+
+  if (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['country'])) {
+    form_set_error('country', t('The country appears to be invalid.'));
+  }
+
+  if (preg_match('/^.*(?=.*[@$%^&=+a-zA-Z]).*$/', $form_state['values']['guests_adults'])) {
+    form_set_error('guests_adults', t('The number guests adults appears to be invalid.'));
+  }
+
+  if (preg_match('/^.*(?=.*[@$%^&=+a-zA-Z]).*$/', $form_state['values']['guests_children'])) {
+    form_set_error('guests_children', t('The number guests children appears to be invalid.'));
+  }
+
+  if ($form_state['values']['travel_agent'] == 'yes') {
+    if (!$form_state['values']['agent_name']) {
+      form_set_error('agent_name', t('Agent name is required.'));
+    } elseif (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['agent_name'])) {
+      form_set_error('agent_name', t('The agent name name appears to be invalid.'));
+    }
+  }
+
+  if ($form_state['values']['travel_agent'] == 'yes' && !$form_state['values']['iata']) {
+    form_set_error('iata', t('IATA is required.'));
+  }
+
+  if ($form_state['values']['travel_agent'] == 'yes' && !$form_state['values']['agency_address']) {
+    form_set_error('agency_address', t('Agency\'s Addresss is required.'));
+  }
+
+  if ($form_state['values']['travel_agent'] == 'yes') {
+    if (!$form_state['values']['agency_zip']) {
+      form_set_error('agency_zip', t('Agency zip is required.'));
+    }
+    /*elseif (preg_match('/^.*(?=.*[@$%^&=+a-zA-Z]).*$/', $form_state['values']['agency_zip']))
+    {
+      form_set_error('agency_zip', t('The agency zip appears to be invalid.'));
+    }*/
+  }
+
+  if ($form_state['values']['travel_agent'] == 'yes') {
+    if (!$form_state['values']['agency_city']) {
+      form_set_error('agency_city', t('Agency city is required.'));
+    } elseif (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['agency_city'])) {
+      form_set_error('agency_city', t('The agency city appears to be invalid.'));
+    }
+
+  }
+
+  if ($form_state['values']['travel_agent'] == 'yes') {
+    if (!$form_state['values']['agency_state']) {
+      form_set_error('agency_state', t('Agency state is required.'));
+    } elseif (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['agency_state'])) {
+      form_set_error('agency_state', t('The agency state appears to be invalid.'));
+    }
+  }
+
+  if ($form_state['values']['travel_agent'] == 'yes') {
+    if (!$form_state['values']['agency_country']) {
+      form_set_error('agency_country', t('Agency country is required.'));
+    } elseif (preg_match('/^.*(?=.*[@#$%^&+=0-9]).*$/', $form_state['values']['agency_country'])) {
+      form_set_error('agency_country', t('The agency country appears to be invalid.'));
+    }
+  }
+
+  $agencyMail = $form_state['values']['agency_email'];
+  if ($form_state['values']['travel_agent'] == 'yes' && !valid_email_address($agencyMail)) {
+    form_set_error('agency_email', t('The agency email address appears to be invalid.'));
+  }
+
+  if ($form_state['values']['travel_agent'] == 'yes') {
+    if (!$form_state['values']['agency_phone']) {
+      form_set_error('agency_phone', t('Agency phone is required.'));
+    } elseif (preg_match('/^.*(?=.*[@$%^&=]).*$/', $form_state['values']['agency_phone'])) {
+      form_set_error('agency_phone', t('The agency phone appears to be invalid.'));
+    }
+  }
+}
+
+/**
+ * Simple wrapper function for drupal_mail() to avoid extraneous code.
+ *
+ * Custom function download_pdf_intro_faq().
+ * Type: General user (Process)
+ *
+ * acruz: Procesa la información generada por download_pdf_contact_form_submit y envia un correo electronico
+ * @return TRUE or FALSE
+ */
+function download_pdf_mail($from = 'default_from', $to, $subject, $message)
+{
+  $my_module = 'custom';
+  $my_mail_token = microtime();
+  if ($from == 'default_from') {
+    // Change this to your own default 'from' email address.
+    $from = variable_get('system_mail', 'My Email Address <example@example.com>');
+  }
+  $message = array(
+    'id' => $my_module . '_' . $my_mail_token,
+    'to' => $to,
+    'subject' => $subject,
+    'body' => array($message),
+    'from' => $from,
+    'headers' => array(
+      'Sender' => $from,
+      'Content-Type' => 'text/html; charset=UTF-8; format=flowed; delsp=yes',
+      'Return-Path' => $from,
+    ),
+  );
+  $system = drupal_mail_system($my_module, $my_mail_token);
+  $message = $system->format($message);
+  if ($system->mail($message)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
+ * Helper function - since hook_menu now takes a function instead of a boolean,
+ * this function is used to compute the user's access.
+ *
+ * @return boolean
+ */
+function download_pdf_admin_or_manipulate()
+{
+  return user_access('administer download_pdf') || user_access('manipulate queues') || user_access('manipulate all queues');
+}
+
+/**
+ * Implements hook_permission().
+ */
+function download_pdf_permission()
+{
+  return array(
+    'administer download pdf' => array(
+      'title' => t('Administer download pdf'),
+      'description' => t('Perform administration tasks for my module.'),
+      // 'restrict access' => true,
+    )
+  );
+}
+
+/**
+ * Custom function home_download_pdf().
+ * Type: General user (Vista)
+ *
+ * acruz: Permite visualizar las preguntas frecuentes faq por medio del template "faq"
+ * @return template faq
+ */
+function faq_download_pdf()
+{
+
+  //acruz: Llama la libreria ajax de drupal
+  drupal_add_library('system', 'drupal.ajax');
+
+  $data_faq = array();
+
+  $query = db_select('download_pdf_faqs', 'f');
+  $query->fields('f', array('id_download_pdf_faq', 'pregunta', 'respuesta'));
+  $result_faq = $query->execute();
+
+  $numtaq = 0;
+  while ($record_faq = $result_faq->fetchAssoc()) {
+    $data_faq[$numtaq] = $record_faq;
+    $numtaq++;
+  }
+
+  $variables = array('faqs' => $data_faq);
+
+  return theme("faq", $variables);
+
+}
+
+/**
+ * Implements hook_theme()
+ * Type: General user (Process)
+ *
+ * acruz: Obtiene el template solicitado para visualizar
+ * @return array
+ */
+function download_pdf_theme($existing, $type, $theme, $path)
+{
+  return array(
+    'download' => array(
+      'template' => 'template/download_pdf_home',
+    ),
+    'faq' => array(
+      'template' => 'template/download_pdf_faq',
+    ),
+    'download_pdf_image_upd' => array(
+      'render element' => 'element',
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme()
+ * Type: General user (Process)
+ *
+ * acruz: No implementado - No funciona
+ *
+ * @return array|string
+ */
+function theme_download_pdf_image_upd($variables)
+{
+
+  $element = $variables['element'];
+  $output = '';
+  if ($element['fid']['#value'] != 0) {
+    // if image is uploaded show its thumbnail to the output HTML
+    $output .= '<div class="image-preview">';
+    $output .= theme('image_style', array('style_name' => 'medium', 'path' => file_load($element['fid']['#value'])->uri, 'getsize' => true));
+    $output .= drupal_render_children($element);
+    $output .= '</div>';
+  }
+  return $output;
+}
+
+/**
+ * Implements hook ajax_ y _autocheckboxes_callback()
+ * Type: Administration (Process)
+ *
+ * acruz: crea por medio de ajax un nuevo tag
+ * @return array
+ */
+function ajax_download_pdf_autocheckboxes_callback($form, $form_state)
+{
+
+  $commands = array();
+  if (!empty($form_state['values']['other_tag']) && $form_state['values']['other_tag']) {
+    $fields = array(
+      'tag' => $form_state['values']['other_tag'],
+    );
+    $id_download = db_insert('download_pdf_tags')
+      ->fields($fields)
+      ->execute();
+
+    //$text = $form_state['values']['html_command_example'];
+
+    //$commands[] = ajax_command_html('#html_div', $text);
+    $commands[] = ajax_command_prepend("#edit-tags", "<div class='form-item form-type-checkbox form-item-tags-$id_download'><input type='checkbox' id='edit-tags-$id_download' name='tags[$id_download]'' value='$id_download' class='form-checkbox'><label class='option' for='edit-tags-$id_download'>" . $form_state['values']['other_tag'] . "</label>
+</div>");
+  }
+  return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+/**
+ * Custom function get_tags().
+ * Type: Administration (Process)
+ *
+ * acruz: obtiene todos los tags existentes
+ * @return $values
+ */
+function _download_pdf_get_tags()
+{
+  $query = db_select('download_pdf_tags', 'd');
+  $query->fields('d', array('id_download_pdf_tag', 'tag'));
+  $result = $query->execute();
+
+  $values = array();
+  while ($value = $result->fetchAssoc()) {
+    $values[$value['id_download_pdf_tag']] = $value['tag'];
+  }
+  return $values;
+}
+
+/**
+ * Implements hook_form().
+ * Type: General user (Vista)
+ *
+ * acruz: Visualiza el formulario "SITE INSPECTION REQUEST FORM"
+ * @return $form
+ */
+function download_pdf_site_inspection_request_form($form, &$form_state, $id_seller = 0)
+{
+
+  preg_match('/MSIE (.*?);/', $_SERVER['HTTP_USER_AGENT'], $matches);
+  if (count($matches) < 2) {
+    preg_match('/Trident\/\d{1,2}.\d{1,2}; rv:([0-9]*)/', $_SERVER['HTTP_USER_AGENT'], $matches);
+  }
+
+  $txtIE = '';
+
+  if (count($matches) > 1) {
+    $version = $matches[1];
+    if (($version <= 9)) {
+      $txtIE = '<p>Your browser (Internet Explorer ) is out of date and may not display all features of this and other websites. Update your browser
+                        <a href="http://windows.microsoft.com/es-CO/internet-explorer/download-ie" target="_blank" >here</a>
+                        </p>';
+      /*$form['descrip_ie'] = array(
+      '#markup' => '
+          <div class="row">
+            <div class="col-xs-12">
+              <p>Your browser (Internet Explorer ) is out of date and may not display all features of this and other websites. Update your browser
+              <a href="http://windows.microsoft.com/es-CO/internet-explorer/download-ie" target="_blank" >here</a>
+              </p>
+            </div>
+           </div>',
+    );*/
+    }
+  }
+
+  $form['descrip_ini'] = array(
+    '#markup' => '<div class="row" id="form">
+        <div id="wr-form" class="container" >
+          <div class="row">
+            <div class="col-xs-12 dl-title os">
+              <h1>SITE INSPECTION REQUEST FORM</h1>
+              <p>Please provide all information requested below and E-mail to aleyva@palaceresorts.com</p>
+              <p><strong>Please complete all boxes: </strong> If you are a Travel Agent, you will be asked your IATAN and business card upon arrival.</p>' . $txtIE . '
+            </div>
+           </div>
+          <div class="row">
+        <div class="formBox col-xs-12">',
+  );
+
+
+  $mailSeller = '';
+
+  if ($id_seller != 0) {
+
+    $query = db_select('download_seller', 's');
+    $query->fields('s', array('mail'))
+      ->condition('id_download_seller', $id_seller);
+    $result = $query->execute();
+
+    $numfaq = 0;
+    while ($record = $result->fetchAssoc()) {
+      $res_faq[$numfaq] = $record;
+      $numfaq++;
+    }
+    $mailSeller = $res_faq[0]['mail'];
+
+  }
+
+
+  $form['mail_seller'] = array(
+    '#type' => 'hidden',
+    '#value' => $mailSeller,
+  );
+  $form['name_agent'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 200,
+    //'#title' => t('Enter Your Bride'),
+    '#placeholder' => t('Full name (Travel Agent)'),
+  );
+  $form['agencys_name'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 200,
+    //'#title' => t('Enter Your Bride'),
+    '#placeholder' => t('Agency’s Name'),
+  );
+  $form['email_agent'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 120,
+    '#placeholder' => t('E-mail (Travel Agent)'),
+  );
+  $form['phone_agent'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Phone'),
+    '#placeholder' => t('Phone (Travel Agent)'),
+  );
+  $form['fax_agent'] = array(
+    '#type' => 'textfield',
+    //'#required' => TRUE,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Phone'),
+    '#placeholder' => t('Fax (Travel Agent)'),
+  );
+  $form['request_line_four'] = array(
+    '#markup' => '<div class="request_line col-xs-12"></div>',
+  );
+  $form['bride_name'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 200,
+    //'#title' => t('Enter Your Bride'),
+    '#placeholder' => t('Bride’s Name'),
+  );
+  $form['groom_name'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 200,
+    //'#title' => t('Enter Your Groom'),
+    '#placeholder' => t('Groom’s Name'),
+  );
+  $form['address'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Address'),
+    '#placeholder' => t('Address'),
+  );
+  $form['city'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your City'),
+    '#placeholder' => t('City'),
+  );
+  $form['state'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your State'),
+    '#placeholder' => t('State'),
+  );
+  $form['zip'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Zip'),
+    '#placeholder' => t('Zip'),
+  );
+  $form['country'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Country'),
+    '#placeholder' => t('Country'),
+  );
+  $form['email'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 120,
+    '#placeholder' => t('E-mail'),
+  );
+  $form['phone'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Phone'),
+    '#placeholder' => t('Phone'),
+  );
+  $form['folio'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Your Phone'),
+    '#placeholder' => t('Wedding Folio'),
+  );
+  $form['wedding_date'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Arrival date'),
+    '#placeholder' => t('Wedding Date'),
+    '#attributes' => array('id' => array('wedding_date_picker'), 'class' => array('form-control')),
+    '#prefix' => '<div class="form-group"><div class="input-group date" id="wedding_date_picker" >',
+    '#suffix' => '<span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    </div></div>',
+  );
+  $form['guests'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 3,
+    '#maxlength' => 3,
+    //'#title' => t('Enter Your Country'),
+    '#placeholder' => t('Number of Guests'),
+    '#prefix' => '<div class="padding-7 col-md-4">',
+    '#suffix' => '</div>',
+  );
+
+  $form['request_line_one'] = array(
+    '#markup' => '<div class="request_line col-xs-12"></div>',
+  );
+
+  $form['wedding_type'] = array(
+    '#type' => 'select',
+    '#title' => t('Wedding Type'),
+    '#description' => null,
+    '#required' => true,
+    '#options' => drupal_map_assoc(array('Symbolic', 'Civil', 'Catholic', 'Vow Renewal', 'Sikh/Hindu')),
+  );
+  $form['request_line_six'] = array(
+    '#markup' => '<div class="col-xs-12 col-md-4">',
+  );
+
+  $form['staying_pr'] = array(
+    '#type' => 'radios',
+    '#title' => t('Are you staying at a Palace Resorts?'),
+    '#required' => true,
+    '#options' => array('yes' => t('Yes'), 'no' => t('No')),
+  );
+  $form['staying_pr_no'] = array(
+    '#type' => 'textfield',
+    //'#required' => TRUE,
+    '#size' => 20,
+    '#maxlength' => 400,
+    //'#title' => t('Enter Your Groom'),
+    '#placeholder' => t('If not, where will you be staying at?'),
+  );
+
+  $form['request_line_seven'] = array(
+    '#markup' => '</div>',
+  );
+
+  $form['request_line_eight'] = array(
+    '#markup' => '<div class="col-xs-12 col-md-4">',
+  );
+
+  $form['requesting_accommodation_pr'] = array(
+    '#type' => 'radios',
+    '#title' => t('Are you requesting accommodation at Palace Resorts?'),
+    '#required' => true,
+    '#options' => array('yes' => t('Yes'), 'no' => t('No')),
+  );
+  $form['arriving_pr'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 400,
+    //'#title' => t('Enter Your Groom'),
+    '#placeholder' => t('How will you be arriving at the Resort?'),
+    '#attributes' => array('class' => array('btn-special')),
+  );
+
+  $form['request_line_nine'] = array(
+    '#markup' => '</div>',
+  );
+
+  $form['arrange_transfers_pr'] = array(
+    '#type' => 'radios',
+    '#title' => t('Do you need to arrange Transfers?'),
+    '#required' => true,
+    '#options' => array('yes' => t('Yes'), 'no' => t('No')),
+    '#prefix' => '<div class="col-md-4">',
+    '#suffix' => '</div>',
+  );
+  $form['arrival_date'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Arrival date'),
+    '#placeholder' => t('Arrival Date & Time'),
+    '#attributes' => array('id' => array('arrival_date_site_picker'), 'class' => array('form-control')),
+    '#prefix' => '<div class="form-group"><div class="input-group date" id="arrival_date_site_picker" >',
+    '#suffix' => '<span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    </div></div>',
+  );
+  $form['departure_date'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Departure day'),
+    '#placeholder' => t('Departure Date & Time'),
+    '#attributes' => array('id' => array('departure_day_site_picker'), 'class' => array('form-control')),
+    '#prefix' => '<div class="form-group"><div class="input-group date" id="departure_day_site_picker" >',
+    '#suffix' => '<span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    </div></div>',
+  );
+  $form['language'] = array(
+    '#type' => 'radios',
+    '#title' => t('Specify preferred language for Site Inspection'),
+    '#required' => true,
+    '#options' => array('English' => t('English'), 'Spanish' => t('Spanish')),
+  );
+
+  $form['descrip_sec'] = array(
+    '#markup' => '<div class="request_line col-xs-12"></div>
+                    <div class="col-xs-12 dl-title">
+                      <h2>Resort Selection:</h2>
+                      <p>Specify a date and time requested next to your chosen Resort. If a date and time are not specified the Site Inspection will not be confirmed.</p>
+                    </div>'
+  );
+
+  $form['resort'] = array(
+    '#type' => 'select',
+    '#title' => t('Resort'),
+    '#description' => null,
+    '#required' => true,
+    '#options' => drupal_map_assoc(array('Beach Palace (Mexico)', 'Cozumel Palace (Mexico)', 'Isla Mujeres Palace (Mexico)', 'Le Blanc Spa Resort (Mexico)', 'Moon Palace Golf & Spa Resort (Mexico)', 'Moon Palace Jamaica Grande Ocho Rios (Jamaica)', 'Playacar Palace (Mexico)', 'Sun Palace (Mexico)')),
+  );
+
+  $form['date_time_requested'] = array(
+    '#type' => 'textfield',
+    '#required' => true,
+    '#size' => 20,
+    '#maxlength' => 20,
+    //'#title' => t('Enter Departure day'),
+    '#placeholder' => t('Date & time requested'),
+    '#attributes' => array('id' => array('date_time_requested_picker'), 'class' => array('form-control')),
+    '#prefix' => '<div class="form-group"><div class="input-group date margin-14" id="date_time_requested_picker" >',
+    '#suffix' => '<span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    </div></div>',
+  );
+
+
+  $form['note'] = array(
+    '#markup' => '<div class="request_line col-xs-12"></div>
+                    <div class="no-margin col-xs-12 body-gralcontent notes-text aling-left">
+                      <h6><strong class="dl-title-pink">Note</strong></h6>
+                      <p>Specify a date and time requested next to your chosen Resort. If a date and time are not specified the Site Inspection will not be confirmed.</p><br>
+                      <ul>
+                        <li>Wedding site inspections may be made by appointment only from 9:30am to 1:00pm Monday – Wednesday.</li>
+                        <li>All date and times are subject to availability. An email confirmation will be sent if approved by resort.</li>
+                        <li>Please be punctual to your site inspections. We will hold all appointments up to 15 minutes after start time.</li>
+                        <li>A late arrival will shorten the duration of your site inspection and may need to be rescheduled upon availability.</li>
+                        <li>Black-Out Dates apply to all visits, all requests are subject to availability.</li>
+                        <li>Couple must book a minimum of 10 rooms for a 3 night stay each under a group contract for the wedding in order to apply the preview of paradise promotion.</li>
+                      </ul>
+                      <p>Resort accommodation and transportation is not included. For Resort availability and rates please contact our Wedding Call Center at 1 877 725 4933. If you are not staying at the Resort and you wish to enjoy the property at the completion of your site inspection, a day pass is available for purchase. Day Passes may be purchased upon arrival for site inspections and are based on occupancy levels. Only reservations made directly through the wedding department qualify to receive the credit for this promotion.</p><br>
+                      <p><strong>Last minute Site Inspection requests are not guaranteed until you have a confirmation in writing.</strong></p>
+                    </div>'
+  );
+
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+    '#submit' => array('site_inspection_form_submit'),
+    '#attributes' => array('class' => array('float-right')),
+  );
+  $form['descrip_fin'] = array(
+    '#markup' => '</div>
+          </div>
+        <div class="row">
+       </div>
+        </div>
+      </div>',
+  );
+
+  return $form;
+
+}
+
+
+/**
+ * Implements hook_form_validate().
+ * Type: General user (Process)
+ *
+ * acruz: Valida el formulario "SITE INSPECTION REQUEST FORM"
+ */
+function download_pdf_site_inspection_request_form_validate($form, &$form_state)
+{
+
+  $mail_seller = $form_state['values']['email_agent'];
+  if (!valid_email_address($mail_seller)) {
+    form_set_error('email_agent', t('The email (Travel Agent) address appears to be invalid.'));
+  }
+  $mail = $form_state['values']['email'];
+  if (!valid_email_address($mail)) {
+    form_set_error('email', t('The email address appears to be invalid.'));
+  }
+
+  if ($form_state['values']['staying_pr'] == 'no' && !$form_state['values']['staying_pr_no']) {
+    form_set_error('staying_pr_no', t('where will you be staying at?'));
+  }
+
+}
+
+/**
+ * Implements hook_form_submit().
+ * Type: General user (Process)
+ *
+ * acruz: Procesa la información suministrada en el formulario "SITE INSPECTION REQUEST FORM"
+ * Ejecuta funcion download_pdf_mail
+ */
+function site_inspection_form_submit($form, &$form_state)
+{
+
+  if ($form_state['values']['staying_pr'] == 'no') {
+
+    drupal_set_message(t('Thank you for your information.', array(
+      '@mail_seller' => $form_state['values']['mail_seller'],
+      '@name_agent' => $form_state['values']['name_agent'],
+      '@agencys_name' => $form_state['values']['agencys_name'],
+      '@email_agent' => $form_state['values']['email_agent'],
+      '@phone_agent' => $form_state['values']['phone_agent'],
+      '@fax_agent' => $form_state['values']['fax_agent'],
+      '@bride_name' => $form_state['values']['bride_name'],
+      '@groom_name' => $form_state['values']['groom_name'],
+      '@address' => $form_state['values']['address'],
+      '@city' => $form_state['values']['city'],
+      '@state' => $form_state['values']['state'],
+      '@zip' => $form_state['values']['zip'],
+      '@country' => $form_state['values']['country'],
+      '@email' => $form_state['values']['email'],
+      '@phone' => $form_state['values']['phone'],
+      '@folio' => $form_state['values']['folio'],
+      '@wedding_date' => $form_state['values']['wedding_date'],
+      '@guests' => $form_state['values']['guests'],
+      '@wedding_type' => $form_state['values']['wedding_type'],
+      '@staying_pr' => $form_state['values']['staying_pr'],
+      '@staying_pr_no' => $form_state['values']['staying_pr_no'],
+      '@requesting_accommodation_pr' => $form_state['values']['requesting_accommodation_pr'],
+      '@arriving_pr' => $form_state['values']['arriving_pr'],
+      '@arrange_transfers_pr' => $form_state['values']['arrange_transfers_pr'],
+      '@arrival_date' => $form_state['values']['arrival_date'],
+      '@departure_date' => $form_state['values']['departure_date'],
+      '@language' => $form_state['values']['language'],
+      '@resort' => $form_state['values']['resort'],
+      '@date_time_requested' => $form_state['values']['date_time_requested'],
+    )));
+
+    $timeWeddingDate = strtotime($form_state['values']['wedding_date']);
+    $timeArrivalDate = strtotime($form_state['values']['arrival_date']);
+    $timeDepartureDate = strtotime($form_state['values']['departure_date']);
+    $timeDateTimeRequested = strtotime($form_state['values']['date_time_requested']);
+
+    $fields = array(
+      'mail_seller' => $form_state['values']['mail_seller'],
+      'name_agent' => $form_state['values']['name_agent'],
+      'agencys_name' => $form_state['values']['agencys_name'],
+      'email_agent' => $form_state['values']['email_agent'],
+      'phone_agent' => $form_state['values']['phone_agent'],
+      'fax_agent' => $form_state['values']['fax_agent'],
+      'bride_name' => $form_state['values']['bride_name'],
+      'groom_name' => $form_state['values']['groom_name'],
+      'address' => $form_state['values']['address'],
+      'city' => $form_state['values']['city'],
+      'state' => $form_state['values']['state'],
+      'zip' => $form_state['values']['zip'],
+      'country' => $form_state['values']['country'],
+      'email' => $form_state['values']['email'],
+      'phone' => $form_state['values']['phone'],
+      'folio' => $form_state['values']['folio'],
+      'wedding_date' => $timeWeddingDate,
+      'guests' => $form_state['values']['guests'],
+      'wedding_type' => $form_state['values']['wedding_type'],
+      'staying_pr' => $form_state['values']['staying_pr'],
+      'staying_pr_no' => $form_state['values']['staying_pr_no'],
+      'requesting_accommodation_pr' => $form_state['values']['requesting_accommodation_pr'],
+      'arriving_pr' => $form_state['values']['arriving_pr'],
+      'arrange_transfers_pr' => $form_state['values']['arrange_transfers_pr'],
+      'arrival_date' => $timeArrivalDate,
+      'departure_day' => $timeDepartureDate,
+      'language' => $form_state['values']['language'],
+      'resort' => $form_state['values']['resort'],
+      'date_time_requested' => $timeDateTimeRequested,
+    );
+
+    $id_faq = db_insert('download_site_request')
+      ->fields($fields)
+      ->execute();
+
+    $body = '';
+    $body .= '<p>' . t('Submitted values are') . ':</p>';
+    $body .= '<p>' . t('Full name (Travel Agent)') . ': ' . $form_state['values']['name_agent'] . '</p>';
+    $body .= '<p>' . t('Agency’s Name') . ': ' . $form_state['values']['agencys_name'] . '</p>';
+    $body .= '<p>' . t('E-mail (Travel Agent)') . ': ' . $form_state['values']['email_agent'] . '</p>';
+    $body .= '<p>' . t('Phone (Travel Agent)') . ': ' . $form_state['values']['phone_agent'] . '</p>';
+    $body .= '<p>' . t('Fax (Travel Agent)') . ': ' . $form_state['values']['fax_agent'] . '</p>';
+    $body .= '<p>' . t('Bride’s Name') . ': ' . $form_state['values']['bride_name'] . '</p>';
+    $body .= '<p>' . t('Groom’s Name') . ': ' . $form_state['values']['groom_name'] . '</p>';
+    $body .= '<p>' . t('Address') . ': ' . $form_state['values']['address'] . '</p>';
+    $body .= '<p>' . t('City') . ': ' . $form_state['values']['city'] . '</p>';
+    $body .= '<p>' . t('State') . ': ' . $form_state['values']['state'] . '</p>';
+    $body .= '<p>' . t('Zip') . ': ' . $form_state['values']['zip'] . '</p>';
+    $body .= '<p>' . t('Country') . ': ' . $form_state['values']['country'] . '</p>';
+    $body .= '<p>' . t('E-mail') . ': ' . $form_state['values']['email'] . '</p>';
+    $body .= '<p>' . t('Phone') . ': ' . $form_state['values']['phone'] . '</p>';
+    $body .= '<p>' . t('Wedding Folio') . ': ' . $form_state['values']['folio'] . '</p>';
+    $body .= '<p>' . t('Wedding Date') . ': ' . $form_state['values']['wedding_date'] . '</p>';
+    $body .= '<p>' . t('Number of Guests') . ': ' . $form_state['values']['guests'] . '</p>';
+    $body .= '<p>' . t('Wedding Type') . ': ' . $form_state['values']['wedding_type'] . '</p>';
+    $body .= '<p>' . t('Are you staying at a Palace Resorts?') . ': ' . $form_state['values']['staying_pr'] . '</p>';
+    $body .= '<p>' . t('If not, where will you be staying at?') . ': ' . $form_state['values']['staying_pr_no'] . '</p>';
+    $body .= '<p>' . t('Are you requesting accommodation at Palace Resorts?') . ': ' . $form_state['values']['requesting_accommodation_pr'] . '</p>';
+    $body .= '<p>' . t('How will you be arriving at the Resort?') . ': ' . $form_state['values']['arriving_pr'] . '</p>';
+    $body .= '<p>' . t('Do you need to arrange Transfers?') . ': ' . $form_state['values']['arrange_transfers_pr'] . '</p>';
+    $body .= '<p>' . t('Arrival Date & Time') . ': ' . $form_state['values']['arrival_date'] . '</p>';
+    $body .= '<p>' . t('Departure Date & Time') . ': ' . $form_state['values']['departure_date'] . '</p>';
+    $body .= '<p>' . t('Specify preferred language for Site Inspection') . ': ' . $form_state['values']['language'] . '</p>';
+    $body .= '<p>' . t('Resorts') . ': ' . $form_state['values']['resort'] . '</p>';
+    $body .= '<p>' . t('Date & time requested') . ': ' . $form_state['values']['date_time_requested'] . '</p>';
+
+    $mailSeller = 'psalazar@palaceresorts.com';
+
+    if ($form_state['values']['mail_seller'] != '')
+      $mailSeller = $mailSeller . ',' . $form_state['values']['mail_seller'];
+
+    $mailSeller = $mailSeller . ',' . $form_state['values']['email'];
+
+    download_pdf_mail('"weddings.palaceresorts.com" <info@weddings.com>', $mailSeller, 'Form submission from: SITE INSPECTION REQUEST FORM', $body);
+
+  } else {
+
+    drupal_set_message(t('Thank you for your information.', array(
+      '@mail_seller' => $form_state['values']['mail_seller'],
+      '@name_agent' => $form_state['values']['name_agent'],
+      '@agencys_name' => $form_state['values']['agencys_name'],
+      '@email_agent' => $form_state['values']['email_agent'],
+      '@phone_agent' => $form_state['values']['phone_agent'],
+      '@fax_agent' => $form_state['values']['fax_agent'],
+      '@bride_name' => $form_state['values']['bride_name'],
+      '@groom_name' => $form_state['values']['groom_name'],
+      '@address' => $form_state['values']['address'],
+      '@city' => $form_state['values']['city'],
+      '@state' => $form_state['values']['state'],
+      '@zip' => $form_state['values']['zip'],
+      '@country' => $form_state['values']['country'],
+      '@email' => $form_state['values']['email'],
+      '@phone' => $form_state['values']['phone'],
+      '@folio' => $form_state['values']['folio'],
+      '@wedding_date' => $form_state['values']['wedding_date'],
+      '@guests' => $form_state['values']['guests'],
+      '@wedding_type' => $form_state['values']['wedding_type'],
+      '@staying_pr' => $form_state['values']['staying_pr'],
+      '@requesting_accommodation_pr' => $form_state['values']['requesting_accommodation_pr'],
+      '@arriving_pr' => $form_state['values']['arriving_pr'],
+      '@arrange_transfers_pr' => $form_state['values']['arrange_transfers_pr'],
+      '@arrival_date' => $form_state['values']['arrival_date'],
+      '@departure_date' => $form_state['values']['departure_date'],
+      '@language' => $form_state['values']['language'],
+      '@resort' => $form_state['values']['resort'],
+      '@date_time_requested' => $form_state['values']['date_time_requested'],
+    )));
+
+    //$timeWeddingDate = strtotime(str_replace('/', '-', $form_state['values']['wedding_date']));
+    $timeWeddingDate = strtotime($form_state['values']['wedding_date']);
+    $timeArrivalDate = strtotime($form_state['values']['arrival_date']);
+    $timeDepartureDate = strtotime($form_state['values']['departure_date']);
+    $timeDateTimeRequested = strtotime($form_state['values']['date_time_requested']);
+
+    $fields = array(
+      'mail_seller' => $form_state['values']['mail_seller'],
+      'name_agent' => $form_state['values']['name_agent'],
+      'agencys_name' => $form_state['values']['agencys_name'],
+      'email_agent' => $form_state['values']['email_agent'],
+      'phone_agent' => $form_state['values']['phone_agent'],
+      'fax_agent' => $form_state['values']['fax_agent'],
+      'bride_name' => $form_state['values']['bride_name'],
+      'groom_name' => $form_state['values']['groom_name'],
+      'address' => $form_state['values']['address'],
+      'city' => $form_state['values']['city'],
+      'state' => $form_state['values']['state'],
+      'zip' => $form_state['values']['zip'],
+      'country' => $form_state['values']['country'],
+      'email' => $form_state['values']['email'],
+      'phone' => $form_state['values']['phone'],
+      'folio' => $form_state['values']['folio'],
+      'wedding_date' => $timeWeddingDate,
+      'guests' => $form_state['values']['guests'],
+      'wedding_type' => $form_state['values']['wedding_type'],
+      'staying_pr' => $form_state['values']['staying_pr'],
+      'requesting_accommodation_pr' => $form_state['values']['requesting_accommodation_pr'],
+      'arriving_pr' => $form_state['values']['arriving_pr'],
+      'arrange_transfers_pr' => $form_state['values']['arrange_transfers_pr'],
+      'arrival_date' => $timeArrivalDate,
+      'departure_day' => $timeDepartureDate,
+      'language' => $form_state['values']['language'],
+      'resort' => $form_state['values']['resort'],
+      'date_time_requested' => $timeDateTimeRequested,
+    );
+
+    $id_faq = db_insert('download_site_request')
+      ->fields($fields)
+      ->execute();
+
+    $body = '';
+    $body .= '<p>' . t('Submitted values are') . ':</p>';
+    $body .= '<p>' . t('Full name (Travel Agent)') . ': ' . $form_state['values']['name_agent'] . '</p>';
+    $body .= '<p>' . t('Agency’s Name') . ': ' . $form_state['values']['agencys_name'] . '</p>';
+    $body .= '<p>' . t('E-mail (Travel Agent)') . ': ' . $form_state['values']['email_agent'] . '</p>';
+    $body .= '<p>' . t('Phone (Travel Agent)') . ': ' . $form_state['values']['phone_agent'] . '</p>';
+    $body .= '<p>' . t('Fax (Travel Agent)') . ': ' . $form_state['values']['fax_agent'] . '</p>';
+    $body .= '<p>' . t('Bride’s Name') . ': ' . $form_state['values']['bride_name'] . '</p>';
+    $body .= '<p>' . t('Groom’s Name') . ': ' . $form_state['values']['groom_name'] . '</p>';
+    $body .= '<p>' . t('Address') . ': ' . $form_state['values']['address'] . '</p>';
+    $body .= '<p>' . t('City') . ': ' . $form_state['values']['city'] . '</p>';
+    $body .= '<p>' . t('State') . ': ' . $form_state['values']['state'] . '</p>';
+    $body .= '<p>' . t('Zip') . ': ' . $form_state['values']['zip'] . '</p>';
+    $body .= '<p>' . t('Country') . ': ' . $form_state['values']['country'] . '</p>';
+    $body .= '<p>' . t('E-mail') . ': ' . $form_state['values']['email'] . '</p>';
+    $body .= '<p>' . t('Phone') . ': ' . $form_state['values']['phone'] . '</p>';
+    $body .= '<p>' . t('Wedding Folio') . ': ' . $form_state['values']['folio'] . '</p>';
+    $body .= '<p>' . t('Wedding Date') . ': ' . $form_state['values']['wedding_date'] . '</p>';
+    $body .= '<p>' . t('Number of Guests') . ': ' . $form_state['values']['guests'] . '</p>';
+    $body .= '<p>' . t('Wedding Type') . ': ' . $form_state['values']['wedding_type'] . '</p>';
+    $body .= '<p>' . t('Are you staying at a Palace Resorts?') . ': ' . $form_state['values']['staying_pr'] . '</p>';
+    $body .= '<p>' . t('Are you requesting accommodation at Palace Resorts?') . ': ' . $form_state['values']['requesting_accommodation_pr'] . '</p>';
+    $body .= '<p>' . t('How will you be arriving at the Resort?') . ': ' . $form_state['values']['arriving_pr'] . '</p>';
+    $body .= '<p>' . t('Do you need to arrange Transfers?') . ': ' . $form_state['values']['arrange_transfers_pr'] . '</p>';
+    $body .= '<p>' . t('Arrival Date & Time') . ': ' . $form_state['values']['arrival_date'] . '</p>';
+    $body .= '<p>' . t('Departure Date & Time') . ': ' . $form_state['values']['departure_date'] . '</p>';
+    $body .= '<p>' . t('Specify preferred language for Site Inspection') . ': ' . $form_state['values']['language'] . '</p>';
+    $body .= '<p>' . t('Resorts') . ': ' . $form_state['values']['resort'] . '</p>';
+    $body .= '<p>' . t('Date & time requested') . ': ' . $form_state['values']['date_time_requested'] . '</p>';
+
+    $mailSeller = 'psalazar@palaceresorts.com';
+
+    if ($form_state['values']['mail_seller'] != '')
+      $mailSeller = $mailSeller . ',' . $form_state['values']['mail_seller'];
+
+    $mailSeller = $mailSeller . ',' . $form_state['values']['email'];
+
+    download_pdf_mail('"weddings.palaceresorts.com" <info@weddings.com>', $mailSeller, 'Form submission from: SITE INSPECTION REQUEST FORM', $body);
+
+  }
+
+  /*
+          [mail_seller] =>
+          [name_agent] => etert
+          [agencys_name] => eetet
+          [email_agent] => et@nens.es
+          [phone_agent] => 1254
+          [fax_agent] => 542
+          [bride_name] => nsnsns
+          [groom_name] => mdmdmsd
+          [address] => diri
+          [city] => city
+          [state] => estado
+          [zip] => 125
+          [country] => Colmbia
+          [email] => mail@test.es
+          [phone] => 124
+          [folio] => 2451
+          [wedding_date] => 06/03/2016
+          [guests] => 10
+          [wedding_type] => Civil
+          [staying_pr] => no
+          [staying_pr_no] => cuando es no
+          [requesting_accommodation_pr] => yes
+          [arriving_pr] => ahshsdn
+          [arrange_transfers_pr] => yes
+          [arrival_date] => 03/06/2016 12:00 AM
+          [departure_date] => 04/05/2016 12:00 AM
+          [language] => English
+          [resort] => Le Blanc Spa Resort (Mexico)
+          [date_time_requested] => 03/06/2016 12:00 AM
+   */
+}
+
+/**
+ * Funcion que retorna todos la informacion de PDF almacenada
+ *
+ * @return bool|\DatabaseStatementInterface|null
+ */
+function _download_pdf_get_pdfs()
+{
+  try {
+    $query = db_select('download_pdf', 'd');
+    $query->fields('d', array('id_download_pdf', 'tags'));
+    $query->join('file_managed', 'f', 'd.id_pdf = f.fid');
+    $query->fields('f', array('filename'));
+    $query->join('file_managed', 'fi', 'd.id_img = fi.fid');
+    $query->fields('fi', array('filename'));
+    $query->fields('d', array('estado'));
+    $result = $query->execute();
+
+    return $result;
+  } catch (Exception $e) {
+    watchdog('download_pdf', 'Error obteniendo la información de los pdf. ERROR: ' . $e->getMessage(), WATCHDOG_ERROR);
+    return false;
+  }
+}
+
+/**
+ * Funcion que retorna todos la informacion de PDF almacenada
+ *
+ * @return bool|\DatabaseStatementInterface|null
+ */
+function _download_pdf_get_all_pdf()
+{
+  try {
+    $query = db_select('download_pdf', 'd');
+    $query->fields('d');
+    $query->condition('estado', 1, '=');
+    $result = $query->execute();
+
+    return $result;
+  } catch (Exception $e) {
+    watchdog('download_pdf', 'Error obteniendo la información de los pdf. ERROR: ' . $e->getMessage(), WATCHDOG_ERROR);
+    return false;
+  }
+}
+
+/**
+ * Funcion que permite obtener la informacion de un pdf por el identificador
+ * @param $id_download
+ *
+ * @return null
+ */
+function _download_pdf_get_by_id($id_download)
+{
+  $query = db_select('download_pdf', 'd');
+  $query->fields('d', array('id_download_pdf', 'id_img', 'id_pdf', 'tags', 'estado'))
+    ->condition('id_download_pdf', $id_download);
+  $result = $query->execute();
+
+  $numdownload_pdf = 0;
+  $data_download_pdf = null;
+  while ($record = $result->fetchAssoc()) {
+    $data_download_pdf[$numdownload_pdf] = $record;
+    $numdownload_pdf++;
+  }
+  return $data_download_pdf;
+}
+
+/**
+ * Funcion encargada de almacenar la informacion de los PDF
+ * @param $form_state
+ * @param $tags
+ *
+ * @return bool|\DatabaseStatementInterface|int
+ */
+function _download_pdf_insert_pdf($form_state, $tags)
+{
+  try {
+    $fields = array(
+      'id_img' => $form_state['values']['img_hotel_pdf'],
+      'id_pdf' => $form_state['values']['hotel_dowload_pdf'],
+      'tags' => $tags,
+    );
+
+    $id_dowload_pdf = db_insert('download_pdf')
+      ->fields($fields)
+      ->execute();
+
+    return $id_dowload_pdf;
+  } catch (Exception $e) {
+    watchdog('download_pdf', 'Error guardando la información del pdf. ERROR: ' . $e->getMessage(), WATCHDOG_ERROR);
+    return false;
+  }
+}
+
+/**
+ * Funcion para actualizar registros de download pdf
+ * @param $form_state
+ * @param $tags
+ * @param $id_download_pdf
+ *
+ * @return bool|\DatabaseStatementInterface
+ */
+function _download_pdf_update_pdf($form_state, $tags, $id_download_pdf)
+{
+  try {
+    $update = db_update('download_pdf')
+      ->fields([
+        'id_img' => $form_state['values']['img_hotel_pdf'],
+        'id_pdf' => $form_state['values']['hotel_dowload_pdf'],
+        'tags' => $tags
+      ])
+      ->condition('id_download_pdf', $id_download_pdf, '=')
+      ->execute();
+
+    return $update;
+  } catch (Exception $e) {
+    watchdog('download_pdf', 'Error guardando la información del pdf. ERROR: ' . $e->getMessage(), WATCHDOG_ERROR);
+    return false;
+  }
+}
+
+/**
+ * Funcion encargada de guardar archivos cargada en el formulario
+ * @author Sebastian Aristizabal - Ariadana CDI Manizales
+ *
+ * @param $form_state_file
+ * @param $id
+ * @param $type
+ */
+function _download_pdf_save_files($form_state_file, $id, $type)
+{
+  $file = file_load($form_state_file);
+  $file->status = FILE_STATUS_PERMANENT;
+  file_save($file);
+  file_usage_add($file, 'dowload_pdf', $type, $id);
+}
+
+/**
+ * Funcione encargada de remover una imagen cargada
+ * @author Sebastian Aristizabal - Ariadana CDI Manizales
+ *
+ * @param $id_file
+ * @param $id
+ * @param $type
+ */
+function _download_pdf_remove_files($id_file, $id, $type)
+{
+  $file = file_load($id_file);
+  $file->status = 0;
+  file_save($file);
+  file_usage_delete($file, 'dowload_pdf', $type, $id);
+}
+
+/**
+ * Funcion que se encarga de consultar todas las faqs creadas
+ * @return bool|\DatabaseStatementInterface|null
+ */
+function _download_pdf_get_faqs_all()
+{
+  try {
+    $query = db_select('download_pdf_faqs', 'f');
+    $query->fields('f', array('id_download_pdf_faq', 'pregunta', 'respuesta'));
+    $result = $query->execute();
+
+    return $result;
+  } catch (Exception $e) {
+    watchdog('download_pdf', 'Error consultado la información en faqs. Error: ' . $e->getMessage());
+    return false;
+  }
+}
+
+/**
+ * Funcion que consulta un faq por el identificador
+ *
+ * @param $id_faq
+ *
+ * @return array
+ */
+function _download_pdf_get_faq_by_id($id_faq)
+{
+  $query = db_select('download_pdf_faqs', 'f');
+  $query->fields('f', array('id_download_pdf_faq', 'pregunta', 'respuesta'))
+    ->condition('id_download_pdf_faq', $id_faq);
+  $result = $query->execute();
+
+  $numfaq = 0;
+  $data_faq = array();
+  while ($record = $result->fetchAssoc()) {
+    $data_faq[$numfaq] = $record;
+    $numfaq++;
+  }
+
+  return $data_faq;
+}
+
+/**
+ * Funcion encargada de insertar los faqs creados
+ * @param $form_state
+ *
+ * @return bool|\DatabaseStatementInterface|int
+ */
+function _download_pdf_insert_faq($form_state)
+{
+  try {
+    $fields = array(
+      'pregunta' => $form_state['values']['question'],
+      'respuesta' => $form_state['values']['answer'],
+    );
+    $id_faq = db_insert('download_pdf_faqs')
+      ->fields($fields)
+      ->execute();
+
+    return $id_faq;
+  } catch (Exception $e) {
+    watchdog('download_pdf', 'Error guardando la información de faq. ERROR: ' . $e->getMessage(), WATCHDOG_ERROR);
+    return false;
+  }
+}
+
+/**
+ * Funcion encargada de actualizar los faqs creados
+ * @param $form_state
+ *
+ * @return bool|\DatabaseStatementInterface|int
+ */
+function _download_pdf_update_faq($form_state, $id_faq)
+{
+  try {
+    $update = db_update('download_pdf_faqs')
+      ->fields(array(
+        'pregunta' => $form_state['values']['question'],
+        'respuesta' => $form_state['values']['answer'],
+      ))
+      ->condition('id_download_pdf_faq', $id_faq, '=')
+      ->execute();
+
+    return $update;
+  } catch (Exception $e) {
+    watchdog('download_pdf', 'Error guardando la información de faq. ERROR: ' . $e->getMessage(), WATCHDOG_ERROR);
+    return false;
+  }
+}
+
+/**
+ * Funcion que consulta todos los tags creados
+ *
+ * @return bool|\DatabaseStatementInterface|null
+ */
+function _download_pdf_get_tag_all()
+{
+  try {
+    // Using the TableSort Extender is what tells the the query object that we
+    // are sorting.
+    $query = db_select('download_pdf_tags', 't');
+    $query->fields('t', ['id_download_pdf_tag', 'tag']);
+    $result = $query->execute();
+
+    return $result;
+  } catch (Exception $e) {
+    watchdog('download_pdf', 'Error consultando los tags. ERROR: ' . $e->getMessage(), WATCHDOG_ERROR);
+    return false;
+  }
+}
+
+/**
+ * Funcion que carga la informacion de un tag por el id
+ * @param $id_tag
+ *
+ * @return array
+ */
+function _download_pdf_get_tag_by_id($id_tag)
+{
+  $query = db_select('download_pdf_tags', 't');
+  $query->fields('t', array('id_download_pdf_tag', 'tag'))
+    ->condition('id_download_pdf_tag', $id_tag);
+  $result = $query->execute();
+
+  $numtag = 0;
+  $data_tag = array();
+  while ($record = $result->fetchAssoc()) {
+    $data_tag[$numtag] = $record;
+    $numtag++;
+  }
+
+  return $data_tag;
+}
+
+/**
+ * Consulta y retorna un string con los nombres de los tags
+ * @param $tags
+ *
+ * @return string
+ */
+function _download_pdf_get_tags_by_tags($tags)
+{
+  try {
+    $query_tags = db_select('download_pdf_tags', 'dpt')
+      ->fields('dpt', array('tag'))
+      ->condition('id_download_pdf_tag', $tags, 'IN')
+      ->execute();
+    $tags_row = array();
+    while ($tag = $query_tags->fetchAssoc()) {
+      $tags_row[] = $tag['tag'];
+    }
+
+    return implode(',', $tags_row);
+  } catch (Exception $e) {
+    watchdog('download_pdf', 'Error consultando los tags. ERROR: ' . $e->getMessage(), WATCHDOG_ERROR);
+    return '';
+  }
+}
+
+/**
+ * Funcion encargada de consultar la informacion de los sellers
+ *
+ * @return bool|\DatabaseStatementInterface|null
+ */
+function _download_pdf_get_all_seller()
+{
+  try {
+    $query = db_select('download_seller', 's');
+    $query->fields('s', ['id_download_seller', 'name', 'mail']);
+    // Don't forget to tell the query object how to find the header information.
+    $result = $query->execute();
+
+    return $result;
+  } catch (Exception $e) {
+    watchdog('download_pdf', 'Error consultando los sellers. ERROR: ' . $e->getMessage(), WATCHDOG_ERROR);
+    return false;
+  }
+}

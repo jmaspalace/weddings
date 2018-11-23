@@ -1,0 +1,117 @@
+.bloque-mach {
+	margin-bottom: 1.3rem;
+	.container-mach {
+		width: 95%;
+		max-width: 1300px;
+		margin: 0 auto;
+	}
+	ul {
+		padding: 0;
+		li {
+			text-align: center;
+			list-style: none;
+			cursor: pointer;
+			transition: 0.3s;
+			padding: 1rem 0;
+			position: relative;
+			height: 9rem;
+			p {
+				margin-top: 1rem;
+				font-family: $miso;
+				color: #707070;
+				text-transform: uppercase;
+				font-size: 1.1rem;
+				line-height: 1rem;
+			}
+			img {
+				opacity: 0.2;
+			}
+			&.active {
+				background-color: #f9f9f9;
+				img {
+					opacity: 1;
+				}
+				p {
+					color: $vinoTinto;
+				}
+			}
+			&:hover {
+				p {
+					color: $vinoTinto;
+				}
+			}
+		}
+	}
+	.owl-carousel .owl-item img {
+		width: auto;
+		display: inline-block;
+	}
+}
+
+.box-answer {
+	padding: 3rem 0;
+	background-color: #f9f9f9;
+	position: relative;
+	display: none;
+	&.active {
+		display: block;
+	}
+	@media (max-width: $anchoMobile) {
+		text-align: center;
+	}
+	ul {
+		padding: 0;
+		position: relative;
+		width: 80%;
+		margin-left: 10%;
+		li {
+			list-style: none;
+		}
+		@media (max-width: $anchoMobile) {
+			margin-top: 2rem;
+		}
+	}
+	.owl-theme .owl-nav {
+		position: absolute;
+		top: 50%;
+		margin-top: -60px;
+		width: 100%;
+		.owl-prev, .owl-next {
+			width: 21px;
+			height: 58px;
+			position: absolute;
+			&:hover {
+				opacity: 0.6;
+			}
+		}
+		.owl-prev {
+			left: -40px;
+			background: url('../img/arrow_prev_gray_small.png') center no-repeat;
+			@media (max-width: $anchoMobile) {
+				left: -40px;
+			}
+		}
+		.owl-next  {
+			right: -40px;
+			background: url('../img/arrow_next_gray_small.png') center no-repeat;
+			@media (max-width: $anchoMobile) {
+				right: -40px;
+			}
+		}
+	}
+	.triangulo {
+		width: 0;
+		height: 0;
+		border-right: 2rem solid transparent;
+		border-bottom: 2rem solid transparent;
+		border-left: 2rem solid transparent;
+		border-top: 2rem solid #f9f9f9;
+		position: absolute;
+		top: -2rem;
+		left: 0;
+		transition: 0.3s;
+		@media (max-width: $anchoMobile) {
+			display: none;
+		}
+	}
+}

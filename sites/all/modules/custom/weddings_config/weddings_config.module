@@ -1,0 +1,291 @@
+<?php 
+
+function weddings_config_init( ){    
+
+ ini_set('memory_limit', '-1');
+
+}
+
+
+function weddings_config_menu(){
+
+  $menus[ "admin/config/weddings_settings" ] = array(
+
+    'title' => 'Configuracion weddings',
+    'description' => 'Configuraciones custom del site',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('weddings_config_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+
+  );
+
+  $menus['consultar/agente'] = array(
+    'title' => 'Buscar agente según state ingresado',
+    'page callback' => 'buscar_agente',
+    'type' => MENU_SUGGESTED_ITEM,
+    'access arguments' => array('access content'),
+  );
+
+  $menus['traer/estados'] = array(
+    'title' => 'Buscar agente según state ingresado',
+    'page callback' => 'traer_estados',
+    'type' => MENU_SUGGESTED_ITEM,
+    'access arguments' => array('access content'),
+  );
+
+  $menus['send/newsletter'] = array(
+    'title' => 'newsletter',
+    'page callback' => 'llenar_formulario',
+    'type' => MENU_SUGGESTED_ITEM,
+    'access arguments' => array('access content'),
+  );
+
+  return $menus;
+
+}
+
+function llenar_formulario(){
+ $node=node_load(131);
+ global $user;
+
+  // Keys in this array are the same keys on the fields in the webform
+ $data = array(
+  'subscribe_to_our_newsletter' => $_POST['email_newsletter'],
+  'terms__conditions' => $_POST['terms_conditions']== 1? array(1 => 'Yes') : '' ,
+  'sign_me_up' => $_POST['sign_me_up']== 1? array(1 => 'Yes') : '' ,
+);
+
+ module_load_include('inc', 'webform', 'webform.module');
+ module_load_include('inc', 'webform', 'includes/webform.submissions');
+
+  // This methods will arrange $data in the right way
+ $data = _webform_client_form_submit_flatten($node, $data);
+ $data = webform_submission_data($node, $data);
+
+ $submission = (object) array(
+  'nid' => $node->nid,
+  'uid' => $user->uid,
+  'sid' => NULL,
+  'submitted' => REQUEST_TIME,
+  'completed' => REQUEST_TIME,
+  'remote_addr' => ip_address(),
+  'is_draft' => FALSE,
+  'data' => $data,
+);
+
+ $error=false;
+ try {
+  webform_submission_insert($node, $submission);
+} catch (Exception $e) {
+  $error=true;
+}
+
+if ($error){
+  print 0;
+}else{
+  print 1;
+}
+
+
+
+}
+
+function traer_estados(){
+  $tid=$_POST['tid'];
+  $childrens=taxonomy_get_children($tid);
+  $options="";
+  foreach ($childrens as $item) {
+    $options.= '<option value="'.$item->tid.'">'.$item->name.'</option>';
+  }
+
+  print $options;
+
+}
+
+function buscar_agente(){
+    if (isset($_POST['key']) && $_POST['key'] !== '' && $_POST['key'] == 'd2VkZGluZ3MtbGlzdGFyLWFnZW50ZXM=')
+    {
+        global $language;
+        $tid=$_POST['tid'];
+        $view = views_get_view('agent');
+        $view->set_display('block');
+        $view->set_arguments(array($tid));
+        $view->execute();
+        if (count($view->result)>0) {
+            $agentes=array();
+            foreach ($view->result as $item) {
+                $item_corto=$item->_field_data['nid']['entity'];
+                $agente=array(
+                    "nombre"=>$item_corto->title,
+                    "agencia"=>$item_corto->body['und'][0]['value'],
+                    "correo"=>$item_corto->field_titulo['und'][0]['value']
+                );
+                array_push($agentes, $agente);
+            }
+            echo json_encode($agentes);
+        }else{
+            if ($language->language == 'en')
+            {
+                $mensaje=t("<li class='shucks'><h2 class='titulo_bloque'>Aww, shucks!</h2><p>There doesn't seem to be a Wedding Specialist in your area at the moment. <strong>Please call (877) 725-4933 </strong> to get in contact with someone who can help you with your fabulous wedding.</p></li>");
+            }
+            else
+            {
+                $mensaje=t("<li class='shucks'><h2 class='titulo_bloque'>DISCULPA</h2><p>Al parecer, por el momento no hay un especialista en bodas disponible en tu área. <strong>Por favor llámanos al (877) 725-4933 </strong> y alguno de nuestros expertos te ayudara.</p></li>");
+            }
+            $retorno=array("nombre"=>0,"mensaje"=>$mensaje);
+            echo json_encode($retorno);
+        }
+    }
+}
+
+
+
+
+function submit_form_settings( $form, &$form_state ){
+
+  if( $_POST ){
+
+
+
+
+
+    variable_set( "url-facebook", $_POST[ "url-facebook" ] );
+    variable_set( "url-instagram", $_POST[ "url-instagram" ] );
+    variable_set( "url-pinterest", $_POST[ "url-pinterest" ] );
+    variable_set( "url-twitter", $_POST[ "url-twitter" ] );
+    variable_set( "url-youtube", $_POST[ "url-youtube" ] );
+    variable_set( "url-boton-en", $_POST[ "url-boton-en" ] );
+    variable_set( "url-boton-es", $_POST[ "url-boton-es" ] );
+    variable_set( "url-boton-pt", $_POST[ "url-boton-pt" ] );
+
+
+  }
+
+}
+
+function weddings_config_admin_settings( ){
+
+  $form = array();
+
+  $form[ "url-facebook" ] = array(
+
+    '#type' => 'textfield',
+    '#title' => t('URL Facebook'),
+    '#value' => variable_get('url-facebook', ""),
+    '#size' => 100,
+    '#maxlength' => 100,
+    '#description' => t("URL de destino para el botón de facebook"),
+    '#required' => TRUE,
+
+  );
+
+  $form[ "url-instagram" ] = array(
+
+    '#type' => 'textfield',
+    '#title' => t('URL Instagram'),
+    '#value' => variable_get('url-instagram', ""),
+    '#size' => 100,
+    '#maxlength' => 100,
+    '#description' => t("URL de destino para el botón de instagram"),
+    '#required' => TRUE,
+
+  );
+
+  $form[ "url-pinterest" ] = array(
+
+    '#type' => 'textfield',
+    '#title' => t('URL Pinterest'),
+    '#value' => variable_get('url-pinterest', ""),
+    '#size' => 100,
+    '#maxlength' => 100,
+    '#description' => t("URL de destino para el botón de pinterest"),
+    '#required' => TRUE,
+
+  );
+
+  $form[ "url-twitter" ] = array(
+
+    '#type' => 'textfield',
+    '#title' => t('Twitter url'),
+    '#value' => variable_get('url-twitter', ""),
+    '#size' => 100,
+    '#maxlength' => 100,
+    '#description' => t("URL de destino para el botón de twitter"),
+    '#required' => TRUE,
+
+  );
+
+  $form[ "url-youtube" ] = array(
+
+    '#type' => 'textfield',
+    '#title' => t('Youtube url'),
+    '#value' => variable_get('url-youtube', ""),
+    '#size' => 100,
+    '#maxlength' => 100,
+    '#description' => t("URL de destino para el botón de youtube"),
+    '#required' => TRUE,
+
+  );
+
+  $form[ "url-boton-en" ] = array(
+
+    '#type' => 'textfield',
+    '#title' => t('URL Boton take the next step EN'),
+    '#value' => variable_get('url-boton-en', ""),
+    '#size' => 100,
+    '#maxlength' => 100,
+    '#description' => t("URL de destino para el botón 'TAKE THE NEXT STEP' en inglés "),
+    '#required' => TRUE,
+
+  );
+
+  $form[ "url-boton-es" ] = array(
+
+    '#type' => 'textfield',
+    '#title' => t('URL Boton take the next step ES'),
+    '#value' => variable_get('url-boton-es', ""),
+    '#size' => 100,
+    '#maxlength' => 100,
+    '#description' => t("URL de destino para el botón 'TAKE THE NEXT STEP' en español "),
+    '#required' => TRUE,
+
+  );
+
+  $form[ "url-boton-pt" ] = array(
+
+    '#type' => 'textfield',
+    '#title' => t('URL Boton take the next step PT'),
+    '#value' => variable_get('url-boton-pt', ""),
+    '#size' => 100,
+    '#maxlength' => 100,
+    '#description' => t("URL de destino para el botón 'TAKE THE NEXT STEP' en portugues "),
+    '#required' => TRUE,
+
+  );
+
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
+
+  $form[ "#submit" ][] = "submit_form_settings";
+
+  return $form;
+
+}
+
+
+function weddings_config_form_alter(&$form, &$form_state, $form_id) {   
+  global $language; 
+
+  if (isset($form['#node_edit_form']) && !empty($form['nid']['#value']) && $form['type']['#value']!="webform"   ) {    
+   if ($language->language!=$form['language']['#default_value']) {    
+    $path = current_path();    
+    $path="/".$form['language']['#default_value']."/".$path;
+    header('location: '.$path);
+  }
+}
+}
+

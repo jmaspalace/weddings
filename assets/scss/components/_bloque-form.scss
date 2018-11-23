@@ -1,0 +1,280 @@
+.bloque-form {
+	.row {
+		margin-bottom: 1rem;
+	}
+	#bootstrap-panel--13{
+			width: 100%;
+	}
+	.webform-component-checkboxes{
+		float: left;
+	}
+	.form-checkboxes{
+		margin-bottom: 15px;
+		input{
+			width: auto;
+		}
+	}
+	.bootstrap-select {
+		width: 100% !important;
+		outline: none;
+		li a {
+			text-transform: capitalize;
+			color: #707070;
+			font-family: $roboto;
+			font-weight: 100;
+		}
+	}
+	input.text, .bootstrap-select button {
+		width: 100%;
+		background: #f9f9f9;
+		text-transform: uppercase;
+		color: #707070;
+		font-family: $miso;
+		border: none;
+		border-radius: 0;
+		outline: 0;
+		font-size: 1.2rem;
+		padding: 1rem;
+		margin: 0.2rem 0;
+		display: inline-block;
+		height: auto;
+		line-height: 1.2rem;
+		box-shadow: none;
+		transition: none;
+		.bs-caret {
+			float: right;
+		}
+		&:hover, &:focus {
+			outline: 0 !important;
+		}
+		&.parsley-error {
+			border: 1px solid $vinoTinto;
+		}
+	}
+	textarea {
+		width: 100%;
+		background: #f9f9f9;
+		text-transform: uppercase;
+		color: #707070;
+		font-family: $miso;
+		height: 10rem;
+		border: none;
+		font-size: 1.2rem;
+		padding: 1rem;
+		margin: 0.2rem 0;
+		border-radius: 0;
+		outline: 0;
+		resize: none;
+		&.parsley-error {
+			border: 1px solid $vinoTinto;
+		}
+	}
+	select {
+		display: none;
+	}
+	.group_radio, .group_check {
+		padding: 1rem;
+		color: #707070;
+		font-family: $miso;
+		font-size: 1.2rem;
+		text-transform: uppercase;
+	}
+	input[type="radio"] {
+		//margin-left: 1.5rem;
+		margin-right: 0.3rem;
+	}
+	input[type="submit"], button[type="submit"] {
+		background: $vinoTinto;
+		color: white;
+		font-family: $miso;
+		border: none;
+		padding: 0.6rem 3rem;
+		font-size: 1.2rem;
+		line-height: 1.2rem;
+		text-transform: uppercase;
+		border: 1px solid $vinoTinto;
+		outline: 0;
+		border-radius: 0;
+		&:hover {
+			background: white;
+			color: $vinoTinto;
+		}
+	}
+	/*a {
+		font-family: $miso;
+		font-size: 1.2rem;
+	}*/
+	.control-label {
+		color: $vinoTinto;
+		font-weight: 100;	
+		font-size: 1rem;
+	}
+	.form-radios, .form-checkboxes {
+		.control-label {
+			color: $gris;
+		}
+	}
+	.form-radio {
+		margin: 0;
+	}
+	.panel-default {
+		box-shadow: none;
+		border: none;
+		height: auto;
+		@media screen and (max-width: $anchoMobile) {
+			height: auto;
+		}
+		> .panel-heading {
+			color: $vinoTinto;
+			background: none;
+			border: none;
+			font-weight: 100;	
+			font-size: 1rem;
+			font-family: $roboto;
+		}
+	}
+	.captcha {
+		margin: 1.5rem 0;
+		float: left;
+		width: 100%;
+	}
+}
+
+.confirm-thanks {
+	.row {
+		margin: 3rem 0;
+		float: left;
+		img {
+			width: 100%;
+		}
+		h2 {
+			color: $vinoTinto;
+		}
+		@media screen and (max-width: $anchoTablet) {
+			a {
+				font-size: 1rem;
+			}
+		}
+		@media screen and (max-width: $anchoMobile) {
+			text-align: center;
+		}
+	}
+	.section-info {
+		margin-bottom: 2rem;
+	}
+}
+.form-actions {
+				margin-bottom: 1rem;
+			}
+.node-type-take-next-step,.page-take-next-step {
+	.bloque-form {
+		form {
+			.form-actions {
+				margin-top: 3rem;
+			}
+			.panel-body {
+				padding: 0;
+			}
+		}
+	}
+}
+
+.page-take-next-step {
+	.bloque-form {
+		form {
+			.form-actions {
+				margin-top: 3rem;
+			}
+			.panel-body {
+				padding: 0;
+			}
+		}
+	}
+}
+
+.node-type-download-brochure {
+	.bloque-form {
+		.form-group {
+			height: 4rem;
+			display: table;
+			@media screen and (max-width: $anchoMobile) {
+				height: auto;
+			}
+		}
+	}
+}
+
+.webform-component-textarea .grippie {
+	display: none !important;
+}
+
+.webform-component--i-accept-terms-and-conditions {
+	.control-label {
+		margin-top: 1rem;
+	}
+}
+
+.webform-component--fieldset-6--t1 {
+	float: left;
+}
+
+#respuesta {
+	font-family: $roboto;
+	font-weight: 100;
+}
+
+#respuesta2 {
+	font-family: $roboto;
+	font-weight: 100;
+	margin-top: 2rem;
+}
+
+#newsletter-form-2 {
+	ul.parsley-errors-list {
+		float: left;
+		li {
+			padding: 0;
+			&:before {
+				display: none;
+			}
+		}
+	}
+}
+
+.webform-component--agentemail {
+	display: none;
+}
+
+.captcha-no {
+	border: 1px solid red;
+}
+
+.webform-client-form-129 {
+	.form-group {
+		padding: 0 15px;
+	}
+}
+.webform-client-form-130{
+	.form-group {
+		display: inline-block;
+	}
+}
+
+
+.page-quiz {
+	.messages.error {
+		display: none;;
+	}
+}
+
+.node-type-download-brochure, .node-type-contact-us, .node-type-take-next-step {
+	.confirm-thanks {
+		.section-info {
+			h2 {
+				span {
+					display: block;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,150 @@
+.bloque-tabs {
+	.container-tabs {
+		width: 100%;
+		height: auto;
+		margin-top: 2rem;
+		float: left;
+		> div {
+			display: none;
+			&.active {
+				display: block;
+			}
+		}
+	}
+	header {
+		text-align: center;
+		margin: 0 auto;
+		.intro {
+			margin-bottom: 2rem;
+			h2 {
+				margin-bottom: 1rem;
+				padding-bottom: 1rem;
+				position: relative;
+			}
+		}
+		h2, p {
+			text-align: center;
+		}
+		ul{
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			text-align: center;
+			position: relative;
+			background: url('../img/line_tab.png') no-repeat center bottom;
+			float: left;
+			margin-bottom: 3rem;
+			@media screen and (max-width: $anchoMobile) {
+				margin-bottom: 0rem;
+				background: none;
+			}
+			li {
+				display: inline-block;
+				margin: 0 1rem;
+				position: relative;
+				line-height: 1.4rem;
+				cursor: pointer;
+				transition: 0.3s;
+				font-family: $miso;
+				padding: 0.5rem 0;
+				text-transform: uppercase;
+				color: $gris;
+				font-size: 1.7rem;
+				@media screen and (max-width: $anchoDesktop) {
+					font-size: 1.8rem;
+					line-height: 1.6rem;
+					margin: 0 1rem;
+				}
+				@media screen and (max-width: $anchoTablet) {
+					font-size: 1.2rem;
+					line-height: 1rem;
+				}
+				@media screen and (max-width: $anchoMobile) {
+					margin: 0rem;
+					width: 100%;
+					padding: 1rem 0;
+					font-size: 1.6rem;
+					line-height: 1.5rem;
+					border-top: 1px solid #e8e8e8;
+					&:last-child {
+						border-bottom: 1px solid #e8e8e8;
+					}
+				}
+				&:hover {
+					opacity: 0.7;
+				}
+				&.active {
+					color: $vinoTinto;
+					&::after {
+						position: absolute;
+						content: "";
+						bottom: -10px;
+						width: 0; 
+						height: 0; 
+						border-top: 0.6rem solid $vinoTinto;
+						border-left: 0.6rem solid transparent;
+						border-right: 0.6rem solid transparent; 	
+						left: 50%;
+						margin-left: -0.3rem;
+						@media screen and (max-width: $anchoMobile) {
+							display: none;
+						}
+					}
+					@media screen and (max-width: $anchoMobile) {
+						background: $vinoTinto;
+						color: white;
+						&:hover, &:focus {
+							opacity: 1;
+						}
+					}
+				}
+			}
+		}
+	}
+	&.bloque-tabs-custumizing {
+		header {
+			ul {
+				li {
+					@media screen and (max-width: $anchoMobile) {
+						background: $gris;
+						color: white;
+						margin: 0rem;
+						width: 50%;
+						padding: 1rem 0;
+						float: left;
+						&.active {
+							background: $vinoTinto;
+							color: white;
+						}
+						&:first-child {
+							text-align: right;
+							padding-right: 20px;
+						}
+						&:last-child {
+							text-align: left;
+							padding-left: 20px;
+						}
+						&:hover {
+							opacity: 1;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.node-type-home-religious-cultural {
+	.bloque-tabs {
+		header {
+			ul {
+				li {
+					width: 11%;
+					@media screen and (max-width: $anchoMobile) {
+						width: 100%;
+					}
+				}
+			}
+		}
+	}
+}

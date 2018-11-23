@@ -1,0 +1,358 @@
+<?php
+/**
+ * Implements hook_schema().
+ *
+ * Defines the database tables used by this module.
+ * Remember that the easiest way to create the code for hook_schema is with
+ * the @link http://drupal.org/project/schema schema module @endlink
+ *
+ * @see hook_schema()
+ * @ingroup dbtng_example
+ */
+function weddings_quiz_schema() {
+  $schema['quiz'] = array(
+    'description' => 'Table with quiz information.',
+    'fields' => array(
+      'id_quiz' => array(
+        'description' => 'id Quiz.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'language' => array(
+        'description' => 'The languages.language of this content.',
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'nombre_quiz' => array(
+        'description' => 'Name of the quiz or header.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'descripcion' => array(
+        'description' => 'Description of the quiz.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'id_img_quiz' => array(
+        'description' => 'Picture of the home of the quiz',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'id_img_banner_preg' => array(
+        'description' => 'Banner of the questions of each quiz',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'id_img_banner_mobile_preg' => array(
+        'description' => 'Banner mobile of the questions of each quiz',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'estado' => array(
+        'description' => 'activo=1,inactivo=2',
+        'type' => 'int',
+        'length' => 2,
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+    ),
+    'primary key' => array('id_quiz'),
+    'indexes' => array(
+      'id_quiz' => array('id_quiz'),
+    ),
+    'foreign keys' => array(
+      'fk_img_quiz' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img_quiz' => 'fid'),
+      ),
+      'fk_img_titulo_quiz' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img_titulo_quiz' => 'fid'),
+      ),
+      'fk_img_fondo' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img_banner_preg' => 'fid'),
+      ),
+      'fk_img_fondo_mobile' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img_banner_mobile_preg' => 'fid'),
+      ),
+      'fk_languages' => array(
+        'table' => 'wed_languages',
+        'columns' => array('language' => 'language'),
+      ),
+    ),
+  );
+
+  $schema['quiz_pregunta'] = array(
+    'description' => 'table with question information for each quiz',
+    'fields' => array(
+      'id_pregunta' => array(
+        'description' => 'Question identifier.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'id_quiz' => array(
+        'description' => 'Identifier of the quiz that is related.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'pregunta' => array(
+        'description' => 'Description of the question.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+
+    ),
+    'primary key' => array('id_pregunta'),
+    'indexes' => array(
+      'id_pregunta' => array('id_pregunta'),
+    ),
+    'foreign keys' => array(
+      'fk_id_quiz' => array(
+        'table' => 'quiz',
+        'columns' => array('id_quiz' => 'id_quiz'),
+      ),
+    ),
+  );
+
+  $schema['quiz_respuesta'] = array(
+    'description' => 'Table with the answers associated with each quiz.',
+    'fields' => array(
+      'id_respuesta' => array(
+        'description' => 'Answer id.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'titulo' => array(
+        'description' => 'Title of the answer.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'subtitulo' => array(
+        'description' => 'Sub-title of the answer.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'default' => '',
+      ),
+      'descripcion' => array(
+        'description' => 'Description of the answer.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'id_img_banner_respuesta' => array(
+        'description' => 'Quiz response banner',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'id_img_banner_mobile_respuesta' => array(
+        'description' => 'Quiz response banner mobile',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'id_img_pregunta' => array(
+        'description' => 'Image of the answer',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'id_img_galeria_1' => array(
+        'description' => 'Image of the galery',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'id_img_galeria_2' => array(
+        'description' => 'Image of the galery',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'id_img_galeria_3' => array(
+        'description' => 'Image of the galery',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'title_link' => array(
+        'description' => 'Title for link.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'link' => array(
+        'description' => 'link.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'id_quiz' => array(
+        'description' => 'Id Quiz',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+    ),
+    'primary key' => array('id_respuesta'),
+    'indexes' => array(
+      'id_respuesta' => array('id_respuesta'),
+    ),
+    'foreign keys' => array(
+      'fk_img_preg' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img_pregunta' => 'fid'),
+      ),
+      'fk_img_banner_respuesta' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img_banner_respuesta' => 'fid'),
+      ),
+      'fk_img_banner_mobile_respuesta' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img_banner_mobile_respuesta' => 'fid'),
+      ),
+      'fk_img_galeria_1' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img_galeria_1' => 'fid'),
+      ),
+      'fk_img_galeria_2' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img_galeria_2' => 'fid'),
+      ),
+      'fk_img_galeria_3' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img_galeria_3' => 'fid'),
+      ),
+      'fk_id_quiz' => array(
+        'table' => 'quiz',
+        'columns' => array('id_quiz' => 'id_quiz'),
+      ),
+    ),
+  );
+
+  $schema['quiz_opcion'] = array(
+    'description' => 'Table with the options associated with each question.',
+    'fields' => array(
+      'id_opcion' => array(
+        'description' => 'Option ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'titulo' => array(
+        'description' => 'Title option.',
+        'type' => 'varchar',
+        'length' => 41,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'id_img_opcion' => array(
+        'description' => 'Image of the option',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'id_pregunta' => array(
+        'description' => 'Question ID.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'id_respuesta' => array(
+        'description' => 'Answer ID.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+
+    ),
+    'primary key' => array('id_opcion'),
+    'indexes' => array(
+      'id_opcion' => array('id_opcion'),
+    ),
+    'foreign keys' => array(
+      'fk_img_option' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img_opcion' => 'fid'),
+      ),
+      'fk_id_pregunta' => array(
+        'table' => 'quiz_pregunta',
+        'columns' => array('id_pregunta' => 'id_pregunta'),
+      ),
+      'fk_id_respuesta' => array(
+        'table' => 'quiz_respuesta',
+        'columns' => array('id_respuesta' => 'id_respuesta'),
+      ),
+    ),
+  );
+
+  $schema['quiz_lead'] = array(
+    'description' => 'Tabla con los lead capturados en el modulo.',
+    'fields' => array(
+      'id_lead' => array(
+        'description' => 'Identificador del lead.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'nombre' => array(
+        'description' => 'Nombre del lead.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'apellido' => array(
+        'description' => 'Apellido del lead.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'mail' => array(
+        'description' => 'Mail del lead.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'id_respuesta' => array(
+        'description' => 'Identificador de la respuesta relaccionada.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+
+    ),
+    'primary key' => array('id_lead'),
+    'indexes' => array(
+      'id_lead' => array('id_lead'),
+    ),
+    'foreign keys' => array(
+      'fk_id_lead_respuesta' => array(
+        'table' => 'quiz_respuesta',
+        'columns' => array('id_respuesta' => 'id_respuesta'),
+      ),
+    ),
+  );
+  return $schema;
+}

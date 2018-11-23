@@ -1,0 +1,19 @@
+name = Download PDF
+description = "Permite la administración y descarga de PDFs en el sitio."
+package = Download PDF
+core = 7.x
+dependencies[] = placeholder
+scripts[] = js/bootstrap/moment.js
+scripts[] = js/bootstrap/locale/es.js
+scripts[] = js/bootstrap/datetimepicker.js
+scripts[] = js/owl.carousel.min.js
+scripts[] = js/download_pdf.js
+
+stylesheets[all][] = css/owl.carousel.css
+stylesheets[all][] = css/download_pdf.css
+
+; Information added by drupal.org packaging script on 2015-02-09
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "download_pdf"
+datestamp = "1423516584"

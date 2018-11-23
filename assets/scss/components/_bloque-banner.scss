@@ -1,0 +1,40 @@
+.bloque-banner {
+	position: relative;
+	img {
+		width: 100%;
+		&.logo-mobile {
+			display: none;
+			@media (max-width: $anchoMobile) {
+				width: 90px;
+				display: block;
+			}
+		}
+	}
+	> a {
+		margin-top: 1rem;
+	    position: absolute;
+	    left: 1rem;
+	    margin-left: 0;
+	    display: block;
+	    width: 90px;
+	    z-index: 4;
+	}
+	&::before{
+		position: absolute;
+		content: "";
+		z-index: 3;
+		height: 190px;
+		width: 100%;
+		left: 0;
+		top: 0;
+		@include gradientTop;
+		@media (max-width: $anchoMobile) {
+			opacity: 1;
+			height: 170px;
+			background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.5) 73%, rgba(255,255,255,0) 100%); /* FF3.6-15 */
+			background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,0.8) 50%,rgba(255,255,255,0.5) 73%,rgba(255,255,255,0) 100%); /* Chrome10-25,Safari5.1-6 */
+			background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0.8) 50%,rgba(255,255,255,0.5) 73%,rgba(255,255,255,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=0 );
+		}
+	}
+}

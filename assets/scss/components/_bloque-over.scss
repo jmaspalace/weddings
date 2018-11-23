@@ -1,0 +1,158 @@
+.bloque-over {
+	background: #2d2528;
+	margin-bottom: 0;
+	padding: 5rem 0;
+	@media (max-width: $anchoMobile) {
+		padding-bottom: 0;
+	}
+	h2 {
+		color: white;
+		text-align: center;
+		margin-bottom: 2rem;
+	}	
+	.container {
+		height: 44rem;
+		@media (max-width: $anchoDesktop) {
+			height: 40rem;
+		}
+		@media (max-width: $anchoTablet) {
+			height: 34rem;
+		}
+		@media (max-width: $anchoMobile) {
+			height: auto;
+		}
+		.section1 {
+			height: 100%;
+			padding: 0;
+			.section2 {
+				height: 50%;
+			}
+		}
+	}
+	.section {
+		overflow: hidden;
+		position: relative;
+		.fondo-gallery {
+			background-position: center;
+			background-size: cover;
+			background-color: #f3f3f3;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			transition: 0.5s;
+		}
+		.content-gallery-overblack {
+			text-align: center;
+			background: rgba(0,0,0,0.6);
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			transition: 0.3s;
+		}
+		&:hover {
+			.content-gallery-overblack {
+				opacity: 1;
+			}
+			.fondo-gallery {
+				transform: scale(1.1);
+			}
+		}
+	}
+	.content-info {
+		text-align: center;
+		position: relative;
+		top: 50%;
+		-ms-transform: translateY(-50%);
+		-webkit-transform: translateY(-50%);
+		transform: translateY(-50%);
+		display: inline-block;
+		padding: 0 1rem;
+		h2 {
+			color: white;
+			font-size: 2.2rem;
+			span {
+				color: white;
+				font-size: 2rem;
+				line-height: 2rem;
+			}
+			@media (max-width: $anchoTablet) {
+				font-size: 3rem;
+			}
+			@media (max-width: $anchoMobile) {
+				font-size: 2.5rem;
+				margin-bottom: 0.5rem;
+			}
+		}
+		a {
+			background: none;
+			border-color: white;
+			color: white;
+			&:hover {
+				color: $vinoTinto;
+				background: white;
+			}
+		}
+	}
+	&.bloque-over-our {
+		background: #192b33;
+		.container {
+			height: 40rem;
+			@media (max-width: $anchoDesktop) {
+				height: 38rem;
+			}
+			@media (max-width: $anchoTablet) {
+				height: 34rem;
+			}
+			@media (max-width: $anchoMobile) {
+				height: auto;
+				padding-bottom: 3rem;
+			}
+			.section1 {
+				height: 100%;
+				padding: 0;
+				.section2 {
+					height: 33.33%;
+				}
+				.section3 {
+					height: 66.66%;
+				}
+			}
+		}
+		.section {
+			.content-gallery-overblack {
+				.content-info {
+					h2 {
+						font-size: 1.6rem;
+						line-height: 1.4rem;
+						margin-bottom: 0.5rem;
+					}
+				}
+			}
+		}
+	}
+	&.only_mobile {
+		ul {
+			float: left;
+			padding: 0;
+			li {
+				list-style: none;
+				.content-info {
+					position: absolute;
+					width: 100%;
+					top: auto;
+					bottom: 3rem;
+					transform: none;
+					a {
+						font-size: 1.7rem;
+						padding: 1rem;
+					}
+				}
+			}
+		}
+	}
+}

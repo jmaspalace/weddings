@@ -1,0 +1,33 @@
+.bloque-whats {
+	.row {
+		margin-bottom: 3rem;
+		.need-more {
+			position: absolute;
+			top: 50%;
+			-ms-transform: translateY(-50%);
+			-webkit-transform: translateY(-50%);
+			transform: translateY(-50%);
+			right: 10%;
+			h2 {
+				font-size: 2rem;
+				line-height: 2rem;
+			}
+			@media screen and (max-width: $anchoMobile) {
+				position: relative;
+				float: left;
+				right: auto;
+				top: auto;
+				-ms-transform: none;
+				-webkit-transform: none;
+				transform: none;
+				text-align: center;
+				width: 100%;
+			}
+		}
+		> div {
+			@media screen and (max-width: $anchoMobile) {
+				margin-bottom: 1rem;
+			}
+		}
+	}
+}

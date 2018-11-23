@@ -1,0 +1,291 @@
+.bloque-steps {
+	.container {
+		height: 3500px;
+		position: relative;
+		margin: 0 auto;
+		@media screen and (max-width: $anchoDesktop) {
+			height: 2900px;
+		}
+		@media screen and (max-width: $anchoMobile) {
+			height: auto;
+			padding: 0;
+		}
+		.text {
+			position: relative;
+			.number {
+				color: #f9f0f1;
+				font-size: 8rem;
+				line-height: 8rem;
+				font-weight: bolder;
+				position: absolute;
+				top: 0;
+				left: 0;
+				z-index: 0;
+				@media screen and (max-width: $anchoMobile) {
+					position: relative;
+					font-size: 4rem;
+					line-height: 3rem;
+					color: $vinoTinto;
+					font-family: $miso;
+				}
+			}
+			.description {
+				top: 2rem;
+				left: 2rem;
+				position: relative;
+				padding: 0.7rem;
+				@media screen and (max-width: $anchoMobile) {
+					top: 0;
+					left: 0;
+				}
+			}
+		}
+		.fondo-gris {
+			background: #f6f6f6;
+			position: absolute;
+			z-index: -1;
+		}
+		.paso1 {
+			width: 60%;
+			top: 0;
+			left: 0;
+			.container-img {
+				margin-top: -20px;
+			}
+		}
+		.paso2 {
+			width: 45%;
+			right: 0;
+			top: 130px;
+			padding: 0 7rem;
+			.fondo-gris {
+				width: 550px;
+				height: 560px;
+				top: -90px;
+				left: -130px;
+			}
+			@media screen and (max-width: $anchoDesktop) {
+				top: 100px;
+				padding: 0 5rem;
+				.fondo-gris {
+					width: 450px;
+					height: 470px;
+					top: -50px;
+					left: -80px;
+				}
+			}
+			@media screen and (max-width: $anchoTablet) {
+				padding: 0 2rem;
+				.fondo-gris {
+					width: 360px;
+					height: 410px;
+					top: -20px;
+					left: -40px;
+				}
+			}
+		}
+		.paso3 {
+			width: 60%;
+			top: 500px;
+			left: 0;
+			.container-img {
+				margin-top: -30px;
+			}
+			@media screen and (max-width: $anchoDesktop) {
+				top: 370px;
+			}
+		}
+		.paso4 {
+			width: 60%;
+			top: 880px;
+			left: 0;
+			.container-img {
+				margin-top: -30px;
+			}
+			@media screen and (max-width: $anchoDesktop) {
+				top: 700px;
+			}
+		}
+		.paso5 {
+			width: 45%;
+			right: 0;
+			top: 800px;
+			padding: 0 7rem;
+			@media screen and (max-width: $anchoDesktop) {
+				top: 620px;
+			}
+			@media screen and (max-width: $anchoTablet) {
+				padding: 0 3rem;
+			}
+		}
+		.paso6 {
+			width: 50%;
+			top: 1300px;
+			left: 0;
+			.container-img {
+				margin-top: -30px;
+			}
+			.fondo-gris {
+				width: 710px;
+				height: 500px;
+				top: -110px;
+				left: -40px;
+			}
+			@media screen and (max-width: $anchoDesktop) {
+				top: 1050px;
+				.fondo-gris {
+					width: 590px;
+					height: 410px;
+					top: -80px;
+					left: -40px;
+				}
+			}
+			@media screen and (max-width: $anchoTablet) {
+				.fondo-gris {
+					width: 450px;
+					height: 410px;
+					top: -60px;
+					left: -10px;
+				}
+			}
+		}
+		.paso7 {
+			width: 80%;
+			top: 1750px;
+			right: 0;
+			.container-img {
+				margin-top: -100px;
+			}
+			@media screen and (max-width: $anchoDesktop) {
+				top: 1410px;
+			}
+		}
+		.paso8 {
+			width: 45%;
+			left: 0;
+			top: 2060px;
+			padding: 0 4rem;
+			@media screen and (max-width: $anchoDesktop) {
+				top: 1690px;
+			}
+			@media screen and (max-width: $anchoTablet) {
+				padding: 0 2rem;
+			}
+		}
+		.paso9 {
+			width: 55%;
+			top: 2130px;
+			right: 0;
+			.container-img {
+				margin-top: -30px;
+			}
+			.fondo-gris {
+				width: 700px;
+				height: 400px;
+				top: -90px;
+				left: -20px;
+				@media screen and (max-width: $anchoDesktop) {
+					width: 550px;
+					left: 0;
+				}
+				@media screen and (max-width: $anchoTablet) {
+					width: 420px;
+					height: 320px;
+					top: -60px;
+					left: 0px;
+				}
+			}
+			@media screen and (max-width: $anchoDesktop) {
+				top: 1750px;
+			}
+		}
+		.paso10 {
+			width: 80%;
+			top: 2570px;
+			left: 100px;
+			.container-img {
+				margin-top: -60px;
+			}
+			@media screen and (max-width: $anchoDesktop) {
+				top: 2170px;
+			}
+		}
+		.paso11{
+			width: 45%;
+			left: 0;
+			top: 2950px;
+			padding: 0 4rem;
+			.container-img {
+				margin-left: 170px;
+				@media screen and (max-width: $anchoTablet) {
+					margin-left: 100px;
+				}
+			}
+			.fondo-gris {
+				width: 520px;
+				height: 630px;
+				top: -230px;
+				left: -20px;
+				@media screen and (max-width: $anchoDesktop) {
+					width: 440px;
+				}
+				@media screen and (max-width: $anchoTablet) {
+					width: 340px;
+					height: 530px;
+					top: -200px;
+					left: 0px;
+				}
+			}
+			@media screen and (max-width: $anchoDesktop) {
+				top: 2450px;
+			}
+			@media screen and (max-width: $anchoTablet) {
+				padding: 0 2rem;
+			}
+		}
+		.paso12 {
+			width: 50%;
+			right: 0;
+			top: 3000px;
+			padding: 0 3rem;
+			@media screen and (max-width: $anchoDesktop) {
+				top: 2500px;
+			}
+		}
+		> div {
+			position: absolute;
+			margin-bottom: 3rem !important;
+			@media screen and (max-width: $anchoMobile) {
+				width: 100% !important;
+				position: relative;
+				top: auto !important;
+				right: auto !important;
+				left: auto !important;
+				float: left !important;
+				display: flex;
+				flex-direction: column;
+				text-align: center;
+				padding: 0 1rem !important;
+				.container-img {
+					margin: 0 !important;
+					img {
+						width: 100%;
+					}
+				}
+				.fondo-gris {
+					display: none;
+				}
+				> div {
+					order: 1;
+					&.container-img {
+						order: 2;
+					}
+				}
+				&:nth-child(2n) {
+					background-color: #f6f6f6;
+					padding: 3rem 1rem !important;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,14 @@
+name = Weddings Quiz
+description = "Permite la administración y creación de quiz para Weddings."
+package = Weddings Quiz
+core = 7.x
+dependencies[] = wysiwyg
+dependencies[] = placeholder
+; scripts[] = js/custom.js
+; stylesheets[all][] = css/custom.css
+
+; Information added by drupal.org packaging script on 2015-02-09
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "weddings_quiz"
+datestamp = "1423516584"

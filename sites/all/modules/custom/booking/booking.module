@@ -1,0 +1,82 @@
+<?php
+
+function booking_menu()
+{
+    $items = array();
+
+    $items[ 'booking/ajax/geturl' ] = array(
+        'page callback' => 'get_url_motor',
+        'delivery callback' => 'drupal_json_output',
+        'access callback' => TRUE
+    );
+
+    return $items;
+}
+
+/* ALL ---> devuelve la url del motor general palace resort dependiendo del país e idioma*/
+function get_url_motor()
+{
+    $resort    = ($_GET["resort"]);
+
+    $array_resorts = array(
+        65 => 'BEACH',
+        66 => 'COZUMEL',
+        67 => 'ISLA',
+        74 => 'PLAYACAR',
+        75 => 'SUN',
+        112 => 'MOON_CANCUN',
+        113 => 'MOON_JAMAICA',
+        114 => 'GRAND',
+        111 => 'LEBLANC',
+        248 => 'LOSCABOS',
+        249 => 'LOSCABOS'
+    );
+
+    $array_URL = array();
+
+    $array_URL["MOON_CANCUN"] = "http://honeymoons.palaceresorts.com/hotels-in-cancun/moon-palace-golf-spa-resort/";
+    $array_URL["LEBLANC"] = "http://honeymoons.palaceresorts.com/hotels-in-cancun/le-blanc-spa-resort/";
+    $array_URL["COZUMEL"] = "http://honeymoons.palaceresorts.com/hotels-in-cozumel/cozumel-palace/";
+    $array_URL["BEACH"] = "http://honeymoons.palaceresorts.com/hotels-in-cancun/beach-palace/";
+    $array_URL["SUN"] = "http://honeymoons.palaceresorts.com/hotels-in-cancun/sun-palace-cancun/";
+    $array_URL["ISLA"] = "http://honeymoons.palaceresorts.com/hotels-in-cancun/isla-mujeres-palace/";
+    $array_URL["PLAYACAR"] = "http://honeymoons.palaceresorts.com/hotels-in-cancun/playacar-palace/";
+    $array_URL["MOON_JAMAICA"] = "http://honeymoons.palaceresorts.com/hotels-in-ocho-rios/moon-palace-jamaica/";
+    $array_URL["GRAND"] = "http://moongrand.palaceresorts.com/rooms-at-moon-palace-grand/";
+    $array_URL["LOSCABOS"] = "http://loscabos.leblancsparesort.com/rooms-at-le-blanc-los-cabos/";
+
+    $motor_ = $array_URL[$array_resorts[$resort]];
+
+    echo base64_encode($motor_);
+    exit();
+}
+
+function booking_block_info()
+{
+  $blocks['weddings_booking'] = array(
+    'info' => t('Book Now Widget'),
+	'cache' => DRUPAL_CACHE_CUSTOM,
+  );
+
+  return $blocks;
+}
+
+function booking_theme()
+{
+    return array(
+		'weddings_booking' => array(
+			'template' => 'booking-interna',
+		),
+    );
+}
+
+function booking_block_view($delta = '')
+{
+  switch ($delta)
+  {
+	case 'weddings_booking':
+	  $block[ 'content' ] = theme( "weddings_booking" );
+      break;
+  }
+  return $block;
+}

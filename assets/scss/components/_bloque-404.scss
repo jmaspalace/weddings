@@ -1,0 +1,67 @@
+.bloque-404 {
+	margin-bottom: 0;
+	height: 44rem;
+	background-position: center bottom;
+	background-repeat: repeat;
+	text-align: center;
+	position: relative;
+	@media (max-width: $anchoMobile) {
+		height: 30rem;
+	}
+	.box {
+		position: absolute;
+		top: 50%;
+		-ms-transform: translateY(-50%);
+		-webkit-transform: translateY(-50%);
+		transform: translateY(-50%);
+		left: 50%;
+		max-width: 38rem;
+		margin-left: -(38rem)/2;
+		text-align: center;
+		width: 100%;
+		@media (max-width: $anchoMobile) {
+			width: 100%;
+			left: auto;
+			margin-left: 0;
+		}
+		.text {
+			position: relative;
+			width: 100%;
+			padding: 3rem;
+			text-align: center;
+			@media (max-width: $anchoMobile) {
+				padding: 1.5rem;
+			}
+			h2 {
+				font-size: 10rem;
+				font-weight: 600;
+				line-height: 6rem;
+				z-index: 3;
+    			position: relative;
+				@media (max-width: $anchoMobile) {
+					font-size: 4rem;
+					line-height: 3rem;
+				}
+			}
+			p{
+				position: relative;
+				z-index: 3;
+				max-width: 80%;
+				margin: 10px auto 17px auto;
+			}
+			a{
+				z-index: 3;
+    			position: relative;
+			}
+			img{
+				position: absolute;
+				top: 0;
+				z-index: 2;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				object-fit: unset;
+			}
+		}
+	}
+}

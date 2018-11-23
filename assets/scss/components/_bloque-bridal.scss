@@ -1,0 +1,62 @@
+.bloque-dream {
+	.row {
+		margin-bottom: 1rem;
+	}
+	.content-info{
+		text-align: center;
+		img {
+			display: inline-block;
+			margin-bottom: 3rem;
+		}
+		p {
+			text-align: left;
+		}
+	}
+	.row2 {
+		> div {
+			padding-right: 5px;
+    		padding-left: 5px;
+		}
+	}
+	.img-responsive {
+		width: 100%;
+	}
+	.title-dream {
+		width: auto;
+	}
+}
+
+.bloque-moon {
+	height: 40rem;
+	background-position: top center; 
+	background-color: #03081b;
+	background-repeat: no-repeat;
+	padding: 3rem 0;
+	@media screen and (max-width: $anchoTablet) {
+		height: 36rem;
+	}
+	@media screen and (max-width: $anchoMobile) {
+		height: auto;
+		padding-top: 8rem;
+	}
+	p {
+		color: white;
+	}
+	.logo-moon {
+		margin-bottom: 3rem;
+	}
+	.content-info {
+		padding-top: 5rem;
+	}
+	.content-gallery {
+		> div {
+			padding: 0;
+			img {
+				width: 100%;
+			}
+		}
+		@media screen and (max-width: $anchoMobile) {
+			margin-top: 2rem;
+		}
+	}
+}

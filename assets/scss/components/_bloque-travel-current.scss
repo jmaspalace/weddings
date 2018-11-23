@@ -1,0 +1,68 @@
+.bloque-travel-current {
+	text-align: center;
+	position: relative;
+	.container-logo {
+		display: inline-block;
+		background-color: white;
+		padding: 0.5rem 2rem;
+		z-index: 1;
+		position: relative;
+	}
+	&:after {
+		content: "";
+		background-color: black;
+		width: 100%;
+		position: absolute;
+		top: 50%;
+		height: 1px;
+		left: 0;
+		z-index: 0;
+	}
+}
+
+.bloque-article-related {
+	h2 {
+		@media (max-width: $anchoMobile) {
+			text-align: center;
+			margin-bottom: 2rem;
+		}
+	}
+	.row {
+		.article {
+			padding: 0;
+			@media (max-width: $anchoMobile) {
+				margin-bottom: 2rem;
+			}
+			> div {
+				&:first-child {
+					padding-right: 0;
+					@media (max-width: $anchoMobile) {
+						padding-right: 15px;
+					}
+				}
+				img {
+					width: 100%;
+					@media (max-width: $anchoMobile) {
+						margin-bottom: 1rem;
+					}
+				}
+				h3 {
+					font-family: $roboto;
+					margin: 0;
+					font-size: 1rem;
+					margin-bottom: 1rem;
+				}
+				a.enlace {
+					font-size: 1rem;
+					background-color: white;
+					color: $vinoTinto;
+					padding: 0.2rem 0.5rem;
+					&:hover {
+						background-color: $vinoTinto;
+						color: white;
+					}
+				}
+			}
+		} 
+	}
+}

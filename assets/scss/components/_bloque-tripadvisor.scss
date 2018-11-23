@@ -1,0 +1,67 @@
+.bloque-tripadvisor {
+	margin-bottom: $marginBloques;
+	.container {
+		padding: 0 7rem;
+		@media (max-width: $anchoMobile) {
+			padding: 0;
+			text-align: center;
+		}
+	}
+	ul {
+		margin: 0;
+		padding: 0;
+		li.item_advisor {
+			list-style: none;
+			.rounded {
+				width: 12.5rem;
+				height: 12.5rem;
+				display: inline-block;
+				margin-bottom: 1rem;
+			}
+			p.item_advisor_text {
+				font-family: $miso;
+				font-size: 2rem;
+				color: $vinoTinto;
+				line-height: 1.9rem;
+				text-transform: uppercase;
+			}
+			p.item_advisor_names {
+				color: #707070;
+				font-family: $miso;
+				font-size: 1.3rem;
+				line-height: 1.2rem;
+				text-transform: uppercase;
+			}
+		}
+	}
+	.flexslider {
+		padding: 0 1.5rem;
+		margin-bottom: 0;
+		@media (max-width: $anchoMobile) {
+			padding: 0;
+		}
+	}
+	.flex-direction-nav a.flex-next, .flex-direction-nav a.flex-prev {
+		background: url('../img/arrow-prev-trip.png') no-repeat center;
+		width: 10px;
+		height: 18px;
+		opacity: 1 !important;
+		left: 0rem !important;
+		transition: 0.2s !important;
+		&:hover {
+			opacity: 0.6 !important;
+		}
+	}
+
+	.flex-direction-nav a.flex-next {
+		background: url('../img/arrow-next-trip.png') no-repeat center;
+		right: 0rem !important;
+		left: auto !important;
+	}
+	.flex-control-nav {
+		display: none;
+		@media (max-width: $anchoMobile) {
+			display: block;
+		}
+	}
+}

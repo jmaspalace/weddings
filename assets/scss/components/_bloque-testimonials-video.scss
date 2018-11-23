@@ -1,0 +1,33 @@
+.bloque-testimonials-video {
+	.slides {
+		li {
+			position: relative;
+		}
+	}
+	.play {
+		background: url('../img/play-button2.png') no-repeat center;
+		width: 364px;
+		height: 363px;
+		position: absolute;
+		top: 45%;
+		left: 50%;
+		margin-top: -(363px)/2;
+		margin-left: -(364px)/2;
+		&:hover {
+			opacity: 0.6;
+		}
+		@media (max-width: $anchoMobile) {
+			transform: scale(0.5);
+			top: 40%;
+		}
+	}
+	h2 {
+		margin-bottom: 0rem;
+	}
+	.date {
+		text-transform: uppercase;
+		font-family: $miso;
+		font-size: 1.2rem;
+		color: #707070;
+	}
+}

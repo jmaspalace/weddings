@@ -1,0 +1,71 @@
+.bloque-find-specialist {
+	padding: 3rem 0;
+	padding-bottom: 4rem;
+	background: url('../img/back-specialist.jpg') no-repeat center bottom #f9f9f9;
+	h3 {
+		color: $vinoTinto;
+	}
+	.row {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.bloque-form .bootstrap-select button, .bloque-form input.text {
+		background-color: #f3f3f3;
+	}
+	button[data-id="state"] {
+		display: none;
+		&.visible {
+			display: block;
+		}
+	}
+}
+
+.bloque-specialist {
+	ul {
+		padding: 0;
+		padding: 0rem 6rem;
+		text-align: center;
+		@media (max-width: $anchoMobile) {
+			padding: 0;
+		}
+		li {
+			width: 42%;
+			margin: 0 2%;
+			position: relative;
+			list-style: none;
+			padding: 1rem 2rem;
+			display: inline-block;
+			text-align: left;
+			@media (max-width: $anchoMobile) {
+				width: 90%;
+			}
+			h2 {
+				font-size: 2.5rem;
+				line-height: 2.2rem;
+			}
+			&.shucks {
+				text-align: center;
+				width: 60%;
+				@media (max-width: $anchoMobile) {
+					width: 90%;
+				}
+			}
+			&::after, &::before {
+				content: "";
+				position: absolute;
+				width: 28px;
+				height: 28px;
+				background: url('../img/corner1.png') no-repeat center;
+			}
+			&::after {
+				top: 0;
+				left: 0;
+			}
+			&::before {
+				background: url('../img/corner2.png') no-repeat center;
+				bottom: 0;
+				right: 0;
+			}
+		}
+	}
+}

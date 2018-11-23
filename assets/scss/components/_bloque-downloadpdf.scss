@@ -1,0 +1,8 @@
+.bloque-downloadpdf {
+	@media screen and (max-width: $anchoMobile) {
+		margin-top: 5rem;
+	}
+	.dl-title h1 {
+		font-family: $miso;
+	}
+}

@@ -1,0 +1,697 @@
+.bloque-booking {
+	width: 65.8rem;
+	height: 3.8rem;
+	position: absolute;
+	bottom: 3rem;
+	left: 50%;
+	margin-left: -32.9rem;
+	z-index: 10;
+	background-position: -12rem;
+	background: url(../img/background-booking.png) -12rem top no-repeat;
+	transition: 0.4s;
+	.cerrar_booking {
+		display: none;
+		@media screen and (max-width: $anchoMobile) {
+			display: block;
+			top: 1rem;
+			right: 1rem;
+			position: absolute;
+			font-size: 1.5rem;
+			font-family: roboto;
+			font-weight: 100;
+		}
+	}
+	@media screen and (max-width: $anchoDesktop) {
+		background-position:  -15rem top;
+		transform: scale(0.8);
+	}
+	@media screen and (max-width: $anchoTablet) {
+		transform: scale(0.6);
+		background-position:  -16rem top;
+	}
+	@media screen and (max-width: $anchoMobile) {
+		width: 100%!important;
+		height: 100%!important;
+		max-height: none!important;
+		top: 0!important;
+		transform: scale(1) !important;
+		left: 100% !important;
+		margin-left: auto !important;
+		background: white !important;
+		z-index: 20 !important;
+		position: fixed !important;
+		right: auto !important;
+		&.visible {
+			left: 0 !important;
+		}
+	}
+	.dv_booking_form {
+		@media screen and (max-width: $anchoMobile) {
+			width: 60%;
+			margin-left: 20%;
+			margin-top: 2rem;
+		}
+	}
+	&.booking-position {
+		bottom: auto;
+		top: 80%;
+	}
+	&.active {
+		background-position:  -7.9rem top;
+		@media screen and (max-width: $anchoDesktop) {
+			background-position:  -9.6rem top;
+		}
+		@media screen and (max-width: $anchoTablet) {
+			background-position:  -10.6rem top;
+		}
+		div.bootstrap-select.form-select-city, #edit-text-flight{
+			display: block;
+		}
+	}
+	.dv_icons_booking {
+		@media screen and (max-width: $anchoMobile) {
+			left: 50%;
+			position: relative;
+			margin-left: -4.5rem;
+			margin-bottom: 1rem;
+			display: inline-block;
+		}
+	}
+	form {
+		select {
+			display: none;
+		}
+		.form-select-resort {
+			button:not(#btn_book_now) {
+				width: 14rem;
+				text-align: left;
+				margin-left: 1.9rem;
+			}
+		}
+		.form-select-rooms{
+
+			.dropdown-menu{
+				li{
+					&.disabled{
+						display: none;
+					}
+				}
+			}
+		}
+		input::-webkit-input-placeholder { color: #707070;opacity:1; }
+		input:-moz-placeholder { color: #707070; opacity:1; }
+		input::-moz-placeholder { color: #707070;opacity:1;  }
+		input:-ms-input-placeholder { color: #707070;opacity:1;  }
+		button:not(#btn_book_now), input {
+			border: none;
+			color: #707070;
+			width: 6rem;
+			margin-top: 1.1rem;
+			position: relative;
+			padding: .3rem 1rem;
+			background: url(../img/icon-desplegar.png) center right no-repeat;
+			padding-left: .5rem;
+			cursor: pointer;
+			font-size: .75rem;
+			line-height: .8rem;
+			font-family: Arial,Helvetica,sans-serif;
+			height: 1.6rem;
+			margin: 0 .4rem;
+			margin-top: 1.1rem;
+			overflow: hidden;
+			float: left;
+			border-radius: 0;
+			outline: 0;
+			&:hover, &:focus {
+				box-shadow: none;
+			}
+			&.parsley-error {
+				box-shadow: 0px 0px 2px $vinoTinto;
+			}
+			.filter-option{
+				width: 94%;
+				overflow: hidden;
+			}
+			.bs-caret {
+				display: none;
+			}
+			&[data-id="select_Rooms"]{
+				width: 6.8rem
+			}
+			&.ancho {
+				width: 5.7rem;
+			}
+			&.icon_form_flying {
+				display: none;
+			}
+			&.icons_form_booking{
+				margin: 0;
+				margin-top: 0.8rem;
+				padding: 0 0.9rem;
+				position: relative;
+				width: auto !important;
+				background: none;
+				overflow: visible;
+				height: 2.7rem;
+				&:focus {
+					outline: none;
+				}
+				.img-white {
+					display: none;
+				}
+				.img-gray {
+					display: none;
+				}
+				&.active {
+					p {
+						color: $vinoTinto;
+					}
+					img.img-white {
+						display: inline-block;
+					}
+					img.img-green {
+						display: none;
+					}
+				}
+				p {
+					color: #707070;
+					font-size: 0.6rem;
+					font-family: $roboto;
+					margin-top: 0.1rem;
+					font-weight: 400;
+					float: initial;
+				}
+				&:first-child {
+					&::after {
+						position: absolute;
+						content: "";
+						right: 0;
+						width: 1px;
+						height: 2rem;
+						background: #707070;
+						top: 0.1rem;
+					}
+				}
+			}
+			@media screen and (max-width: $anchoMobile) {
+				width: 100% !important;
+				margin: 0.6rem 0;
+				padding-left: 0;
+			}
+		}
+		#edit-text-flight {
+			background: none;
+			&::placeholder {
+				color: #707070;
+			}
+		}
+		.dv_input_kids {
+			display: none;
+		}
+		.btn-group, .btn-group-vertical {
+			float: left !important;
+			width: auto !important;
+			@media screen and (max-width: $anchoMobile) {
+				width: 100% !important;
+			}
+		}
+		div.bootstrap-select.form-select-city, #edit-text-flight{
+			display: none;
+		}
+		.dv_input_kids {
+			float: left;
+			.dv_years_kids {
+				display: none;
+				> div {
+					> span {
+						position: relative;
+						top: 22px;
+						float: left;
+					}
+				}
+			}
+		}
+		.date_inputs {
+			background: url(../img/icon-desplegar2.png) center right no-repeat;
+		}
+		.dv_inputs {
+			> div {
+				position: relative;
+				float: left;
+				@media screen and (max-width: $anchoMobile) {
+					width: 100%;
+				}
+				#select_resort-button {
+					width: 10rem;
+					&.ancho {
+						width: 6rem;
+					}
+				}
+
+				input {
+					&::-webkit-input-placeholder {
+					  color: #707070;
+					  opacity: 1;
+					}
+					&::-moz-placeholder {
+					  color: #707070;
+					  opacity: 1;
+					}
+					&:-ms-input-placeholder {
+					  color: #707070;
+					  opacity: 1;
+					}
+					&:-moz-placeholder {
+					  color: #707070;
+					  opacity: 1;
+					}
+				}
+			}
+		}
+		#btn_book_now {
+			position: absolute;
+			right: 0;
+			top: 0;
+			color: #fff;
+			height: 100%;
+			font-size: 1.1rem;
+			font-weight: 700;
+			padding: 0 0.5rem;
+			padding-left: 1.5rem;
+			display: inline-block;
+			width: 8rem;
+			background: $vinoTinto;
+			font-family: $roboto;
+			margin: 0;
+			border: none;
+			cursor: pointer;
+			&:after {
+				content: "";
+				left: 0.8rem;
+				margin-top: -10px;
+				width: 13px;
+				height: 20px;
+				background: url(../img/arrow-left-booking.png) center no-repeat;
+				z-index: 7;
+				position: absolute;
+				top: 50%;
+				@media screen and (max-width: $anchoTablet) {
+					transform: scale(0.6);
+				}
+			}
+			&:hover {
+				background: #bc374d;
+			}
+			&:focus {
+				outline: none;
+			}
+			@media screen and (max-width: $anchoMobile) {
+				float: left;
+				height: auto;
+				position: relative;
+				right: auto;
+				width: 100%;
+				margin-top: 1rem;
+				padding: 1rem 0;
+			}
+		}
+	}
+
+	p.close {
+		position: absolute;
+		top: 4px;
+		right: 11px;
+		color: rgba(128,128,128,.44);
+		cursor: pointer;
+		font-weight: 100;
+		font-family: sans-serif;
+		opacity: 0.8;
+		text-shadow: none;
+		font-size: 1rem;
+	}
+
+	.dv_booking_form_only_us {
+		form {
+			button:not(#btn_book_now) {
+				&.icon_form_flying {
+					display: block;
+				}
+			}
+			.form-select-resort {
+				button:not(#btn_book_now) {
+					width: 13rem;
+					text-align: center;
+					margin-left: 0rem;
+					&.ancho8 {
+						width: 8rem;
+					}
+					@media screen and (max-width: $anchoMobile) {
+						width: 100%;
+					}
+				}
+			}
+		}
+	}
+
+	.parsley-custom-error-message, .parsley-required, .parsley-errors-list {
+		display: none;
+	}
+
+	.booking__header form .bootstrap-select .dropdown-menu, .dv_booking_form form .bootstrap-select .dropdown-menu {
+		background: white;
+		border: none;
+		border-radius: 0;
+		margin-top: .125rem;
+		max-height: 24.5rem!important;
+		padding-bottom: 0;
+		padding-top: 0;
+	}
+
+	.bootstrap-select.btn-group .dropdown-menu.inner {
+		position: static;
+		float: none;
+		border: 0;
+		padding: 0;
+		margin: 0;
+		border-radius: 0;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+	}
+
+	.booking__header form .bootstrap-select .dropdown-menu .inner, .dv_booking_form form .bootstrap-select .dropdown-menu .inner {
+		background: 0 0;
+		border: none;
+		padding: 1rem;
+		li {
+			cursor: pointer;
+		}
+	}
+
+	.glyphicon {
+		display: none;
+	}
+
+	.btn-group.open .dropdown-toggle {
+		box-shadow: none;
+	}
+	&.derecha {
+		left: auto;
+		margin-left: 0;
+		right: -65.8rem;
+		top: 4.82rem;
+		position: fixed;
+	}
+	&.vertical {
+		width: 12.5rem;
+		top: 4.8rem;
+		position: fixed;
+		right: 0;
+		left: auto;
+		z-index: 50;
+		background: #fbfbfb;
+		height: auto;
+		transform: scale(1);
+		max-height: 19.5rem;
+		.cerrar_booking {
+			display: block;
+			position: absolute;
+			right: 0.5rem;
+			font-size: 0.8rem;
+			font-weight: lighter;
+			color: #9a9a9a;
+			cursor: pointer;
+			line-height: 1rem;
+			font-family: 'Helvetica';
+			text-transform: uppercase;
+			top: 0.5rem;
+		}
+		.dv_icons_booking {
+			left: 50%;
+			position: relative;
+			margin-left: -1.5rem;
+			padding-bottom: 4rem;
+			margin-top: 1rem;
+			.icons_form_booking {
+				&::after {
+					display: none;
+				}
+			}
+		}
+		#btn_book_now  {
+			width: 100%;
+			position: relative;
+			height: 3rem;
+			margin-top: 1rem;
+			&::after {
+				display: none;
+			}
+		}
+		.form-select-resort {
+			button:not(#btn_book_now) {
+				margin-left: 1rem !important;
+				width: 10rem !important;
+				text-align: left !important;
+			}
+		}
+		.check_in_input {
+		//    margin-left: 0px;
+		}
+		button:not(#btn_book_now), input {
+			width: 10rem!important;
+			text-align: left;
+			margin-left: 1rem;
+			margin-top: 0.3rem;
+			margin-bottom: 0.3rem;
+	  &[data-id=select_Rooms]{
+		   width: 10rem;
+		}
+			&.ancho {
+				width: 10rem;
+			}
+		}
+		.dv_years_kids {
+			right: 12.5rem;
+			background: #cacaca;
+			> div > span {
+				display: none;
+			}
+			button {
+				width: 7rem !important;
+			}
+		}
+		.dv_booking_form_only_us {
+			.dv_icons_booking {
+				margin-left: -4.2rem;
+				.icons_form_booking {
+					&::after {
+						display: block;
+					}
+				}
+			}
+		}
+	}
+	&.bloque-booking-propiedad {
+		form button:not(#btn_book_now), form input {
+			width: 6.5rem;
+		}
+		.form-select-resort {
+			display: none;
+		}
+		.date_inputs.check_in_input {
+		//	margin-left: 3rem;
+		}
+		&.no-ninos {
+			.dv_input_kids {
+				display: none;
+			}
+			form button:not(#btn_book_now), form input {
+				width: 11rem;
+			}
+		}
+	}
+	li.no-results {
+		display: none !important;
+	}
+
+	.bs-searchbox {
+		input {
+			border: solid 1px rgba(128, 128, 128, 0.24);
+			border-radius: 0;
+			box-shadow: none;
+			width: 90% !important;
+			margin: 0;
+			padding: 8px;
+			background: none;
+			margin: 10px 5%;
+			margin-bottom: 0;
+			cursor: auto;
+		}
+	}
+	.bootstrap-select {
+		.dropdown-menu.open {
+			ul {
+				border: none;
+				box-shadow: none;
+				border-radius: 0px;
+				background: white;
+				width: 100%;
+				max-width: auto;
+				li {
+					text-align: left;
+					cursor: pointer;
+					a {
+						font-family: $roboto;
+						font-size: 0.8rem;
+						font-weight: 100;
+						color: $gris;
+					}
+					.check-mark {
+						display: none;
+					}
+					&.selected {
+						a {
+							background: $vinoTinto;
+							color: white;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.ui-autocomplete {
+	max-height: 200px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.dv_years_kids {
+	display: block;
+	background: rgba(255,255,255, 1);
+	padding: 0.5rem 1rem;
+	position: absolute;
+	bottom: 3.8rem;
+	padding-top: 0;
+	max-width: 12rem;
+	> div {
+		display: none;
+		.ui-selectmenu-button {
+			margin-top: 0;
+			width: 8rem;
+		}
+	}
+}
+
+#btn_book_now2 {
+	position: fixed;
+	right: -11rem;
+	top: 4.8rem;
+	color: #fff;
+	height: 3rem;
+	font-size: 1.1rem;
+	line-height: 1.1rem;
+	font-weight: 600;
+	padding: 0 1.5rem;
+	display: inline-block;
+	width: 11rem;
+	background: $vinoTinto;
+	font-family: $roboto;
+	margin: 0;
+	border: none;
+	cursor: pointer;
+	z-index: 50;
+	text-transform: uppercase;
+	transition: 0.3s;
+	@media screen and (max-width: $anchoDesktop) {
+		top: 5.8rem;
+	}
+	@media screen and (max-width: $anchoTablet) {
+		top: 4.8rem;
+	}
+	@media screen and (max-width: $anchoMobile) {
+		display: none !important;
+	}
+	&:hover {
+		background: #bc374d;
+	}
+	&:focus {
+		outline: none;
+	}
+	&.visible {
+		right: 0;
+	}
+}
+
+#btn_book_now3 {
+	display: none;
+	@media (max-width: $anchoMobile) {
+		display: block;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		background: $vinoTinto;
+		color: white;
+		text-transform: uppercase;
+		width: 100%;
+		height: 4rem;
+		border: none;
+		font-family: $roboto;
+		cursor: pointer;
+		font-size: 1.3rem;
+		z-index: 10;
+	}
+}
+
+/* Datepicker */
+
+.datepicker {
+	border-radius: 0;
+	border: none;
+	box-shadow: none;
+	font-family: $roboto;
+	font-weight: 100;
+	padding: 13px;
+	.datepicker-switch {
+		font-family: $miso;
+		border-radius: 0 !important;
+		font-size: 1.1rem;
+		color: $vinoTinto;
+		text-transform: uppercase;
+	}
+	.active.day, .month.active, .year.active {
+		background: $vinoTinto !important;
+		border-radius: 0;
+	}
+	td, th, .month {
+		border-radius: 0 !important;
+	}
+	.dow {
+		color: $vinoTinto;
+		font-family: $roboto;
+	}
+	.disabled.day {
+		color: #c7c7c7;
+		&:hover {
+			color: #c7c7c7;
+		}
+	}
+}
+
+.ui-autocomplete {
+	border: none !important;
+	background: white !important;
+	li {
+		font-family: $roboto;
+		font-size: 0.8rem;
+	}
+	.ui-state-active,
+	.ui-widget-content .ui-state-active,
+	.ui-widget-header .ui-state-active,
+	a.ui-button:active,
+	.ui-button:active,
+	.ui-button.ui-state-active:hover {
+		background: $vinoTinto;
+		border: none;
+	}
+}

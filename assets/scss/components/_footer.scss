@@ -1,0 +1,415 @@
+.bloque_footer {
+	color: white;
+	margin-bottom: 0;
+	.bloque_search {
+		background: $vinoTinto;
+		margin: 0;
+		padding: 1.6rem;
+		.search_form {
+			width: 100%;
+			position: relative;
+			input[type="text"], input[type="email"] {
+				background: white;
+				width: 100%;
+				padding: 0.5rem;
+				font-family: $roboto;
+				font-weight: 100;
+				font-size: 1.3rem;
+				outline: none;
+				color: $gris;
+				border: none;
+				border-radius: 0;
+			}
+			input[type="submit"] {
+				position: absolute;
+				top: 10px;
+				border: none;
+				right: 0;
+				height: 25px;
+				width: 35px;
+				background: url('../img/lupa_search_footer.png') no-repeat center;
+				border-left: 1px solid gray;
+				outline: none;
+				border-radius: 0;
+			}
+		}
+	}
+	.header-footer{
+		background: $vinoTinto;
+		padding: 1.5rem 0 1.8rem;
+		margin-bottom: 0;
+        position: relative;
+        #cargando{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: 100px;
+        }
+        #respuesta{
+                button {
+				font-family: $miso;
+				color: white;
+				background: #a82036;
+				line-height: 1.9rem;
+				outline: 0;
+				padding: 0.2rem 1.8rem;
+				transition: 0.3s;
+				height: 36px;
+				text-transform: uppercase;
+				border:0;
+				font-size: 1.4rem;
+				border-radius: 0;
+                display: block;
+                vertical-align: middle;
+                margin-top: 10px;
+				&:hover {
+					background: white;
+					color: $vinoTinto;
+				}
+			}
+        }
+		.newsletter {
+			display: table;
+			margin: 0 auto;
+			max-width: 720px;
+			.form-actions, .form-item {
+				float: left;
+			}
+            .parsley-errors-list{
+               float: left;
+                width: 100%;
+            }
+            .form-type-webform-email{
+                .parsley-errors-list{
+                    display: block;
+                    float: left;
+                    max-width: 15rem;
+                    width: 100%;
+                    margin-left: 15.6rem !important;
+                }
+            }
+            .parsley-required{
+                &:hover{
+                    color: #fff;
+                }
+            }
+			.link-wrapper{
+				display: none;
+			}
+			.control-label {
+				font-family: $miso;
+				line-height: 1.2rem;
+				color: white;
+				margin: 8px 1rem 0 0;
+				text-transform: uppercase;
+				float: left;
+				font-size: 1.4rem;
+				font-weight: 100;
+
+				span{
+					display: none;
+				}
+			}
+			.messages.error {
+				display: none;
+			}
+			form{
+				float: left;
+    			max-width: 624px;
+				#email_news{
+					margin-top: 20px;
+				}
+				fieldset{
+					background: none;
+					box-shadow: none;
+					border: none;
+					margin-bottom: 0;
+
+					&.title-mail{
+						.control-label{
+							width: auto;
+						}
+					}
+					&.form-fielset{
+						max-width: 420px;
+						float: left;
+						margin-left: 264px;
+						margin-top: 6px;
+
+						@media (max-width: $anchoDesktop) {
+							margin-left: 233px;
+						}
+						@media (max-width: $anchoTablet) {
+							margin-left: 219px;
+						}
+
+					}
+					.panel-body{
+						padding: 0;
+					}
+
+				}
+				.webform-component-checkboxes{
+					.control-label {
+						    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+							font-size: 13px;
+							line-height: 1.42857143;
+						    font-weight: 700;
+						    margin-top: 0;
+					}
+				}
+				.form-item{
+					margin: 0;
+					position: relative;
+					p{
+						font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+						font-size: 14px;
+						color: #fff;
+						font-weight: 300;
+						margin: 0;
+						line-height: 18px;
+					}
+				}
+				&.form_weddings{
+					input{
+						margin-right: 7px;
+						top: 2px;
+						position: relative;
+						max-width: 420px;
+    					float: left;
+					}
+				}
+				span{
+					float: left;
+					width: 100%;
+				}
+				label{
+					display: block;
+					float: left;
+					width: 100%;
+					a{
+						color: #fff;
+						font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+						font-weight: bold;
+						text-decoration: underline;
+						font-size: 14px;
+					}
+				}
+			}
+			input[type=text], input[type=email] {
+				border: none;
+				width: 15rem;
+				color: black;
+				padding: 0 5px;
+				font-family: $roboto;
+				border-radius: 0;
+				outline: none;
+				float: left;
+				height:36px;
+			}
+			.form-actions{
+				margin-left: 264px;
+                position: relative;
+
+                .masck{
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    cursor: pointer;
+                }
+				button {
+				font-family: $miso;
+				color: white;
+				background: #a82036;
+				line-height: 1.9rem;
+				outline: 0;
+				padding: 0.2rem 1.8rem;
+				transition: 0.3s;
+				height: 36px;
+				float: left;
+				text-transform: uppercase;
+				border:0;
+				font-size: 1.4rem;
+				border-radius: 0;
+				&:hover {
+					background: white;
+					color: $vinoTinto;
+				}
+			}
+				@media (max-width: $anchoDesktop) {
+					margin-left: 233px;
+				}
+				@media (max-width: $anchoTablet) {
+					margin-left: 219px;
+				}
+			}
+		}
+	}
+	.body-footer {
+		background: #323232;
+		margin-bottom: 0;
+		padding: 3rem 0;
+		@media screen and (max-width: $anchoMobile) {
+			text-align: center;
+		}
+		.container {
+			margin-bottom: 2.5rem;
+			margin-top: 1.7rem;
+		}
+		h5 {
+			color: $vinoTinto;
+			font-family: $roboto;
+		}
+		p {
+			color: #c5c5c5;
+		}
+		.logo-footer{
+			display: block;
+			margin:0 auto;
+		}
+		ul {
+			margin: 0;
+			padding: 0;
+			margin-bottom: 1.2rem;
+
+			li {
+				list-style: none;
+				line-height: 1rem;
+				position: relative;
+				padding-left: 1rem;
+				&:before{
+					content: '';
+					background-color: $vinoTinto;
+					height: 3px;
+					width: 3px;
+					border-radius: 50%;
+					position: absolute;
+					left: 0;
+					top: 10px;
+				}
+				a {
+					color: #c5c5c5;
+					font-family: $roboto;
+					transition: 0.3s;
+					text-decoration: none;
+					font-size: 0.8rem;
+					&:hover {
+						color: $vinoTinto;
+					}
+				}
+			}
+			&.our-resorts{
+				-webkit-columns: 2;
+				-moz-columns: 2;
+				columns: 2;
+			}
+			&.social-media{
+				display: table;
+				margin: 1.8rem auto 0;
+				li{
+					float: left;
+					margin: 0 3px;
+					padding: 0;
+					&:before{
+						display: none;
+					}
+				}
+			}
+		}
+		.container .row div:last-child p{
+			text-align: center;
+			padding-top: 1.4rem;
+			border-top: 1px solid $vinoTinto;
+			margin-top: 3rem;
+			a{
+				font-family: $roboto;
+			}
+		}
+	}
+	.content.clearfix {
+		.form-item.form-type-item {
+			display: none;
+		}
+	}
+	.link-wrapper {
+		.translation_es {
+			display: none;
+		}
+		.links {
+			&::before {
+				display: none;
+			}
+		}
+	}
+	@media screen and (max-width: $anchoMobile) {
+		.body-footer {
+		  .weddingcoordinator {
+			max-width: 80%;
+			margin: 0 auto 1rem;
+			a.tel {
+				display: block;
+				margin-top: 0.8rem;
+				font-size: 1.3rem;
+				color: white;
+			}
+		  }
+		  .newsletter-mobile {
+			//border-top: 1px solid $vinoTinto;
+			max-width: 80%;
+			margin: 2rem auto 0.6rem;
+			p {
+				text-transform: uppercase;
+				text-align: left;
+				color: #fff;
+				padding-top: 0.6rem;
+			}
+			form {
+				width: 100%;
+				display: table;
+				position: relative;
+				text-align: left;
+				span{
+					display: blocK;
+					float: left;
+					width: 100%;
+					margin-top: 12px;
+				}
+				label{
+					input[type="checkbox"]{
+						margin-right: 8px;
+					}
+				}
+			}
+			input[type="text"], input[type="email"] {
+				padding: 0.4rem;
+				color: #fff;
+				background: #424242;
+				border: 0;
+				float: left;
+				width: 80%;
+				outline: none;
+				border-radius: 0;
+			}
+			input[type="submit"] {
+				background: #282828 url(../img/arrow_newsletter.png) center center no-repeat;
+				padding: .44rem;
+				border: 0;
+				width: 20%;
+				float: left;
+				color: transparent;
+				border-radius: 0;
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
+		  }
+		}
+	}
+}
+
+.landing_my_royal_wedding {
+	footer {
+		position: relative;
+		z-index: 1;
+	}
+}

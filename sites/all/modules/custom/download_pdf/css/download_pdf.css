@@ -1,0 +1,311 @@
+body.page-requestform {
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+body.page-requestform .miga-de-pan {
+	display: none;
+}
+
+body.page-requestform .alert {
+	margin-top: 75px !important;
+	border: none;
+	color: #f34f7e;
+	background: #fff3f6;
+	border-radius: 0;
+	padding: 2rem;
+	font-family: 'Open Sans', sans-serif !important;
+}
+
+body.page-requestform .alert ul li{
+	color: #f34f7e;
+	font-size: 0.85rem;
+	line-height: 1.1rem;
+}
+
+.dl-title {
+	text-align: center;
+	margin: 0 0 40px 0;
+}
+
+.dl-title h1 {
+	font-family: 'Miso';
+	text-transform: uppercase;
+	font-size: 40px;
+	color: #f34f7e;
+}
+
+.dl-title p {
+	margin: 0;
+}
+
+.dl-title p span {
+	color: #f34f7e;
+	margin:0 0 0 30px;
+	font-weight: bold;
+}
+
+.dl-title p span:first-child {
+	margin: 0;
+}
+
+.dl-title-pink{
+	color: #f34f7e;
+}
+
+/* Slider hoteles*/
+#download-slider {
+	width: 92%;
+	/*padding: 0 4%;*/
+	margin: auto;
+}
+
+#download-slider .item,
+#download-slider .owl-item  {
+	text-align: center;
+}
+
+#download-slider .item img,
+#download-slider .owl-item img {
+	display: inline-block !important;
+}
+
+#download-slider .owl-buttons > div {
+	width: 11px;
+	height: 62px;
+	position: absolute;
+	top: 50%;
+	margin-top: -31px;
+}
+
+#download-slider .owl-buttons .owl-prev {
+	background: url(../img/dl_prev.png) no-repeat center;
+	left: -25px;
+}
+
+#download-slider .owl-buttons .owl-next {
+	background: url(../img/dl_next.png) no-repeat center;
+	right: -25px;
+}
+
+#download-slider p.text {
+	margin: 10px 0;
+}
+
+#download-slider p.text span {
+	color: #f34f7e;
+}
+
+#download-slider input[type="text"] {
+	width: 80%;
+	border: thin #dfe1e2 solid;
+	padding: 3px 0 3px 6px;
+}
+
+.dl-line {
+	width: 92%;
+	margin: 25px auto;
+	height: 1px;
+	background: #f34f7e;
+	opacity: .5;
+}
+
+/* Tags */
+
+.dl-tags {
+	margin: 25px 0 !important;
+}
+
+.dl-tags .dl-tag a {
+	display: block;
+	background: #fff;
+	text-align: center;
+	color: #6d6e71;
+	margin: 2px 0;
+	padding: 5px 0;
+	transition:all 400ms 100ms;
+}
+
+.dl-tags .dl-tag a:hover {
+	background: #f34f7e;
+	color: #fff;
+	text-decoration: none;
+}
+
+
+/* FAQS */
+
+.dl-question {
+	width: 100%;
+	position: relative;
+}
+
+.dl-question a {
+	display: block;
+	font-weight: bold;
+	padding: 10px 20px;
+	margin:2px 0;
+	color: #939393;
+	background: url(../img/q-open.png) no-repeat center right 20px #FFF;
+}
+
+.dl-question a:hover {
+	text-decoration: none;
+	color: #f34f7e;
+}
+
+.dl-question a.dl-active {
+	background: url(../img/q-close.png) no-repeat center right 20px #FFF;
+	color: #f34f7e;
+}
+
+.dl-answer {
+	display: none;
+}
+
+.dl-answer p {
+	margin: 0;
+	padding: 10px 20px 25px 20px;
+}
+#dwlspdf .back-pdf{
+	padding: 0;
+}
+#dwlspdf .form-item-name{
+	width: 100%;
+}
+
+.back-pdf a {
+	display: inline-block;
+	padding: 5px 15px;
+	margin: 20px 0;
+	color: #fff;
+	background: #cd586c;
+	border-radius: 2px;
+	transition:opacity 200ms 40ms ease-in;
+}
+
+.back-pdf a:hover {
+	opacity: .75;
+	color: #fff;
+	text-decoration: none;
+}
+
+
+
+/* Weddings Request Form */
+
+#wr-form .formBox > .form-group,
+#info_agent > .form-group {
+	margin: 5px 0 !important;
+	padding: 0 15px !important;
+}
+
+.request_line {
+	border-top: thin dotted #ccc;
+	margin: 20px 0;
+}
+
+#wr-form input {
+	color: #333 !important;
+}
+
+#wr-form label {
+	display: block;
+}
+
+#wr-form select {
+	width: 100%;
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 3px;
+	padding: 5px 6px;
+	border: none;
+}
+
+#wr-form input[type="radio"] {
+	width: auto !important;
+}
+
+#wr-form button {
+	margin-top: 40px;
+	width: auto !important;
+}
+
+#wr-form .form-item-ceremony-date,
+#wr-form .form-item-arrival-date,
+#wr-form .form-item-date-time-requested,
+#wr-form .form-item-wedding-date,
+#wr-form .form-item-departure-day,
+#wr-form .form-item-departure-date {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+#wr-form .form-item-ceremony-date input,
+#wr-form .form-item-arrival-date input,
+#wr-form .form-item-departure-day input {
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+	border-right: none;
+}
+
+.input-group-addon {
+	background-color: rgba(0, 0, 0, 0.1) !important;
+	border: none !important;
+}
+
+.dl-seller {
+	text-align: center;
+}
+
+.dl-seller select {
+	width: 235px;
+	margin-bottom: 20px;
+}
+
+.dl-seller p {
+	margin: 5px 0;
+}
+
+.dl-seller input {
+	margin: 0 0 20px 0;
+	width: 235px;
+}
+
+.align-left{
+	text-align: left;
+}
+
+.margin-14{
+	margin-top: 14px !important;
+}
+
+.padding-7{
+	padding-bottom: 7px !important;
+}
+
+.no-margin{
+	margin-bottom: 30px !important;
+	margin-top: 0 !important;
+}
+
+#form .formBox .btn:hover {
+	background: #CA4F64;
+}
+
+.btn-special{
+	background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.os{
+	font-family: 'Open Sans', sans-serif !important;
+}
+
+.float-right{
+	float: right !important;
+		margin-right: 16px !important;
+}
+.breadcrumb {display: none;}
+
+.page-requestform #skip-link, .page-downloadpdf #skip-link{
+	margin-top: 11rem;
+}

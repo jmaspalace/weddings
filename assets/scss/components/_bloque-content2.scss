@@ -1,0 +1,58 @@
+.bloque-content2 {
+	ul.items {
+		padding: 0;
+		margin: 0;
+		> li {
+			list-style: none;
+			display: inline-block;
+			width: 100%;
+			margin-bottom: $marginBloques;
+			&:nth-child(2n) {
+				> div {
+					float: right;
+				}
+			}
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+	.content-slider {
+		padding: 0;
+		img {
+			width: 100%;
+		}
+		.flex-direction-nav {
+			display: none;
+		}
+		.flex-control-nav {
+			z-index: 2;
+			bottom: -40px;
+			@media screen and (max-width: $anchoMobile) {
+				top: auto;
+				bottom: 10px;
+			}
+		}
+	}
+	.content-bloque {
+		max-width: 34rem;
+		padding: 0 2rem;
+		@media screen and (max-width: $anchoTablet) {
+			max-width: none;
+		}
+		@media screen and (max-width: $anchoMobile) {
+			margin-top: 1rem;
+			text-align: left;
+			ul {
+				li {
+					text-align: left;
+				}
+			}
+		}
+	}
+	&.right {
+		.content-slider, .content-bloque {
+			float: right;
+		}
+	}
+}

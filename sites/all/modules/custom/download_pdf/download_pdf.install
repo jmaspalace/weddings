@@ -1,0 +1,595 @@
+<?php
+/**
+ * Implements hook_schema().
+ *
+ * Defines the database tables used by this module.
+ * Remember that the easiest way to create the code for hook_schema is with
+ * the @link http://drupal.org/project/schema schema module @endlink
+ *
+ * @see hook_schema()
+ * @ingroup dbtng_example
+ */
+
+function download_pdf_schema() {
+  //drupal_flush_all_caches();
+  $schema['download_pdf'] = array(
+    'description' => 'Table with information of the fields of discharge.',
+    'fields' => array(
+      'id_download_pdf' => array(
+        'description' => 'Download PDF ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'id_img' => array(
+        'description' => 'Imagen ID of the table file_managed.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      /*'hotel' => array(
+        'description' => 'Name hotel.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),*/
+      'id_pdf' => array(
+        'description' => 'PDF ID of the tabla file_managed.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'tags' => array(
+        'description' => 'Id of the tags to which it is associated.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'estado' => array(
+        'description' => 'activo=1, inactivo=2',
+        'type' => 'int',
+        'length' => 1,
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+    ),
+    'primary key' => array('id_download_pdf'),
+    'indexes' => array(
+      'id_download_pdf' => array('id_download_pdf'),
+    ),
+    'foreign keys' => array(
+      'fk_id_img' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_img' => 'fid'),
+      ),
+      'fk_id_pdf' => array(
+        'table' => 'wed_file_managed',
+        'columns' => array('id_pdf' => 'fid'),
+      ),
+    ),
+  );
+
+  $schema['download_pdf_tags'] = array(
+    'description' => 'Table the tags of each PDF.',
+    'fields' => array(
+      'id_download_pdf_tag' => array(
+        'description' => 'Tag ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'tag' => array(
+        'description' => 'Tag name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('id_download_pdf_tag'),
+    'indexes' => array(
+      'id_download_pdf_tag' => array('id_download_pdf_tag'),
+    ),
+  );
+
+  $schema['download_pdf_faqs'] = array(
+    'description' => 'Frequently Asked Questions - Download PDF.',
+    'fields' => array(
+      'id_download_pdf_faq' => array(
+        'description' => 'Faq ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'pregunta' => array(
+        'description' => 'Question.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'respuesta' => array(
+        'description' => 'Answer.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('id_download_pdf_faq'),
+    'indexes' => array(
+      'id_download_pdf_faq' => array('id_download_pdf_faq'),
+    ),
+  );
+
+  $schema['download_seller'] = array(
+    'description' => 'Guarda la informacion del formulario Contact Agency.',
+    'fields' => array(
+      'id_download_seller' => array(
+        'description' => 'Seller ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'Seller Name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'mail' => array(
+        'description' => 'Seller email.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'estado' => array(
+        'description' => 'activo=1,inactivo=2',
+        'type' => 'int',
+        'length' => 1,
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+    ),
+    'primary key' => array('id_download_seller'),
+    'indexes' => array(
+      'id_download_seller' => array('id_download_seller'),
+    ),
+  );
+
+  $schema['download_contact'] = array(
+    'description' => 'Save the information from the Contact Agency form.',
+    'fields' => array(
+      'id_download_contact' => array(
+        'description' => 'Contact Agency ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'Name Contact Agency.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'mail' => array(
+        'description' => 'Email Contact Agency.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'phone' => array(
+        'description' => 'Phone number with extension.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'descripcion' => array(
+        'description' => 'Reviews.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id_download_contact'),
+    'indexes' => array(
+      'id_download_contact' => array('id_download_contact'),
+    ),
+  );
+
+  $schema['download_site_request'] = array(
+    'description' => 'Save the information from the "SITE INSPECTION REQUEST FORM".',
+    'fields' => array(
+      'id_download_site_req' => array(
+        'description' => 'Site Request ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'mail_seller' => array(
+        'description' => 'Seller email.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'name_agent' => array(
+        'description' => 'Agent Name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'agencys_name' => array(
+        'description' => 'Name Agency.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'email_agent' => array(
+        'description' => 'Agent email.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'phone_agent' => array(
+        'description' => 'Phone Agent.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'fax_agent' => array(
+        'description' => 'Fax Agent.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'bride_name' => array(
+        'description' => 'Bride name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'groom_name' => array(
+        'description' => 'Groom name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'address' => array(
+        'description' => 'Address Boyfriend.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'city' => array(
+        'description' => 'City Boyfriends.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'state' => array(
+        'description' => 'State Boyfriends.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'zip' => array(
+        'description' => 'Zip Boyfriends.',
+        'type' => 'varchar',
+        'length' => 100,
+        'default' => '',
+      ),
+      'country' => array(
+        'description' => 'Country Boyfriends.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'email' => array(
+        'description' => 'Mail Boyfriends.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'phone' => array(
+        'description' => 'Phone Boyfriends.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'folio' => array(
+        'description' => 'Folio.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'wedding_date' => array(
+        'description' => 'Wedding Date - The Unix timestamp when the set was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'guests' => array(
+        'description' => 'Number of Guests.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'wedding_type' => array(
+        'description' => 'Wedding Type.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'staying_pr' => array(
+        'description' => 'Are you staying at a Palace Resorts? (yes or not).',
+        'type' => 'varchar',
+        'length' => 10,
+        'default' => '',
+      ),
+      'staying_pr_no' => array(
+        'description' => 'If not (staying_pr), where will you be staying at?.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'requesting_accommodation_pr' => array(
+        'description' => 'Are you requesting accommodation at Palace Resorts? (yes or not).',
+        'type' => 'varchar',
+        'length' => 10,
+        'default' => '',
+      ),
+      'arriving_pr' => array(
+        'description' => 'How will you be arriving at the Resort?.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'arrange_transfers_pr' => array(
+        'description' => 'Do you need to arrange Transfers? (yes or not).',
+        'type' => 'varchar',
+        'length' => 10,
+        'default' => '',
+      ),
+      'arrival_date' => array(
+        'description' => 'Arrival Date & Time - The Unix timestamp when the set was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'departure_day' => array(
+        'description' => 'Departure Date & Time - The Unix timestamp when the set was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'language' => array(
+        'description' => 'Specify preferred language for Site Inspection (English or Spanish).',
+        'type' => 'varchar',
+        'length' => 10,
+        'default' => '',
+      ),
+      'date_time_requested' => array(
+        'description' => 'DATE & TIME REQUESTED - The Unix timestamp when the set was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'resort' => array(
+        'description' => 'Resort.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('id_download_site_req'),
+    'indexes' => array(
+      'id_download_site_req' => array('id_download_site_req'),
+    ),
+  );
+
+  $schema['download_request'] = array(
+    'description' => 'Guarda la informacion del formulario "Solicitud de boda".',
+    'fields' => array(
+      'id_download_request' => array(
+        'description' => 'Request ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'bride' => array(
+        'description' => 'Bride full name Request.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'groom' => array(
+        'description' => 'Groom full name Request.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'mail' => array(
+        'description' => 'Mail.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'phone' => array(
+        'description' => 'Phone.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'address' => array(
+        'description' => 'Address.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'zip' => array(
+        'description' => 'Zip.',
+        'type' => 'varchar',
+        'length' => 100,
+        'default' => '',
+      ),
+      'city' => array(
+        'description' => 'City.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'state' => array(
+        'description' => 'State.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'country' => array(
+        'description' => 'Country.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'ceremony_type' => array(
+        'description' => 'Ceremony type.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'legal_ceremony' => array(
+        'description' => 'Legal Ceremony o Symbolic Ceremony.',
+        'type' => 'varchar',
+        'length' => 20,
+        'default' => '',
+      ),
+      'resort' => array(
+        'description' => 'Resort.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'ceremony_date' => array(
+        'description' => 'Preferred ceremony date and time - The Unix timestamp when the set was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'arrival_date' => array(
+        'description' => 'Arrival date ceremony date and time - The Unix timestamp when the set was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'departure_day' => array(
+        'description' => 'Departure day ceremony date and time - The Unix timestamp when the set was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'flexible_wedding' => array(
+        'description' => 'Are you flexible with your wedding Date? (yes or not).',
+        'type' => 'varchar',
+        'length' => 10,
+        'default' => '',
+      ),
+      'guests_adults' => array(
+        'description' => 'Number of guests - Adults.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'guests_children' => array(
+        'description' => 'Number of guests - Children.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'exist_travel_agent' => array(
+        'description' => 'Are you working with a travel agent? (yes or not).',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'travel_agent_name' => array(
+        'description' => 'Travel Agent name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'travel_agency' => array(
+        'description' => 'Travel Agency.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'iata' => array(
+        'description' => 'IATA #.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'agency_address' => array(
+        'description' => 'Agency Address.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'agency_zip' => array(
+        'description' => 'Agency Zip Code.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'agency_city' => array(
+        'description' => 'Agency City.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'agency_state' => array(
+        'description' => 'Agency State.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'agency_country' => array(
+        'description' => 'Agency Country.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'agency_email' => array(
+        'description' => 'Agency Email.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+      'agency_phone' => array(
+        'description' => 'Agency Phone.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('id_download_request'),
+    'indexes' => array(
+      'id_download_request' => array('id_download_request'),
+    ),
+  );
+
+  return $schema;
+}
