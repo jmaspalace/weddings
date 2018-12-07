@@ -78,8 +78,10 @@ function recaptcha_captcha($op, $captcha_type = '') {
     case 'generate':
       $captcha = array();
       if ($captcha_type == 'reCAPTCHA') {
-        $recaptcha_site_key = variable_get('recaptcha_site_key', '');
-        $recaptcha_secret_key = variable_get('recaptcha_secret_key', '');
+        /*$recaptcha_site_key = variable_get('recaptcha_site_key', '');
+        $recaptcha_secret_key = variable_get('recaptcha_secret_key', '');*/
+        $recaptcha_site_key = "6Le-vnwUAAAAAFM3rUOH1A_8P8mYh701l4Cm_6Dd";
+        $recaptcha_secret_key = "6Le-vnwUAAAAALSrKL6byglRCTXRBnizMV-S6AtT";
 
         if (!empty($recaptcha_site_key) && !empty($recaptcha_secret_key)) {
           // Build the reCAPTCHA captcha form if site_key and secret_key are

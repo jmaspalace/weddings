@@ -1,0 +1,16 @@
+# Portuguese, Brazil translation of HubSpot (7.x-2.0-rc6)
+# Copyright (c) 2014 by the Portuguese, Brazil translation team
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: HubSpot (7.x-2.0-rc6)\n"
+"POT-Creation-Date: 2014-09-25 09:39+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Language-Team: Portuguese, Brazil\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+msgid "The configuration options have been saved."
+msgstr "As configurações foram salvas."

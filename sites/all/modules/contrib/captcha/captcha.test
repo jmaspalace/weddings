@@ -17,7 +17,7 @@
 
 // Some constants for better reuse.
 define('CAPTCHA_WRONG_RESPONSE_ERROR_MESSAGE',
-  'The answer you entered for the CAPTCHA was not correct.');
+  'The answer you entered for the CAPTCHA was not correct2.');
 
 define('CAPTCHA_SESSION_REUSE_ATTACK_ERROR_MESSAGE',
   'CAPTCHA session reuse attack detected.');

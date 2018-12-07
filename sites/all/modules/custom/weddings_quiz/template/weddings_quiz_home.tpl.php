@@ -143,7 +143,7 @@ drupal_add_html_head($tw_image_height, 'twitter:image:height');
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12 content-info">
                 <div class="box">
-                    <h2 class="titulo_bloque"><?= $quiz['nombre_quiz']; ?></h2>
+                    <h2 class="titulo_bloque ok"><?= $quiz['nombre_quiz']; ?></h2>
                     <a class="enlace" href="<?= url('quiz/ini/'.$quiz['id_quiz'], array('absolute' => TRUE)) ?>"><?php print t('start quiz') ?></a>
                 </div>
             </div>
